@@ -88,7 +88,7 @@
 
 <h2 class="no-num no-toc" id="abstract">Abstract</h2>
 
-<p>This specification defines an unified interface to store and retrieve performance metric data. 
+<p>This specification defines an unified interface to store and retrieve performance metric data.
 This specification does not cover individual performance metric interfaces.</p>
 
 <h2 class="no-num no-toc" id="status-of-this-document">Status of this
@@ -143,7 +143,7 @@ cite this document as other than work in progress. </p>
   <li><a href="#conformance-requirements"><span class="secno">2
     </span>Conformance requirements</a></li>
   <li><a href="#terminology"><span class="secno">3 </span>Terminology</a></li>
-  <li><a href="#sec-navigation-timing"><span class="secno">4 </span>Performance Timeline</a> 
+  <li><a href="#sec-navigation-timing"><span class="secno">4 </span>Performance Timeline</a>
     <ol class="toc">
       <li><a href="#sec-performance-timeline"><span class="secno">4.1 </span> The Performance Timeline</a></li>
       <li><a href="#sec-PerformanceEntry-interface"><span class="secno">4.2 </span>The <code>PerformanceEntry</code> interface</a></li>
@@ -175,7 +175,7 @@ scripts, respectively.
 Together these interfaces, and potentially others created in the future, define performance metrics
 that describe the performance timeline of a web application. This
 specification provides an unifying interface to access and retrieve these various performance metrics from the performance timeline of a
-web application.  
+web application.
 </p>
 
 <div class="example">
@@ -190,23 +190,23 @@ to obtain timing data related to the navigation of the document, resources on th
   &lt;body onload="init()"&gt;
     &lt;img id="image0" src="http://www.w3.org/Icons/w3c_main.png" /&gt;
     &lt;script&gt;
-       function init() 
+       function init()
        {
             performance.mark("startWork"); // see <a href='#UserTiming'>[User Timing]</a>
             doWork(); // Some developer code
             performance.mark("endWork");
-            
+
             measurePerf();
        }
 
-       function measurePerf() 
+       function measurePerf()
        {
            var perfEntries = performance.getEntries();
            for (var i = 0; i &lt; perfEntries.length; i++)
            {
-                 if (window.console) console.log("Name: "        + perfEntries[i].name      + 
+                 if (window.console) console.log("Name: "        + perfEntries[i].name      +
                                                  " Entry Type: " + perfEntries[i].entryType +
-                                                 " Start Time: " + perfEntries[i].startTime + 
+                                                 " Start Time: " + perfEntries[i].startTime +
                                                  " Duration: "   + perfEntries[i].duration  + "\n");
            }
        }
@@ -254,13 +254,13 @@ the more accurate "an object implementing the interface <code
 title="">Foo</code>". </p>
 
 <p>
-  Throughout this work, all time values are measured in milliseconds since the start of 
-  navigation of the document. For example, the start of navigation of the document 
-  occurs at time 0. The term <i>current time</i> refers to the number of milliseconds 
-  since the start of navigation of the document until the current moment in time. 
+  Throughout this work, all time values are measured in milliseconds since the start of
+  navigation of the document. For example, the start of navigation of the document
+  occurs at time 0. The term <i>current time</i> refers to the number of milliseconds
+  since the start of navigation of the document until the current moment in time.
   This definition of time is based on the High Resolution Time specification
   [<a href="http://www.w3.org/TR/hr-time/">High Resolution Time</a>] and is different
-  from the definition of time used in the Navigation Timing specification 
+  from the definition of time used in the Navigation Timing specification
   [<a href="http://www.w3.org/TR/navigation-timing/">Navigation Timing</a>],
   where time is measured in milliseconds since midnight of January 1, 1970 (UTC).
 </p>
@@ -269,8 +269,8 @@ title="">Foo</code>". </p>
 
 <h3 id="sec-performance-timeline"><span class="secno">4.1 </span> The Performance Timeline</h3>
 <p>
-	All interfaces that participate in the <a href="#sec-performance-timeline">Performance Timeline</a>, such as the 
-	<a href="http://www.w3.org/TR/resource-timing/#performanceresourcetiming"><code>PerformanceResourceTiming</code></a> <a href='#ResourceTiming'>[Resource Timing]</a>, 
+	All interfaces that participate in the <a href="#sec-performance-timeline">Performance Timeline</a>, such as the
+	<a href="http://www.w3.org/TR/resource-timing/#performanceresourcetiming"><code>PerformanceResourceTiming</code></a> <a href='#ResourceTiming'>[Resource Timing]</a>,
 	<a href="http://www.w3.org/TR/user-timing/#performancemark"><code>PerformanceMark</code></a>, and
 	<a href="http://www.w3.org/TR/user-timing/#performancemeasure"><code>PerformanceMeasure</code></a>  <a href='#UserTiming'>[User Timing]</a> interfaces,
 	<span class='rfc2119'>must</span> adhere to the following rules:
@@ -278,12 +278,12 @@ title="">Foo</code>". </p>
 
 <ul>
 	<li><Span Class='Rfc2119'>Must</Span> extend the <a href="#performanceentry"><code>PerformanceEntry</code></a> interface</li>
-	<li><Span Class='Rfc2119'>Must</Span> be supported by the 
+	<li><Span Class='Rfc2119'>Must</Span> be supported by the
 		<a href="#dom-performance-getentries"><code>getEntries</code></a>,
 		<a href="#dom-performance-getentriesbytype"><code>getEntriesByType</code></a>, and
 		<a href="#dom-performance-getentriesbyname"><code>getEntriesByName</code></a> methods
 	</li>
-</ul>	
+</ul>
 
 <h3 id="sec-PerformanceEntry-interface"><span class="secno">4.2 </span> The <a href="#performanceentry"><code>PerformanceEntry</code></a>
 interface</h3>
@@ -298,7 +298,7 @@ interface</h3>
 <h4 id="dom-performanceentry-name"><code>name</code> attribute</h4>
 <p>
 	The <code>name</code> attribute <span class='rfc2119'>must</span> return the identifier for this <a href="#performanceentry"><code>PerformanceEntry</code></a> object. This
-	identifier does not have to be unique. 
+	identifier does not have to be unique.
 </p>
 
 <h4 id="dom-performanceentry-entrytype"><code>entryType</code> attribute</h4>
@@ -322,7 +322,7 @@ interface</h3>
 <h4 id="dom-performanceentry-duration"><code>duration</code> attribute</h4>
 <p>
 	The <code>duration</code> attribute <span class='rfc2119'>must</span> return a <a href="http://www.w3.org/TR/hr-time/#domhighrestimestamp"><code>DOMHighResTimeStamp</code></a>
-	that contains the time value of the duration of the entire event being recorded by this <a href="#performanceentry"><code>PerformanceEntry</code></a>. Typically, this would be the 
+	that contains the time value of the duration of the entire event being recorded by this <a href="#performanceentry"><code>PerformanceEntry</code></a>. Typically, this would be the
 	time difference between the last recorded timestamp and the first recorded timestamp of this <a href="#performanceentry"><code>PerformanceEntry</code></a>. A performance metric may choose
 	to return a <code>duration</code> of 0, if the duration concept doesn't apply.
 <p>
@@ -339,12 +339,12 @@ typedef sequence &lt;PerformanceEntry&gt; <b><dfn id='performanceentrylist'>Perf
 </pre>
 
 <p>
-The <a href="http://www.w3.org/TR/navigation-timing/#dom-window-performance"><code>window.performance</code></a> attribute provides a hosting area for performance measurement related attributes and methods using the <a href='http://www.w3.org/TR/navigation-timing/#performance'><code>Performance</code></a> interface <a href='#NavigationTiming'>[Navigation Timing]</a>. 
+The <a href="http://www.w3.org/TR/navigation-timing/#dom-window-performance"><code>window.performance</code></a> attribute provides a hosting area for performance measurement related attributes and methods using the <a href='http://www.w3.org/TR/navigation-timing/#performance'><code>Performance</code></a> interface <a href='#NavigationTiming'>[Navigation Timing]</a>.
 </p>
 
 <div class="methods">
     <h4 id="dom-performance-getentries"><code>getEntries</code> method</h4>
-	<p>The <code>getEntries</code> method returns a 
+	<p>The <code>getEntries</code> method returns a
 		<a href="#performanceentrylist"><code>PerformanceEntryList</code></a> object that contains a copy of all <a href="#performanceentry"><code>PerformanceEntry</code></a> objects in chronological order with respect to <a href="#dom-performanceentry-starttime">startTime</a>.
     </p>
 
@@ -359,15 +359,15 @@ The <a href="http://www.w3.org/TR/navigation-timing/#dom-window-performance"><co
 
 <div class="methods">
     <h4 id="dom-performance-getentriesbytype"><code>getEntriesByType</code> method</h4>
-	<p>The <code>getEntriesByType</code> method returns a 
-		<a href="#performanceentrylist"><code>PerformanceEntryList</code></a> object that contains a copy of all <a href="#performanceentry"><code>PerformanceEntry</code></a> objects, in chronological order with respect to <a href="#dom-performanceentry-starttime">startTime</a>, 
+	<p>The <code>getEntriesByType</code> method returns a
+		<a href="#performanceentrylist"><code>PerformanceEntryList</code></a> object that contains a copy of all <a href="#performanceentry"><code>PerformanceEntry</code></a> objects, in chronological order with respect to <a href="#dom-performanceentry-starttime">startTime</a>,
 		that have the same value for the <code>entryType</code> attribute of <a href="#performanceentry"><code>PerformanceEntry</code></a> as the <code>entryType</code> parameter.
     </p>
 
 		<div class="parameters">
 				<p><b>Parameter</b></p>
 					<p><a href='http://www.w3.org/TR/WebIDL/#idl-DOMString'><code>DOMString</code></a> <code>entryType</code></p>
-                    <p>		
+                    <p>
                         A <a href="#performanceentrylist"><code>PerformanceEntryList</code></a> object that contains a copy of <a href="#performanceentry"><code>PerformanceEntry</code></a> objects
 				        that have the same value for the <code>entryType</code> attribute of <a href="#performanceentry"><code>PerformanceEntry</code></a> as the <code>entryType</code> parameter.
 				        If no such <a href="#performanceentry"><code>PerformanceEntry</code></a> objects exist, the <a href="#performanceentrylist"><code>PerformanceEntryList</code></a>
@@ -383,8 +383,8 @@ The <a href="http://www.w3.org/TR/navigation-timing/#dom-window-performance"><co
     <h4 id="dom-performance-getentriesbyname"><code>getEntriesByName</code> method</h4>
 	<p>
 		The <code>getEntriesByName</code> method returns a
-		<a href="#performanceentrylist"><code>PerformanceEntryList</code></a> object that contains a copy of <a href="#performanceentry"><code>PerformanceEntry</code></a> objects, in chronological order with respect to <a href="#dom-performanceentry-starttime">startTime</a>, 
-		that have the same value for the <code>name</code> attribute of <a href="#performanceentry"><code>PerformanceEntry</code></a> as the <code>name</code> parameter 
+		<a href="#performanceentrylist"><code>PerformanceEntryList</code></a> object that contains a copy of <a href="#performanceentry"><code>PerformanceEntry</code></a> objects, in chronological order with respect to <a href="#dom-performanceentry-starttime">startTime</a>,
+		that have the same value for the <code>name</code> attribute of <a href="#performanceentry"><code>PerformanceEntry</code></a> as the <code>name</code> parameter
 		and, if specified, have the same value for the <code>entryType</code> attribute of <a href="#performanceentry"><code>PerformanceEntry</code></a> as the <code>entryType</code> parameter.
     </p>
 		<div class="parameters">
@@ -392,14 +392,14 @@ The <a href="http://www.w3.org/TR/navigation-timing/#dom-window-performance"><co
 					<p><a href='http://www.w3.org/TR/WebIDL/#idl-DOMString'><code>DOMString</code></a> <code>name</code></p>
 					<p>
 						The <a href="#performanceentrylist"><code>PerformanceEntryList</code></a> object that contains a copy of <a href="#performanceentry"><code>PerformanceEntry</code></a> objects
-						that have the same value for the <code>name</code> attribute of <a href="#performanceentry"><code>PerformanceEntry</code></a> as the <code>name</code> parameter. 
+						that have the same value for the <code>name</code> attribute of <a href="#performanceentry"><code>PerformanceEntry</code></a> as the <code>name</code> parameter.
 						If no such <a href="#performanceentry"><code>PerformanceEntry</code></a> objects exist, the <a href="#performanceentrylist"><code>PerformanceEntryList</code></a> <span class='rfc2119'>must</span> be empty.
 					</p>
 					<p><a href='http://www.w3.org/TR/WebIDL/#idl-DOMString'><code>DOMString</code></a> <code>entryType</code></p>
 					<p>
 						The <a href="#performanceentrylist"><code>PerformanceEntryList</code></a> object that only contains a copy of <a href="#performanceentry"><code>PerformanceEntry</code></a> objects
-						that have the same value for the <code>entryType</code> attribute of <a href="#performanceentry"><code>PerformanceEntry</code></a> as the <code>entryType</code> parameter 
-						and have the same value for the <code>name</code> attribute of <a href="#performanceentry"><code>PerformanceEntry</code></a> as the <code>name</code> parameter. 
+						that have the same value for the <code>entryType</code> attribute of <a href="#performanceentry"><code>PerformanceEntry</code></a> as the <code>entryType</code> parameter
+						and have the same value for the <code>name</code> attribute of <a href="#performanceentry"><code>PerformanceEntry</code></a> as the <code>name</code> parameter.
 						If no such <a href="#performanceentry"><code>PerformanceEntry</code></a> objects exist, the <a href="#performanceentrylist"><code>PerformanceEntryList</code></a>
 						<span class='rfc2119'>must</span> be empty.
 					</p>
@@ -412,8 +412,8 @@ The <a href="http://www.w3.org/TR/navigation-timing/#dom-window-performance"><co
 <h3 id="sec-vendor-extensions">4.4 Vendor Extensions</h3>
 
 <p>
-  If a vendor-specific proprietary user agent extension is needed to create experimental 
-  <a href="#performanceentry"><code>PerformanceEntry</code></a> objects, on getting the 
+  If a vendor-specific proprietary user agent extension is needed to create experimental
+  <a href="#performanceentry"><code>PerformanceEntry</code></a> objects, on getting the
   <a href="#dom-performanceentry-entrytype"><code>entryType</code></a> IDL attribute, vendors MUST return a DOMString that uses the following convention:
 </p>
 
@@ -425,7 +425,7 @@ The <a href="http://www.w3.org/TR/navigation-timing/#dom-window-performance"><co
     <code>[vendorprefix]</code> is a non-capitalized name that identifies the vendor,
   </li>
   <li>
-    <code>[entrytype]</code> is a non-capitalized name given to the <i>type</i> of the interface 
+    <code>[entrytype]</code> is a non-capitalized name given to the <i>type</i> of the interface
     represented by this <a href="#performanceentry"><code>PerformanceEntry</code></a> object,
   </li>
   <li>
@@ -441,7 +441,7 @@ The <a href="http://www.w3.org/TR/navigation-timing/#dom-window-performance"><co
 <dl id='references-list'>
 <dt><a id='rfc2119'>[IETF RFC 2119]</a></dt>
 <dd>
- <cite><a href='http://www.ietf.org/rfc/rfc2119.txt'>Key words for use in RFCs to Indicate Requirement Levels</a></cite>, Scott Bradner, Author. Internet Engineering Task Force, March 1997. Available at http://www.ietf.org/rfc/rfc2119.txt. 
+ <cite><a href='http://www.ietf.org/rfc/rfc2119.txt'>Key words for use in RFCs to Indicate Requirement Levels</a></cite>, Scott Bradner, Author. Internet Engineering Task Force, March 1997. Available at http://www.ietf.org/rfc/rfc2119.txt.
 </dd>
    <dt>[<a id="NavigationTiming">Navigation Timing</a>]</dt>
    <dd><cite><a href='http://www.w3.org/TR/2012/REC-navigation-timing-20121217/'>Navigation Timing</a></cite>, Zhiheng Wang, Editor. W3C Recommendation, World Wide Web Consortium, December 2012. This version of the Navigation Timing specification is available from http://www.w3.org/TR/2012/REC-navigation-timing-20121217/. The <a href='http://www.w3.org/TR/navigation-timing/'>latest version of Navigation Timing</a> is available at http://www.w3.org/TR/navigation-timing/.</dd>
