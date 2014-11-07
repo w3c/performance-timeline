@@ -277,13 +277,21 @@ title="">Foo</code>". </p>
 </p>
 
 <ul>
-	<li><Span Class='Rfc2119'>Must</Span> extend the <a href="#performanceentry"><code>PerformanceEntry</code></a> interface</li>
-	<li><Span Class='Rfc2119'>Must</Span> be supported by the
+	<li><Span Class='Rfc2119'>MUST</Span> extend the <a href="#performanceentry"><code>PerformanceEntry</code></a> interface</li>
+	<li><Span Class='Rfc2119'>MUST</Span> be supported by the
 		<a href="#dom-performance-getentries"><code>getEntries</code></a>,
 		<a href="#dom-performance-getentriesbytype"><code>getEntriesByType</code></a>, and
 		<a href="#dom-performance-getentriesbyname"><code>getEntriesByName</code></a> methods
 	</li>
+  <li><Span Class='Rfc2119'>SHOULD</Span> surface new performance metrics in a timely manner</li>
 </ul>
+
+<div class="note">
+<div class="noteHeader">Note</div>
+  <p>
+    The user agent is not required to provide synchronous access to new performance metrics - i.e. the user agent may delay reporting the metric to avoid performance bottlenecks; the application should not rely on synchronous access to performance metrics - e.g. try to process a metric immediately after invoking an operation that triggers it.
+  </p>
+</div>
 
 <h3 id="sec-PerformanceEntry-interface"><span class="secno">4.2 </span> The <a href="#performanceentry"><code>PerformanceEntry</code></a>
 interface</h3>
