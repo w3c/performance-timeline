@@ -300,6 +300,8 @@ interface</h3>
   readonly attribute <a href='http://www.w3.org/TR/WebIDL/#idl-DOMString'>DOMString</a> <a href='#dom-performanceentry-entrytype' title='entryType'>entryType</a>;
   readonly attribute <a href="http://www.w3.org/TR/hr-time/#domhighrestimestamp">DOMHighResTimeStamp</a> <a href='#dom-performanceentry-starttime' title='startTime'>startTime</a>;
   readonly attribute <a href="http://www.w3.org/TR/hr-time/#domhighrestimestamp">DOMHighResTimeStamp</a> <a href='#dom-performanceentry-duration' title='duration'>duration</a>;
+
+  serializer = { name, entryType, startTime, duration };
 };
 </pre>
 
