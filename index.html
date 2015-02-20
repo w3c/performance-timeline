@@ -126,15 +126,13 @@
           <dt>readonly attribute DOMString name</dt>
           <dd>The attribute MUST return the identifier for this <a>PerformanceEntry</a> object. This identifier does not have to be unique.</dd>
           <dt>readonly attribute DOMString entryType</dt>
-          <dd>This attribute MUST return a <a href="http://www.w3.org/TR/WebIDL/#idl-DOMString">DOMString</a> that describes the type of the interface represented by this <a>PerformanceEntry</a> object.</dd>
+          <dd>This attribute MUST return a <a href="http://www.w3.org/TR/WebIDL/#idl-DOMString">DOMString</a> that describes the <a href="http://www.w3.org/wiki/Web_Performance/EntryType">type of the interface</a> represented by this <a>PerformanceEntry</a> object.</dd>
           <dt>readonly attribute DOMString startTime</dt>
           <dd>The attribute MUST return a <a href="http://www.w3.org/TR/hr-time/#domhighrestimestamp">DOMHighResTimeStamp</a> that contains the time value of the first recorded timestamp of this performance metric.</dd>
           <dt>readonly attribute DOMString duration</dt>
           <dd>The attribute MUST return a <a href="http://www.w3.org/TR/hr-time/#domhighrestimestamp">DOMHighResTimeStamp</a> that contains the time value of the duration of the entire event being recorded by this <a>PerformanceEntry</a>. Typically, this would be the time difference between the last recorded timestamp and the first recorded timestamp of this <a>PerformanceEntry</a>. If the duration concept doesn't apply, a performance metric may choose to return a `duration` of 0.</dd>
           <dt>serializer = { attribute }</dt>
         </dl>
-
-        <p class="note">The <a href="http://www.w3.org/wiki/Web_Performance/EntryType">Web Performance/entryType</a> wiki page lists all of the known <a href="#widl-PerformanceEntry-entryType">entryType</a> values.</p>
       </section>
 
       <section>
