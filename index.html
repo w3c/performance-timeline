@@ -4,7 +4,7 @@
 <head>
   <title>Performance Timeline</title>
   <meta charset='utf-8'>
-  <script src='//www.w3.org/Tools/respec/respec-w3c-common' async class='remove'></script>
+  <script src='http://www.w3.org/Tools/respec/respec-w3c-common' async class='remove'></script>
   <script class='remove'>
   var respecConfig = {
     shortName: "performance-timeline",
@@ -122,7 +122,7 @@
         <h2>The <dfn>PerformanceEntry</dfn> interface</h2>
         <p>The <a>PerformanceEntry</a> interface hosts the performance data of various metrics.</p>
 
-        <dl title='interface PerformanceEntry' class='idl'>
+        <dl title='[Exposed=(Window,Worker)] interface PerformanceEntry' class='idl'>
           <dt>readonly attribute DOMString name</dt>
           <dd>The attribute MUST return a <a href="http://www.w3.org/TR/WebIDL/#idl-DOMString">DOMString</a> identifier for this <a>PerformanceEntry</a> object. This identifier does not have to be unique.</dd>
           <dt>readonly attribute DOMString entryType</dt>
@@ -140,7 +140,7 @@
 
         <p>The <a>Performance</a> interface hosts performance related attributes and methods used to retrieve the performance metric data from the <a>Performance Timeline</a>.</p>
 
-        <dl title='[Exposed=Window,Worker] interface Performance : EventTarget' class='idl'>
+        <dl title='[Exposed=(Window,Worker)] interface Performance : EventTarget' class='idl'>
           <dt>PerformanceEntryList getEntries()</dt>
           <dd>This method returns a <a>PerformanceEntryList</a> object that contains a copy of all <a>PerformanceEntry</a> objects in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>.</dd>
 
@@ -152,19 +152,28 @@
         </dl>
 
         <dl class="idl" title="typedef sequence PerformanceEntry PerformanceEntryList"></dl>
+
+        <dl class='idl' title='[NoInterfaceObject, Exposed=(Window,Worker)] interface GlobalPerformance'>
+        <dt>[Replaceable] readonly attribute Performance performance</dt>
+        <dd>
+        <p>This attribute allows access to performance related attributes and methods.</p>
+        </dd>
+        </dl>
+        <pre class='idl'>
+        Window implements GlobalPerformance;
+        WorkerGlobalScope implements GlobalPerformance;
+        </pre>
       </section>
-    </section>
-
-    <section>
-      <h2>Vendor Extensions</h2>
-
-      <p>If a vendor-specific proprietary user agent extension is needed to create experimental <a>PerformanceEntry</a> objects, on getting the <a href="#widl-PerformanceEntry-entryType">entryType</a> IDL attribute, vendors MUST return a `DOMString` that uses the following convention:</p>
-
-      <pre>[vendorPrefix]-[entryType]</pre>
-
-      <p>Where, `[vendorPrefix]` is a non-capitalized name that identifies the vendor, `[entryType]` is a non-capitalized name given to the type of the interface represented by this <a>PerformanceEntry</a> object, and the above names are in ASCII.</p>
-    </section>
   </section>
 
+  <section>
+    <h2>Vendor Extensions</h2>
+    <p>If a vendor-specific proprietary user agent extension is needed to create experimental <a>PerformanceEntry</a> objects, on getting the <a hrefidl-PerformanceEntry-entryType">entryType</a> IDL attribute, vendors MUST return a `DOMString` that uses the following convention:</p>
+    <pre>[vendorPrefix]-[entryType]</pre>
+    <p>Where, `[vendorPrefix]` is a non-capitalized name that identifies the vendor, `[entryType]` is a non-capitalized name given to the type of   interface represented by this <a>PerformanceEntry</a> object, and the above names are in ASCII.</p>
+  </section>
+
+
+    </section>
 </body>
 </html>
