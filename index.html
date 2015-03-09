@@ -53,7 +53,7 @@
 
 <body>
   <section id='abstract'>
-    <p>This specification defines an unified interface to store and retrieve performance metric data. This specification does not cover individual performance metric interfaces.</p>
+    <p>This specification defines a unified interface to store and retrieve high resolution performance metric data.</p>
   </section>
 
   <section id='sotd'>
@@ -63,11 +63,9 @@
   <section class='informative'>
     <h2>Introduction</h2>
 
-    <p>Accurately measuring performance characteristics of web applications is an important aspect of making web applications faster. [[NAVIGATION-TIMING]], [[RESOURCE-TIMING]], and [[USER-TIMING]] are examples of specifications that define timing information related to the navigation of the document, resources on the page, and developer scripts, respectively.</p>
+    <p>Accurately measuring performance characteristics of web applications is an important aspect of making web applications faster. This specification defines the necessary <a>Performance Timeline</a> primitives that enable web developers to access, instrument, and retrieve various performance metrics from the full lifecycle of a web application.</p>
 
-    <p>Together these interfaces, and potentially others created in the future, define performance metrics that describe the performance timeline of a web application. This specification provides an unifying interface to access and retrieve these various performance metrics from the performance timeline of a web application.</p>
-
-    <p>The following script shows how a developer can use the <a>PerformanceEntry</a> interface to obtain timing data related to the navigation of the document, resources on the page and developer scripts.</p>
+    <p>[[NAVIGATION-TIMING]], [[RESOURCE-TIMING]], and [[USER-TIMING]] are examples of specifications that define timing information related to the navigation of the document, resources on the page, and developer scripts, respectively. Together these interfaces, and potentially others created in the future, define performance metrics that describe the <a>Performance Timeline</a> of a web application. For example, the following script shows how a developer can access the <a>Performance Timeline</a> to obtain performance metrics related to the navigation of the document, resources on the page, and developer scripts:</p>
 
     <pre class="highlight example">
 &lt;!doctype html&gt;
@@ -104,74 +102,78 @@
   </section>
 
   <section>
-    <h2>Terminology</h2>
-    <p>The construction "a `Foo` object", where `Foo` is actually an interface, is sometimes used instead of the more accurate "an object implementing the interface Foo".</p>
+    <h2><dfn>Performance Timeline</dfn></h2>
 
-    <p>Throughout this work, all time values are measured in milliseconds since the start of navigation of the document. For example, the start of navigation of the document occurs at time 0. The term <dfn>current time</dfn> refers to the number of milliseconds since the start of navigation of the document until the current moment in time. This definition of time is based on [[HR-TIME]] and is different from the definition of time used in the [[NAVIGATION-TIMING]], where time is measured in milliseconds since midnight of January 1, 1970 (UTC).
+    <p>The <a>Performance Timeline</a> enables the user agent and application developers to access, instrument, and retrieve various performance metrics from the full lifecycle of a web application.</p>
+
+    <p>All interfaces that participate in the <a>Performance Timeline</a> MUST adhere to the following rules:</p>
+
+    <ul>
+      <li>MUST extend the <a>PerformanceEntry</a> interface</li>
+      <li>MUST be supported by the <a href="#widl-Performance-getEntries-PerformanceEntryList">getEntries</a>, <a href="#widl-Performance-getEntriesByType-PerformanceEntryList">getEntriesByType</a>, and <a href="#widl-Performance-getEntriesByName-PerformanceEntryList">getEntriesByName</a> methods.</li>
+      <li>SHOULD surface new performance metrics in a timely manner</li>
+      <ul>
+        <li>The user agent is NOT REQUIRED to provide synchronous access to new performance metrics</li>
+        <li>The user agent MAY delay reporting the metric to avoid performance bottlenecks</li>
+      </ul>
+    </ul>
+
+      <section>
+        <h2>The <dfn>PerformanceEntry</dfn> interface</h2>
+        <p>The <a>PerformanceEntry</a> interface hosts the performance data of various metrics.</p>
+
+        <dl title='[Exposed=(Window,Worker)] interface PerformanceEntry' class='idl'>
+          <dt>readonly attribute DOMString name</dt>
+          <dd>The attribute MUST return a <a href="http://www.w3.org/TR/WebIDL/#idl-DOMString">DOMString</a> identifier for this <a>PerformanceEntry</a> object. This identifier does not have to be unique.</dd>
+          <dt>readonly attribute DOMString entryType</dt>
+          <dd>This attribute MUST return a <a href="http://www.w3.org/TR/WebIDL/#idl-DOMString">DOMString</a> that describes the <a href="http://www.w3.org/wiki/Web_Performance/EntryType">type of the interface</a> represented by this <a>PerformanceEntry</a> object.</dd>
+          <dt>readonly attribute DOMString startTime</dt>
+          <dd>The attribute MUST return a <a href="http://www.w3.org/TR/hr-time/#domhighrestimestamp">DOMHighResTimeStamp</a> that contains the time value of the first recorded timestamp of this performance metric.</dd>
+          <dt>readonly attribute DOMString duration</dt>
+          <dd>The attribute MUST return a <a href="http://www.w3.org/TR/hr-time/#domhighrestimestamp">DOMHighResTimeStamp</a> that contains the time value of the duration of the entire event being recorded by this <a>PerformanceEntry</a>. Typically, this would be the time difference between the last recorded timestamp and the first recorded timestamp of this <a>PerformanceEntry</a>. If the duration concept doesn't apply, a performance metric may choose to return a `duration` of 0.</dd>
+          <dt>serializer = { attribute }</dt>
+        </dl>
+      </section>
+
+      <section>
+        <h2>The <dfn>Performance</dfn> interface</h2>
+
+        <p>The <a>Performance</a> interface hosts performance related attributes and methods used to retrieve the performance metric data from the <a>Performance Timeline</a>.</p>
+
+        <dl title='[Exposed=(Window,Worker)] interface Performance : EventTarget' class='idl'>
+          <dt>PerformanceEntryList getEntries()</dt>
+          <dd>This method returns a <a>PerformanceEntryList</a> object that contains a copy of all <a>PerformanceEntry</a> objects in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>.</dd>
+
+          <dt>PerformanceEntryList getEntriesByType(DOMString entryType)</dt>
+          <dd>This method returns a <a>PerformanceEntryList</a> object that contains a copy of all <a>PerformanceEntry</a> objects, in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>, that have the same value for the <a href="#widl-PerformanceEntry-entryType">entryType</a> attribute of <a>PerformanceEntry</a> as the <a href="#widl-PerformanceEntry-entryType">entryType</a> parameter. If no such <a>PerformanceEntry</a> objects exist, the <a>PerformanceEntryList</a> must be empty.</dd>
+
+          <dt>PerformanceEntryList getEntriesByName(DOMString name, optional DOMString entryType)</dt>
+          <dd>This method returns a <a>PerformanceEntryList</a> object that contains a copy of <a>PerformanceEntry</a> objects, in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>, that have the same value for the <a href="#widl-PerformanceEntry-name">name</a> attribute of <a>PerformanceEntry</a> as the <a href="#widl-PerformanceEntry-name">name</a> parameter and, if specified, have the same value for the <a href="#widl-PerformanceEntry-entryType">entryType</a> attribute of <a>PerformanceEntry</a> as the <a href="#widl-PerformanceEntry-entryType">entryType</a> parameter. If no such <a>PerformanceEntry</a> objects exist, the <a>PerformanceEntryList</a> must be empty.</dd>
+        </dl>
+
+        <dl class="idl" title="typedef sequence PerformanceEntry PerformanceEntryList"></dl>
+
+        <dl class='idl' title='[NoInterfaceObject, Exposed=(Window,Worker)] interface GlobalPerformance'>
+        <dt>[Replaceable] readonly attribute Performance performance</dt>
+        <dd>
+        <p>This attribute allows access to performance related attributes and methods.</p>
+        </dd>
+        </dl>
+        <pre class='idl'>
+        Window implements GlobalPerformance;
+        WorkerGlobalScope implements GlobalPerformance;
+        </pre>
+      </section>
   </section>
 
   <section>
-    <h2>Performance Timeline</h2>
-
-    <section>
-      <h2>The <dfn>Performance Timeline</dfn></h2>
-
-      <p>All interfaces that participate in the <a>Performance Timeline</a> must adhere to the following rules:</p>
-
-      <ul>
-        <li>MUST extend the <a>PerformanceEntry</a> interface</li>
-        <li>MUST be supported by the <a href="#widl-Performance-getEntries-PerformanceEntryList">getEntries</a>, <a href="#widl-Performance-getEntriesByType-PerformanceEntryList">getEntriesByType</a>, and <a href="#widl-Performance-getEntriesByName-PerformanceEntryList">getEntriesByName</a> methods</li>
-        <li>SHOULD surface new performance metrics in a timely manner</li>
-      </ul>
-
-      <p>The user agent is NOT REQUIRED to provide synchronous access to new performance metrics. The user agent MAY delay reporting the metric to avoid performance bottlenecks; the application should not rely on synchronous access to performance metrics.</p>
-    </section>
-
-    <section>
-      <h2>The <dfn>PerformanceEntry</dfn> interface</h2>
-
-      <dl title='interface PerformanceEntry' class='idl'>
-        <dt>readonly attribute DOMString name</dt>
-        <dd>The attribute MUST return the identifier for this <a>PerformanceEntry</a> object. This identifier does not have to be unique.</dd>
-        <dt>readonly attribute DOMString entryType</dt>
-        <dd>This attribute MUST return a <a href="http://www.w3.org/TR/WebIDL/#idl-DOMString">DOMString</a> that describes the type of the interface represented by this <a>PerformanceEntry</a> object.</dd>
-        <dt>readonly attribute DOMString startTime</dt>
-        <dd>The attribute MUST return a <a href="http://www.w3.org/TR/hr-time/#domhighrestimestamp">DOMHighResTimeStamp</a> that contains the time value of the first recorded timestamp of this performance metric.</dd>
-        <dt>readonly attribute DOMString duration</dt>
-        <dd>The attribute MUST return a <a href="http://www.w3.org/TR/hr-time/#domhighrestimestamp">DOMHighResTimeStamp</a> that contains the time value of the duration of the entire event being recorded by this <a>PerformanceEntry</a>. Typically, this would be the time difference between the last recorded timestamp and the first recorded timestamp of this <a>PerformanceEntry</a>. If the duration concept doesn't apply, a performance metric may choose to return a `duration` of 0.</dd>
-        <dt>serializer = { attribute }</dt>
-      </dl>
-
-      <p class="note">The <a href="http://www.w3.org/wiki/Web_Performance/EntryType">Web Performance/entryType</a> wiki page lists all of the known <a href="#widl-PerformanceEntry-entryType">entryType</a> values.</p>
-    </section>
-
-    <section>
-      <h2>Extensions to the Performance interface</h2>
-
-      <dl class="idl" title="typedef sequence PerformanceEntry PerformanceEntryList"></dl>
-
-      <dl title='partial interface Performance' class='idl'>
-        <dt>PerformanceEntryList getEntries()</dt>
-        <dd>This method returns a <a>PerformanceEntryList</a> object that contains a copy of all <a>PerformanceEntry</a> objects in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>.</dd>
-
-        <dt>PerformanceEntryList getEntriesByType(DOMString entryType)</dt>
-        <dd>This method returns a <a>PerformanceEntryList</a> object that contains a copy of all <a>PerformanceEntry</a> objects, in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>, that have the same value for the <a href="#widl-PerformanceEntry-entryType">entryType</a> attribute of <a>PerformanceEntry</a> as the <a href="#widl-PerformanceEntry-entryType">entryType</a> parameter. If no such <a>PerformanceEntry</a> objects exist, the <a>PerformanceEntryList</a> must be empty.</dd>
-
-        <dt>PerformanceEntryList getEntriesByName(DOMString name, optional DOMString entryType)</dt>
-        <dd>This method returns a <a>PerformanceEntryList</a> object that contains a copy of <a>PerformanceEntry</a> objects, in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>, that have the same value for the <a href="#widl-PerformanceEntry-name">name</a> attribute of <a>PerformanceEntry</a> as the <a href="#widl-PerformanceEntry-name">name</a> parameter and, if specified, have the same value for the <a href="#widl-PerformanceEntry-entryType">entryType</a> attribute of <a>PerformanceEntry</a> as the <a href="#widl-PerformanceEntry-entryType">entryType</a> parameter. If no such <a>PerformanceEntry</a> objects exist, the <a>PerformanceEntryList</a> must be empty.</dd>
-      </dl>
-    </section>
-
-    <section>
-      <h2>Vendor Extensions</h2>
-
-      <p>If a vendor-specific proprietary user agent extension is needed to create experimental <a>PerformanceEntry</a> objects, on getting the <a href="#widl-PerformanceEntry-entryType">entryType</a> IDL attribute, vendors MUST return a `DOMString` that uses the following convention:</p>
-
-      <pre>[vendorPrefix]-[entryType]</pre>
-
-      <p>Where, `[vendorPrefix]` is a non-capitalized name that identifies the vendor, `[entryType]` is a non-capitalized name given to the type of the interface represented by this <a>PerformanceEntry</a> object, and the above names are in ASCII.</p>
-    </section>
+    <h2>Vendor Extensions</h2>
+    <p>If a vendor-specific proprietary user agent extension is needed to create experimental <a>PerformanceEntry</a> objects, on getting the <a hrefidl-PerformanceEntry-entryType">entryType</a> IDL attribute, vendors MUST return a `DOMString` that uses the following convention:</p>
+    <pre>[vendorPrefix]-[entryType]</pre>
+    <p>Where, `[vendorPrefix]` is a non-capitalized name that identifies the vendor, `[entryType]` is a non-capitalized name given to the type of   interface represented by this <a>PerformanceEntry</a> object, and the above names are in ASCII.</p>
   </section>
 
+
+    </section>
 </body>
 </html>
