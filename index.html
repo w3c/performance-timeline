@@ -164,16 +164,68 @@
         WorkerGlobalScope implements GlobalPerformance;
         </pre>
       </section>
+
+    <section>
+      <h2>The <dfn>PerformanceObserver</dfn> interface</h2>
+
+      <p>A <a>PerformanceObserver</a> object can be used to observe the <a>Performance Timeline</a> and be notified of new performance metrics as they are recorded by the user agent.</p>
+
+      <dl title='callback PerformanceObserverCallback = void (PerformanceObserverTimeline eventList, PerformanceObserver observer)' class='idl'></dl>
+
+      <dl title='[Constructor(PerformanceObserverCallback callback), Exposed=(Window,Worker)] interface PerformanceObserver' class='idl'>
+
+        <dt>void observe(PerformanceObserverInit options)</dt>
+        <dd>This method instructs the user agent to <dfn>register the observer</dfn> (i.e. observe the Performance Timeline), and report any new performance entries based on the criteria given by <a>options</a>.
+          <dl title='dictionary PerformanceObserverInit' class='idl'>
+            <dt>sequence&lt;DOMString&gt; typeFilter</dt>
+            <dd>
+              <p>A list of valid <a href="#widl-PerformanceEntry-entryType">entryType names</a> if not all entry types need to be observed. The list must not be empty and types not recognized by the user agent must be ignored.</p>
+
+              <p class="note">To keep the performance overhead to minimum the application should only subscribe to event types that it is interested in, and disconnect the observer once it no longer needs the performance data. Filtering by name is not supported, as it would implicitly require a subscription for all event types &mdash; this is possible, but discouraged, as it will generate a significant volume of events.</p>
+            </dd>
+          </dl>
+        </dd>
+
+        <dt>void disconnect()</dt>
+        <dd>This method removes the <a>registered performance observer</a> from <a>Performance Timeline</a>.</dd>
+      </dl>
+
+      <section>
+        <h2>The <dfn>PerformanceObserverTimeline</dfn> interface</h2>
+
+        <p>The <a>PerformanceObserverTimeline</a> interface provides the same `getEntries`, `getEntriesByType`, and `getEntriesByName` methods with identical semantics as the <a>Performance</a> interface, except that <a>PerformanceObserverTimeline</a> operates on the events observed by the <a>registered performance observer</a>, whereas the <a>Performance</a> operates on the global timeline.</p>
+
+        <dl title='[Exposed=(Window,Worker)] interface PerformanceObserverTimeline' class='idl'>
+          <dt>PerformanceEntryList getEntries()</dt>
+          <dd>See <a href="#widl-Performance-getEntries-PerformanceEntryList">performance.getEntries()</a>.</dd>
+          <dt>PerformanceEntryList getEntriesByType(DOMString entryType)</dt>
+          <dd>See <a href="#widl-Performance-getEntriesByType-PerformanceEntryList">performance.getEntriesByType()</a>.</dd>
+          <dt>PerformanceEntryList getEntriesByName(DOMString name, optional DOMString entryType)</dt>
+          <dd>See <a href="#widl-Performance-getEntriesByName-PerformanceEntryList">performance.getEntriesByName()</a>.</dd>
+          <dt>void clear()</dt>
+          <dd>The method clears the list of events observed by the <a>registered performance observer</a>.</dd>
+        </dl>
+      </section>
+
+      <section>
+        <h2>Process</h2>
+        <p>A <dfn>registered performance observer</dfn> consists of an observer (a <a>PerformanceObserver</a> object) and options (a <a>PerformanceObserverInit</a> dictionary).</p>
+
+        <p>... TODO ...</p>
+      </section>
+
+    </section>
   </section>
+
 
   <section>
     <h2>Vendor Extensions</h2>
-    <p>If a vendor-specific proprietary user agent extension is needed to create experimental <a>PerformanceEntry</a> objects, on getting the <a hrefidl-PerformanceEntry-entryType">entryType</a> IDL attribute, vendors MUST return a `DOMString` that uses the following convention:</p>
+    <p>If a vendor-specific proprietary user agent extension is needed to create experimental <a>PerformanceEntry</a> objects, on getting the <a href="#idl-PerformanceEntry-entryType">entryType</a> IDL attribute, vendors MUST return a `DOMString` that uses the following convention:</p>
     <pre>[vendorPrefix]-[entryType]</pre>
     <p>Where, `[vendorPrefix]` is a non-capitalized name that identifies the vendor, `[entryType]` is a non-capitalized name given to the type of   interface represented by this <a>PerformanceEntry</a> object, and the above names are in ASCII.</p>
   </section>
 
 
-    </section>
+  </section>
 </body>
 </html>
