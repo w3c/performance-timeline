@@ -92,7 +92,8 @@
                  if (window.console) console.log("Name: "        + perfEntries[i].name      +
                                                  " Entry Type: " + perfEntries[i].entryType +
                                                  " Start Time: " + perfEntries[i].startTime +
-                                                 " Duration: "   + perfEntries[i].duration  + "\n");
+                                                 " Duration: "   + perfEntries[i].duration  +
+                                                 " Group: "      + perfEntries[i].group + "\n");
            }
        }
     &lt;/script&gt;
@@ -110,7 +111,7 @@
 
     <ul>
       <li>MUST extend the <a>PerformanceEntry</a> interface</li>
-      <li>MUST be supported by the <a href="#widl-Performance-getEntries-PerformanceEntryList">getEntries</a>, <a href="#widl-Performance-getEntriesByType-PerformanceEntryList">getEntriesByType</a>, and <a href="#widl-Performance-getEntriesByName-PerformanceEntryList">getEntriesByName</a> methods.</li>
+      <li>MUST be supported by the <a href="#widl-Performance-getEntries-PerformanceEntryList">getEntries</a>, <a href="#widl-Performance-getEntriesByType-PerformanceEntryList">getEntriesByType</a>, <a href="#widl-Performance-getEntriesByName-PerformanceEntryList">getEntriesByName</a>, and <a href="#widl-Performance-getEntriesByGroup-PerformanceEntryList">getEntriesByGroup</a> methods.</li>
       <li>SHOULD surface new performance metrics in a timely manner</li>
       <ul>
         <li>The user agent is NOT REQUIRED to provide synchronous access to new performance metrics</li>
@@ -131,6 +132,8 @@
           <dd>The attribute MUST return a <a href="http://www.w3.org/TR/hr-time/#domhighrestimestamp">DOMHighResTimeStamp</a> that contains the time value of the first recorded timestamp of this performance metric.</dd>
           <dt>readonly attribute DOMString duration</dt>
           <dd>The attribute MUST return a <a href="http://www.w3.org/TR/hr-time/#domhighrestimestamp">DOMHighResTimeStamp</a> that contains the time value of the duration of the entire event being recorded by this <a>PerformanceEntry</a>. Typically, this would be the time difference between the last recorded timestamp and the first recorded timestamp of this <a>PerformanceEntry</a>. If the duration concept doesn't apply, a performance metric may choose to return a `duration` of 0.</dd>
+          <dt>readonly attribute DOMString group</dt>
+          <dd>This attribute MUST return a <a href="http://www.w3.org/TR/WebIDL/#idl-DOMString">DOMString</a> identifier that may be used to associate one or more <a>PerformanceEntry</a> objects into an event group - e.g. an event that results in generation of multiple <a>PerformanceEntry</a> objects may group them by returning the same group identifier. This attribute MUST be unique for <a>PerformanceEntry</a> objects that do not belong to the same event group.</dd>
           <dt>serializer = { attribute }</dt>
         </dl>
       </section>
@@ -149,6 +152,9 @@
 
           <dt>PerformanceEntryList getEntriesByName(DOMString name, optional DOMString entryType)</dt>
           <dd>This method returns a <a>PerformanceEntryList</a> object that contains a copy of <a>PerformanceEntry</a> objects, in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>, that have the same value for the <a href="#widl-PerformanceEntry-name">name</a> attribute of <a>PerformanceEntry</a> as the <a href="#widl-PerformanceEntry-name">name</a> parameter and, if specified, have the same value for the <a href="#widl-PerformanceEntry-entryType">entryType</a> attribute of <a>PerformanceEntry</a> as the <a href="#widl-PerformanceEntry-entryType">entryType</a> parameter. If no such <a>PerformanceEntry</a> objects exist, the <a>PerformanceEntryList</a> must be empty.</dd>
+
+          <dt>PerformanceEntryList getEntriesByGroup(DOMString group)</dt>
+          <dd>This method returns a <a>PerformanceEntryList</a> object that contains a copy of <a>PerformanceEntry</a> objects, in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>, that have the same value for the <a href="#widl-PerformanceEntry-group">group</a> attribute of <a>PerformanceEntry</a> as the <a href="#widl-PerformanceEntry-group">group</a> parameter. If no such <a>PerformanceEntry</a> objects exist, the <a>PerformanceEntryList</a> must be empty.</dd>
         </dl>
 
         <dl class="idl" title="typedef sequence PerformanceEntry PerformanceEntryList"></dl>
