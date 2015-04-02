@@ -109,7 +109,7 @@
     });
 
     // subscribe to Frame-Timing and User-Timing events
-    observer.observe({eventTypes: ['renderer', 'composite', 'mark', 'measure']});
+    observer.observe({eventTypes: ['render', 'composite', 'mark', 'measure']});
     observer.disconnect();
 
     // processing logic called by application code
