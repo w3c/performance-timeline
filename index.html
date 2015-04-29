@@ -65,7 +65,7 @@
 
     <p>Accurately measuring performance characteristics of web applications is an important aspect of making web applications faster. This specification defines the necessary <a>Performance Timeline</a> primitives that enable web developers to access, instrument, and retrieve various performance metrics from the full lifecycle of a web application.</p>
 
-    <p>[[NAVIGATION-TIMING]], [[RESOURCE-TIMING]], and [[USER-TIMING]] are examples of specifications that define timing information related to the navigation of the document, resources on the page, and developer scripts, respectively. Together these interfaces, and potentially others created in the future, define performance metrics that describe the <a>Performance Timeline</a> of a web application. For example, the following script shows how a developer can access the <a>Performance Timeline</a> to obtain performance metrics related to the navigation of the document, resources on the page, and developer scripts:</p>
+    <p>[[NAVIGATION-TIMING]], [[RESOURCE-TIMING]], and [[USER-TIMING]] are examples of specifications that define timing information related to the navigation of the document, resources on the page, and developer scripts, respectively. Together these and other performance interfaces define performance metrics that describe the <a>Performance Timeline</a> of a web application. For example, the following script shows how a developer can access the <a>Performance Timeline</a> to obtain performance metrics related to the navigation of the document, resources on the page, and developer scripts:</p>
 
     <pre class="highlight example">
 &lt;!doctype html&gt;
@@ -98,6 +98,27 @@
     &lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;
+    </pre>
+
+    <p>Alternatively, instead of processing metrics at a predefined time, or having to periodically poll the timeline for new metrics, the developer may also observe the <a>Performance Timeline</a> and be notified of new performance metrics via a <a>Performance Observer</a>:</p>
+
+    <pre class="highlight example">
+    var observedEvents = [];
+    var observer = new PerformanceObserver(function(list) {
+      observedEvents.push(list); // defer processing
+    });
+
+    // subscribe to Frame-Timing and User-Timing events
+    observer.observe({eventTypes: ['render', 'composite', 'mark', 'measure']});
+    observer.disconnect();
+
+    // processing logic called by application code
+    function processObservedPerfEvents() {
+      observedEvents.forEach(function(list) {
+            var entries = list.getEntries();
+            // application processing logic
+      }
+    }
     </pre>
   </section>
 
@@ -164,16 +185,67 @@
         WorkerGlobalScope implements GlobalPerformance;
         </pre>
       </section>
+
+    <section>
+      <h2>The <dfn>Performance Observer</dfn> interface</h2>
+
+      <p>The <a>PerformanceObserver</a> interface can be used to observe the <a>Performance Timeline</a> and be notified of new performance entries as they are recorded by the user agent. A <dfn>registered performance observer</dfn> consists of an observer (a <a>PerformanceObserver</a> object) and options (a <a>PerformanceObserverInit</a> dictionary).</p>
+
+      <dl title='callback PerformanceObserverCallback = void (LazyPerformanceEntryList eventList, PerformanceObserver observer)' class='idl'></dl>
+
+      <dl title='[Constructor(PerformanceObserverCallback callback), Exposed=(Window,Worker)] interface PerformanceObserver' class='idl'>
+
+        <dt>void observe(PerformanceObserverInit options)</dt>
+        <dd>This method instructs the user agent to <dfn>register the observer</dfn> and report any new performance entries based on the criteria given by <a>options</a>.
+          <dl title='dictionary PerformanceObserverInit' class='idl'>
+            <dt>sequence&lt;DOMString&gt; typeFilter</dt>
+            <dd>
+              <p>A list of valid <a href="#widl-PerformanceEntry-entryType">entryType names</a> to be observed. The list MUST NOT be empty and types not recognized by the user agent MUST be ignored.</p>
+
+              <p class="note">To keep the performance overhead to minimum the application should only subscribe to event types that it is interested in, and disconnect the observer once it no longer needs to observe the performance data. Filtering by name is not supported, as it would implicitly require a subscription for all event types &mdash; this is possible, but discouraged, as it will generate a significant volume of events.</p>
+            </dd>
+          </dl>
+
+          <p>The `observe(options)` method must run these steps:</p>
+          <ol>
+            <li>If _options'_ `typeFilter` attribute is not present, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `AbortError`.</li>
+            <li>Filter unsupported <a href="#widl-PerformanceEntry-entryType">entryType names</a> within the `typeFilter` sequence, and replace the `typeFilter` sequence with the new filtered sequence.</li>
+            <li>If the _options'_ `typeFilter` attribute is an empty sequence, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `AbortError`.</li>
+            <li>Add a new <a>registered performance observer</a> with the <a href="http://www.w3.org/TR/dom/#context-object">context object</a> as the <dfn>observer</dfn> and _options_ as the `options`.</li>
+          </ol>
+        </dd>
+
+        <dt>void disconnect()</dt>
+        <dd>This method must remove the <a>registered performance observer</a> from the <a>Performance Timeline</a> for which the <a href="http://www.w3.org/TR/dom/#context-object">context object</a> is the <a>observer</a>.</dd>
+      </dl>
+
+      <section>
+        <h2>The <dfn>LazyPerformanceEntryList</dfn> interface</h2>
+
+        <p>The <a>LazyPerformanceEntryList</a> interface provides the same `getEntries`, `getEntriesByType`, `getEntriesByName` methods as the <a>Performance</a> interface, except that <a>LazyPerformanceEntryList</a> operates on the observed emitted list of events instead of the global timeline.</p>
+
+        <dl title='[Exposed=(Window,Worker)] interface LazyPerformanceEntryList' class='idl'>
+          <dt>PerformanceEntryList getEntries()</dt>
+          <dd>See <a href="#widl-Performance-getEntries-PerformanceEntryList">performance.getEntries</a>.</dd>
+          <dt>PerformanceEntryList getEntriesByType(DOMString entryType)</dt>
+          <dd>See <a href="#widl-Performance-getEntriesByType-PerformanceEntryList">performance.getEntriesByType</a>.</dd>
+          <dt>PerformanceEntryList getEntriesByName(DOMString name, optional DOMString entryType)</dt>
+          <dd>See <a href="#widl-Performance-getEntriesByName-PerformanceEntryList">performance.getEntriesByName</a>.</dd>
+        </dl>
+      </section>
+
+    </section>
   </section>
+
 
   <section>
     <h2>Vendor Extensions</h2>
-    <p>If a vendor-specific proprietary user agent extension is needed to create experimental <a>PerformanceEntry</a> objects, on getting the <a hrefidl-PerformanceEntry-entryType">entryType</a> IDL attribute, vendors MUST return a `DOMString` that uses the following convention:</p>
+    <p>If a vendor-specific proprietary user agent extension is needed to create experimental <a>PerformanceEntry</a> objects, on getting the <a href="#idl-PerformanceEntry-entryType">entryType</a> IDL attribute, vendors MUST return a `DOMString` that uses the following convention:</p>
     <pre>[vendorPrefix]-[entryType]</pre>
     <p>Where, `[vendorPrefix]` is a non-capitalized name that identifies the vendor, `[entryType]` is a non-capitalized name given to the type of   interface represented by this <a>PerformanceEntry</a> object, and the above names are in ASCII.</p>
   </section>
 
 
-    </section>
+  </section>
 </body>
 </html>
