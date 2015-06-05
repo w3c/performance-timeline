@@ -191,7 +191,7 @@
 
       <p>The <a>PerformanceObserver</a> interface can be used to observe the <a>Performance Timeline</a> and be notified of new performance entries as they are recorded by the user agent. A <dfn>registered performance observer</dfn> consists of an observer (a <a>PerformanceObserver</a> object) and options (a <a>PerformanceObserverInit</a> dictionary).</p>
 
-      <dl title='callback PerformanceObserverCallback = void (LazyPerformanceEntryList eventList, PerformanceObserver observer)' class='idl'></dl>
+      <dl title='callback PerformanceObserverCallback = void (PerformanceObserverEntries entries, PerformanceObserver observer)' class='idl'></dl>
 
       <dl title='[Constructor(PerformanceObserverCallback callback), Exposed=(Window,Worker)] interface PerformanceObserver' class='idl'>
 
@@ -220,11 +220,11 @@
       </dl>
 
       <section>
-        <h2>The <dfn>LazyPerformanceEntryList</dfn> interface</h2>
+        <h2>The <dfn>PerformanceObserverEntries</dfn> interface</h2>
 
-        <p>The <a>LazyPerformanceEntryList</a> interface provides the same `getEntries`, `getEntriesByType`, `getEntriesByName` methods as the <a>Performance</a> interface, except that <a>LazyPerformanceEntryList</a> operates on the observed emitted list of events instead of the global timeline.</p>
+        <p>The <a>PerformanceObserverEntries</a> interface provides the same `getEntries`, `getEntriesByType`, `getEntriesByName` methods as the <a>Performance</a> interface, except that <a>PerformanceObserverEntries</a> operates on the observed emitted list of events instead of the global timeline.</p>
 
-        <dl title='[Exposed=(Window,Worker)] interface LazyPerformanceEntryList' class='idl'>
+        <dl title='[Exposed=(Window,Worker)] interface PerformanceObserverEntries' class='idl'>
           <dt>PerformanceEntryList getEntries()</dt>
           <dd>See <a href="#widl-Performance-getEntries-PerformanceEntryList">performance.getEntries</a>.</dd>
           <dt>PerformanceEntryList getEntriesByType(DOMString entryType)</dt>
