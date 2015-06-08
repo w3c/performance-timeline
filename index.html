@@ -103,27 +103,35 @@
     <p>Alternatively, instead of processing metrics at a predefined time, or having to periodically poll the timeline for new metrics, the developer may also observe the <a>Performance Timeline</a> and be notified of new performance metrics via a <a>Performance Observer</a>:</p>
 
     <pre class="highlight example">
-    var doneObservingEvents = false;
-    var observedEvents = [];
+&lt;!doctype html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+  &lt;/head&gt;
+  &lt;body onload="init()"&gt;
+    &lt;img id="image0" src="http://www.w3.org/Icons/w3c_main.png" /&gt;
+    &lt;script&gt;
     var observer = new PerformanceObserver(function(list) {
-      observedEvents.push(list); // defer processing
+      var doneObservingEvents = false;
+      var perfEntries = list.getEntries();
+      for (var i = 0; i &lt; perfEntries.length; i++)
+      {
+           if (window.console) console.log("Name: "        + perfEntries[i].name      +
+                                           " Entry Type: " + perfEntries[i].entryType +
+                                           " Start Time: " + perfEntries[i].startTime +
+                                           " Duration: "   + perfEntries[i].duration  + "\n");
+      }
+      // maybe disconnect after processing the events.
+      if (doneObservingEvents) {
+           observer.disconnect();
+      }
     });
 
     // subscribe to Frame-Timing and User-Timing events
     observer.observe({eventTypes: ['render', 'composite', 'mark', 'measure']});
-
-    // processing logic called by application code
-    function processObservedPerfEvents() {
-      observedEvents.forEach(function(list) {
-            var entries = list.getEntries();
-            // application processing logic
-      }
-      // maybe disconnect after processing the events.
-      if (doneObservingEvents) {
-            observer.disconnect();
-      }
-    }
-    </pre>
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
   </section>
 
   <section>
