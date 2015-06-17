@@ -173,23 +173,23 @@
 
         <p>The <a>Performance</a> interface hosts performance related attributes and methods used to retrieve the performance metric data from the <a>Performance Timeline</a>.</p>
 
-        <dl title='dictionary EntryProps' class='idl'>
-          <dt>DOMString? name = null</dt>
+        <dl title='dictionary FilterOptions' class='idl'>
+          <dt>DOMString name</dt>
           <dd><a href="#widl-PerformanceEntry-name">name</a> of `PerformanceEntry` object.</dd>
-          <dt>DOMString? entryType = null</dt>
+          <dt>DOMString entryType</dt>
           <dd><a href="#widl-PerformanceEntry-type">entryType</a> of `PerformanceEntry` object.</dd>
-          <dt>DOMString? initiatorType = null</dt>
+          <dt>DOMString initiatorType</dt>
           <dd><a href="http://www.w3.org/TR/resource-timing/#widl-PerformanceResourceTiming-initiatorType">initiatorType</a> of `PerformanceEntry` object.</dd>
         </dl>
 
         <dl title='[Exposed=(Window,Worker)] interface Performance : EventTarget' class='idl'>
-          <dt>PerformanceEntryList getEntries(optional EntryProps filter)</dt>
+          <dt>PerformanceEntryList getEntries(optional FilterOptions filter)</dt>
           <dd>
             <p>This method returns a <a>PerformanceEntryList</a> object that contains a list of <a>PerformanceEntry</a> objects, sorted in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>, that match the following criteria:</p>
 
             <ol>
               <li>Let the <dfn>list of entry objects</dfn> be the empty <a>PerformanceEntryList</a>.</li>
-              <li>Let the <dfn>set of filter properties</dfn> be the non-null <a href="http://www.w3.org/TR/WebIDL/#dfn-dictionary-member">dictionary members</a> of `filter`, or the empty set if `filter` is omitted.</li>
+              <li>Let the <dfn>set of filter properties</dfn> be the <a href="http://www.w3.org/TR/WebIDL/#dfn-dictionary-member">dictionary members</a> of `filter`, or the empty set if `filter` is omitted.</li>
               <li>For each available <a>PerformanceEntry</a> object (<dfn>entryObject</dfn>), in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>:</li>
                 <ol>
                 <li>For each _key_ and _value_ pair in <a>set of filter properties</a>:</li>
@@ -264,7 +264,7 @@
 
 
         <dl title='[Exposed=(Window,Worker)] interface PerformanceObserverEntryList' class='idl'>
-          <dt>PerformanceEntryList getEntries(optional dictionary entryProps)</dt>
+          <dt>PerformanceEntryList getEntries(optional FilterOptions filter)</dt>
           <dd>See <a href="#widl-Performance-getEntries-PerformanceEntryList">performance.getEntries</a>.</dd>
           <dt>PerformanceEntryList getEntriesByType(DOMString entryType)</dt>
           <dd>See <a href="#widl-Performance-getEntriesByType-PerformanceEntryList">performance.getEntriesByType</a>.</dd>
