@@ -4,7 +4,7 @@
 <head>
   <title>Performance Timeline</title>
   <meta charset='utf-8'>
-  <script src='//www.w3.org/Tools/respec/respec-w3c-common' async class='remove'></script>
+  <script src='http://www.w3.org/Tools/respec/respec-w3c-common' async class='remove'></script>
   <script class='remove'>
   var respecConfig = {
     shortName: "performance-timeline",
@@ -53,7 +53,7 @@
 
 <body>
   <section id='abstract'>
-    <p>This specification defines a unified interface to store and retrieve high resolution performance metric data.</p>
+    <p>This specification extends the High Resolution Time specification [[!HR-TIME-2]] by providing methods to store and retrieve high resolution performance metric data.</p>
   </section>
 
   <section id='sotd'>
@@ -65,7 +65,7 @@
 
     <p>Accurately measuring performance characteristics of web applications is an important aspect of making web applications faster. This specification defines the necessary <a>Performance Timeline</a> primitives that enable web developers to access, instrument, and retrieve various performance metrics from the full lifecycle of a web application.</p>
 
-    <p>[[NAVIGATION-TIMING]], [[RESOURCE-TIMING]], and [[USER-TIMING]] are examples of specifications that define timing information related to the navigation of the document, resources on the page, and developer scripts, respectively. Together these and other performance interfaces define performance metrics that describe the <a>Performance Timeline</a> of a web application. For example, the following script shows how a developer can access the <a>Performance Timeline</a> to obtain performance metrics related to the navigation of the document, resources on the page, and developer scripts:</p>
+    <p>[[NAVIGATION-TIMING-2]], [[RESOURCE-TIMING]], and [[USER-TIMING]] are examples of specifications that define timing information related to the navigation of the document, resources on the page, and developer scripts, respectively. Together these and other performance interfaces define performance metrics that describe the <a>Performance Timeline</a> of a web application. For example, the following script shows how a developer can access the <a>Performance Timeline</a> to obtain performance metrics related to the navigation of the document, resources on the page, and developer scripts:</p>
 
     <pre class="highlight example">
 &lt;!doctype html&gt;
@@ -169,11 +169,11 @@
       </section>
 
       <section>
-        <h2>The <dfn>Performance</dfn> interface</h2>
+        <h2>Extensions to the <dfn>Performance</dfn> interface</h2>
 
-        <p>The <a>Performance</a> interface hosts performance related attributes and methods used to retrieve the performance metric data from the <a>Performance Timeline</a>.</p>
+        <p>This extends the <a href='http://www.w3.org/TR/hr-time/#idl-def-Performance'>Performance</a> interface [[!HR-TIME-2]] and hosts performance related attributes and methods used to retrieve the performance metric data from the <a>Performance Timeline</a>.</p>
 
-        <dl title='[Exposed=(Window,Worker)] interface Performance : EventTarget' class='idl'>
+        <dl title='partial interface Performance' class='idl'>
           <dt>PerformanceEntryList getEntries()</dt>
           <dd>This method returns a <a>PerformanceEntryList</a> object that contains a copy of all <a>PerformanceEntry</a> objects in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>.</dd>
 
