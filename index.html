@@ -173,15 +173,41 @@
 
         <p>The <a>Performance</a> interface hosts performance related attributes and methods used to retrieve the performance metric data from the <a>Performance Timeline</a>.</p>
 
+        <dl title='dictionary FilterOptions' class='idl'>
+          <dt>DOMString name</dt>
+          <dd><a href="#widl-PerformanceEntry-name">name</a> of `PerformanceEntry` object.</dd>
+          <dt>DOMString entryType</dt>
+          <dd><a href="#widl-PerformanceEntry-type">entryType</a> of `PerformanceEntry` object.</dd>
+          <dt>DOMString initiatorType</dt>
+          <dd><a href="http://www.w3.org/TR/resource-timing/#widl-PerformanceResourceTiming-initiatorType">initiatorType</a> of `PerformanceEntry` object.</dd>
+        </dl>
+
         <dl title='[Exposed=(Window,Worker)] interface Performance : EventTarget' class='idl'>
-          <dt>PerformanceEntryList getEntries()</dt>
-          <dd>This method returns a <a>PerformanceEntryList</a> object that contains a copy of all <a>PerformanceEntry</a> objects in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>.</dd>
+          <dt>PerformanceEntryList getEntries(optional FilterOptions filter)</dt>
+          <dd>
+            <p>This method returns a <a>PerformanceEntryList</a> object that contains a list of <a>PerformanceEntry</a> objects, sorted in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>, that match the following criteria:</p>
+
+            <ol>
+              <li>Let the <dfn>list of entry objects</dfn> be the empty <a>PerformanceEntryList</a>.</li>
+              <li> Let the <dfn>set of filter properties</dfn> be a set of pairs where the first element is the _name_ of a <a href="http://www.w3.org/TR/WebIDL/#dfn-dictionary-member">dictionary member</a> of `filter` that is present and the second element is the _value_ of that <a href="http://www.w3.org/TR/WebIDL/#dfn-dictionary-member">dictionary member</a>.</li>
+              <li>For each available <a>PerformanceEntry</a> object (<dfn>entryObject</dfn>), in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>:</li>
+                <ol>
+                <li>For each _name_ and _value_ pair in <a>set of filter properties</a>:</li>
+                  <ol>
+                  <li>If the <a>entryObject</a> does not contain an attribute whose name matches _name_, go to next <a>entryObject</a>.</li>
+                  <li>Otherwise, if the <a>entryObject</a> contains an attribute whose name matches _name_, and its value does not match _value_, go to next <a>entryObject</a>.</li>
+                  </ol>
+                <li>Add <a>entryObject</a> to the <a>list of entry objects</a>.</li>
+                </ol>
+              <li>Return the <a>list of entry objects</a>.</li>
+            </ol>
+          </dd>
 
           <dt>PerformanceEntryList getEntriesByType(DOMString entryType)</dt>
-          <dd>This method returns a <a>PerformanceEntryList</a> object that contains a copy of all <a>PerformanceEntry</a> objects, in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>, that have the same value for the <a href="#widl-PerformanceEntry-entryType">entryType</a> attribute of <a>PerformanceEntry</a> as the <a href="#widl-PerformanceEntry-entryType">entryType</a> parameter. If no such <a>PerformanceEntry</a> objects exist, the <a>PerformanceEntryList</a> must be empty.</dd>
+          <dd>This method returns a <a>PerformanceEntryList</a> object returned by `getEntries({'entryType': entryType})`.</dd>
 
           <dt>PerformanceEntryList getEntriesByName(DOMString name, optional DOMString entryType)</dt>
-          <dd>This method returns a <a>PerformanceEntryList</a> object that contains a copy of <a>PerformanceEntry</a> objects, in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>, that have the same value for the <a href="#widl-PerformanceEntry-name">name</a> attribute of <a>PerformanceEntry</a> as the <a href="#widl-PerformanceEntry-name">name</a> parameter and, if specified, have the same value for the <a href="#widl-PerformanceEntry-entryType">entryType</a> attribute of <a>PerformanceEntry</a> as the <a href="#widl-PerformanceEntry-entryType">entryType</a> parameter. If no such <a>PerformanceEntry</a> objects exist, the <a>PerformanceEntryList</a> must be empty.</dd>
+          <dd>This method returns a <a>PerformanceEntryList</a> object returned by `getEntries({'name': name})` if optional `entryType` is omitted, and `getEntries({'name': name, 'entryType': entryType})` otherwise.</dd>
         </dl>
 
         <dl class='idl' title='typedef sequence<PerformanceEntry> PerformanceEntryList'></dl>
@@ -236,8 +262,9 @@
 
         <p>The <a>PerformanceObserverEntryList</a> interface provides the same `getEntries`, `getEntriesByType`, `getEntriesByName` methods as the <a>Performance</a> interface, except that <a>PerformanceObserverEntryList</a> operates on the observed emitted list of events instead of the global timeline.</p>
 
+
         <dl title='[Exposed=(Window,Worker)] interface PerformanceObserverEntryList' class='idl'>
-          <dt>PerformanceEntryList getEntries()</dt>
+          <dt>PerformanceEntryList getEntries(optional FilterOptions filter)</dt>
           <dd>See <a href="#widl-Performance-getEntries-PerformanceEntryList">performance.getEntries</a>.</dd>
           <dt>PerformanceEntryList getEntriesByType(DOMString entryType)</dt>
           <dd>See <a href="#widl-Performance-getEntriesByType-PerformanceEntryList">performance.getEntriesByType</a>.</dd>
