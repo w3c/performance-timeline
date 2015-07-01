@@ -241,8 +241,9 @@
             </dd>
           </dl>
 
-          <p>The `observe(options)` method must run these steps:</p>
+          <p>The `observe(target, options)` method must run these steps:</p>
           <ol>
+            <li>If `target` is not valid, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `TypeError`.</li>
             <li>If _options'_ `typeFilter` attribute is not present, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `TypeError`.</li>
             <li>Filter unsupported <a href="#widl-PerformanceEntry-entryType">entryType names</a> within the `typeFilter` sequence, and replace the `typeFilter` sequence with the new filtered sequence.</li>
             <li>If the _options'_ `typeFilter` attribute is an empty sequence, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `TypeError`.</li>
