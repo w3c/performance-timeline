@@ -127,7 +127,7 @@
     });
 
     // subscribe to Frame-Timing and User-Timing events
-    observer.observe({typeFilter: ['render', 'composite', 'mark', 'measure']});
+    observer.observe(window.performance, {typeFilter: ['render', 'composite', 'mark', 'measure']});
     &lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;
@@ -233,8 +233,8 @@
 
       <dl title='[Constructor(PerformanceObserverCallback callback), Exposed=(Window,Worker)] interface PerformanceObserver' class='idl'>
 
-        <dt>void observe(PerformanceObserverInit options)</dt>
-        <dd>This method instructs the user agent to <dfn>register the observer</dfn> and report any new performance entries based on the criteria given by <a>options</a>.
+        <dt>void observe(Performance target, PerformanceObserverInit options)</dt>
+        <dd>This method instructs the user agent to <dfn>register the observer</dfn> for <i>target</i> and report any new performance entries based on the criteria given by <i>options</i>.
           <dl title='dictionary PerformanceObserverInit' class='idl'>
             <dt>sequence&lt;DOMString&gt; typeFilter</dt>
             <dd>
@@ -244,8 +244,9 @@
             </dd>
           </dl>
 
-          <p>The `observe(options)` method must run these steps:</p>
+          <p>The `observe(target, options)` method must run these steps:</p>
           <ol>
+            <li>If `target` is not valid, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `TypeError`.</li>
             <li>If _options'_ `typeFilter` attribute is not present, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `TypeError`.</li>
             <li>Filter unsupported <a href="#widl-PerformanceEntry-entryType">entryType names</a> within the `typeFilter` sequence, and replace the `typeFilter` sequence with the new filtered sequence.</li>
             <li>If the _options'_ `typeFilter` attribute is an empty sequence, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `TypeError`.</li>
@@ -254,7 +255,7 @@
         </dd>
 
         <dt>void disconnect()</dt>
-        <dd>This method must remove the <a>registered performance observer</a> from the <a>Performance Timeline</a> for which the <a href="http://www.w3.org/TR/dom/#context-object">context object</a> is the <a>observer</a>.</dd>
+        <dd>This method must remove the <a>registered performance observer</a> from all <a>Performance Timeline</a>s for which the <a href="http://www.w3.org/TR/dom/#context-object">context object</a> is an <a>observer</a>.</dd>
       </dl>
 
       <section>
