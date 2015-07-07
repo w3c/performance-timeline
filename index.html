@@ -127,7 +127,7 @@
     });
 
     // subscribe to Frame-Timing and User-Timing events
-    observer.observe({eventTypes: ['render', 'composite', 'mark', 'measure']});
+    observer.observe({typeFilter: ['render', 'composite', 'mark', 'measure']});
     &lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;
