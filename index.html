@@ -236,11 +236,15 @@
         <dt>void observe(PerformanceObserverInit options)</dt>
         <dd>This method instructs the user agent to <dfn>register the observer</dfn> and report any new performance entries based on the criteria given by <a>options</a>.
           <dl title='dictionary PerformanceObserverInit' class='idl'>
-            <dt>sequence&lt;DOMString&gt; typeFilter</dt>
+            <dt>required sequence&lt;DOMString&gt; typeFilter</dt>
             <dd>
               <p>A list of valid <a href="#widl-PerformanceEntry-entryType">entryType names</a> to be observed. The list MUST NOT be empty and types not recognized by the user agent MUST be ignored.</p>
 
               <p class="note">To keep the performance overhead to minimum the application should only subscribe to event types that it is interested in, and disconnect the observer once it no longer needs to observe the performance data. Filtering by name is not supported, as it would implicitly require a subscription for all event types &mdash; this is possible, but discouraged, as it will generate a significant volume of events.</p>
+            </dd>
+            <dt>Performance? target</dt>
+            <dd>
+              An optional <a>Performance Timeline</a> to observe. If this is _null_, the global `window.performance` at the time the <a>PerformanceObserver</a> was created will be used.
             </dd>
           </dl>
 
@@ -249,7 +253,7 @@
             <li>If _options'_ `typeFilter` attribute is not present, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `TypeError`.</li>
             <li>Filter unsupported <a href="#widl-PerformanceEntry-entryType">entryType names</a> within the `typeFilter` sequence, and replace the `typeFilter` sequence with the new filtered sequence.</li>
             <li>If the _options'_ `typeFilter` attribute is an empty sequence, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `TypeError`.</li>
-            <li>Add a new <a>registered performance observer</a> with the <a href="http://www.w3.org/TR/dom/#context-object">context object</a> as the <dfn>observer</dfn> and _options_ as the `options`.</li>
+            <li>Add a new <a>registered performance observer</a> to the target <a>performance timeline</a> with the <a href="http://www.w3.org/TR/dom/#context-object">context object</a> as the <dfn>observer</dfn> and _options_ as the `options`.</li>
           </ol>
         </dd>
 
