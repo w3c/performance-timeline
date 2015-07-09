@@ -135,21 +135,40 @@
   </section>
 
   <section>
-    <h2><dfn>Performance Timeline</dfn></h2>
+    <h2>Performance Timeline</h2>
 
-    <p>The <a>Performance Timeline</a> enables the user agent and application developers to access, instrument, and retrieve various performance metrics from the full lifecycle of a web application.</p>
+    <p>Each browsing and worker context has an associated <dfn>performance timeline</dfn>. The <a>performance timeline</a> is responsible for processing of registered metrics, providing methods to retrieve metrics via the <a>Performance</a> interface, and delivery of notificiations to relevant subscribers via the <a>Performance Observer</a> interface.</p>
 
-    <p>All interfaces that participate in the <a>Performance Timeline</a> MUST adhere to the following rules:</p>
+    <section>
+      <h2>Processing</h2>
 
-    <ul>
-      <li>MUST extend the <a>PerformanceEntry</a> interface</li>
-      <li>MUST be supported by the <a href="#widl-Performance-getEntries-PerformanceEntryList">getEntries</a>, <a href="#widl-Performance-getEntriesByType-PerformanceEntryList">getEntriesByType</a>, and <a href="#widl-Performance-getEntriesByName-PerformanceEntryList">getEntriesByName</a> methods.</li>
-      <li>SHOULD surface new performance metrics in a timely manner</li>
+      <p>The <a>performance timeline</a> can have one or more <a>registered performance observer</a>'s that can be used to subscribe to notifications of <a title="register">registered metrics</a> matching specified criteria.</p>
+
       <ul>
-        <li>The user agent is NOT REQUIRED to provide synchronous access to new performance metrics</li>
-        <li>The user agent MAY delay reporting the metric to avoid performance bottlenecks</li>
+        <li>To <dfn>register</dfn> a performance metric with the <a>performance timeline</a> the participating interface MUST provide an object that extends the <a>PerformanceEntry</a> interface.</li>
+
+        <li>To <dfn>buffer</dfn> a performance metric the user agent MUST record the new metric registration with the <dfn>new metric buffer</dfn>.
+          <ul>
+          <li>The user agent SHOULD seek to minimize overhead and resource contention with other and more critical application logic. For example, buffer one or more registered metrics prior to notifying the <a>registered performance observer</a>'s.</li>
+          <li>The user agent MAY define own buffering logic. For example, it may periodically process the buffered metrics, based on a timer, number of metrics in the buffer, and other criteria.</li>
+          </ul>
+
+        <li>To <dfn>notify an observer</dfn>, the user agent MUST execute the following steps:</li>
+          <ol>
+          <li>For each <a>registered performance observer</a> (_observer_):</li>
+          <ol>
+            <li>Let the <dfn>lazy list of entry objects</dfn> be the empty <a>LazyPerformanceEntryList</a>.</li>
+            <li>For each _metric_ in the <a>new metric buffer</a>:</li>
+              <ol>
+                <li>If the _metric_ `name` attribute does not match the specified _observer_ criteria, go to next _metric_.</li>
+                <li>Otherwise, add _metric_ to the <a>lazy list of entry objects</a>.</li>
+              </ol>
+            <li>Call the _observer_ with the resulting <a>lazy list of entry objects</a>.</li>
+          </ol>
+          <li>Clear the <a>new metric buffer</a>.</li>
+          </ol>
       </ul>
-    </ul>
+    </section>
 
       <section>
         <h2>The <dfn>PerformanceEntry</dfn> interface</h2>
