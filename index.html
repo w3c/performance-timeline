@@ -145,11 +145,12 @@
     <ul>
       <li>MUST extend the <a>PerformanceEntry</a> interface</li>
       <li>MUST be supported by the <a href="#widl-Performance-getEntries-PerformanceEntryList">getEntries</a>, <a href="#widl-Performance-getEntriesByType-PerformanceEntryList">getEntriesByType</a>, and <a href="#widl-Performance-getEntriesByName-PerformanceEntryList">getEntriesByName</a> methods.</li>
-      <li>SHOULD surface new performance metrics in a timely manner</li>
+      <li>SHOULD surface new performance metrics in a timely manner
       <ul>
         <li>The user agent is NOT REQUIRED to provide synchronous access to new performance metrics</li>
         <li>The user agent MAY delay reporting the metric to avoid performance bottlenecks</li>
       </ul>
+      </li>
     </ul>
 
       <section>
@@ -191,15 +192,17 @@
             <ol>
               <li>Let the <dfn>list of entry objects</dfn> be the empty <a>PerformanceEntryList</a>.</li>
               <li> Let the <dfn>set of filter properties</dfn> be a set of pairs where the first element is the _name_ of a <a href="http://www.w3.org/TR/WebIDL/#dfn-dictionary-member">dictionary member</a> of `filter` that is present and the second element is the _value_ of that <a href="http://www.w3.org/TR/WebIDL/#dfn-dictionary-member">dictionary member</a>.</li>
-              <li>For each available <a>PerformanceEntry</a> object (<dfn>entryObject</dfn>), in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>:</li>
+              <li>For each available <a>PerformanceEntry</a> object (<dfn>entryObject</dfn>), in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>:
                 <ol>
-                <li>For each _name_ and _value_ pair in <a>set of filter properties</a>:</li>
+                <li>For each _name_ and _value_ pair in <a>set of filter properties</a>:
                   <ol>
                   <li>If the <a>entryObject</a> does not contain an attribute whose name matches _name_, go to next <a>entryObject</a>.</li>
                   <li>Otherwise, if the <a>entryObject</a> contains an attribute whose name matches _name_, and its value does not match _value_, go to next <a>entryObject</a>.</li>
                   </ol>
+                </li>
                 <li>Add <a>entryObject</a> to the <a>list of entry objects</a>.</li>
                 </ol>
+              </li>
               <li>Return the <a>list of entry objects</a>.</li>
             </ol>
           </dd>
