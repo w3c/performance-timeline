@@ -4,7 +4,7 @@
 <head>
   <title>Performance Timeline</title>
   <meta charset='utf-8'>
-  <script src='http://www.w3.org/Tools/respec/respec-w3c-common' async class='remove'></script>
+  <script src='//www.w3.org/Tools/respec/respec-w3c-common' async class='remove'></script>
   <script class='remove'>
   var respecConfig = {
     shortName: "performance-timeline",
@@ -53,7 +53,7 @@
 
 <body>
   <section id='abstract'>
-    <p>This specification extends the High Resolution Time specification [[!HR-TIME-2]] by providing methods to store and retrieve high resolution performance metric data.</p>
+    <p>This specification defines a unified interface to store and retrieve high resolution performance metric data.</p>
   </section>
 
   <section id='sotd'>
@@ -65,7 +65,7 @@
 
     <p>Accurately measuring performance characteristics of web applications is an important aspect of making web applications faster. This specification defines the necessary <a>Performance Timeline</a> primitives that enable web developers to access, instrument, and retrieve various performance metrics from the full lifecycle of a web application.</p>
 
-    <p>[[NAVIGATION-TIMING-2]], [[RESOURCE-TIMING]], and [[USER-TIMING]] are examples of specifications that define timing information related to the navigation of the document, resources on the page, and developer scripts, respectively. Together these and other performance interfaces define performance metrics that describe the <a>Performance Timeline</a> of a web application. For example, the following script shows how a developer can access the <a>Performance Timeline</a> to obtain performance metrics related to the navigation of the document, resources on the page, and developer scripts:</p>
+    <p>[[NAVIGATION-TIMING]], [[RESOURCE-TIMING]], and [[USER-TIMING]] are examples of specifications that define timing information related to the navigation of the document, resources on the page, and developer scripts, respectively. Together these and other performance interfaces define performance metrics that describe the <a>Performance Timeline</a> of a web application. For example, the following script shows how a developer can access the <a>Performance Timeline</a> to obtain performance metrics related to the navigation of the document, resources on the page, and developer scripts:</p>
 
     <pre class="highlight example">
 &lt;!doctype html&gt;
@@ -173,9 +173,35 @@
 
         <p>This extends the <a href='http://www.w3.org/TR/hr-time/#idl-def-Performance'>Performance</a> interface [[!HR-TIME-2]] and hosts performance related attributes and methods used to retrieve the performance metric data from the <a>Performance Timeline</a>.</p>
 
+        <dl title='dictionary FilterOptions' class='idl'>
+          <dt>DOMString name</dt>
+          <dd><a href="#widl-PerformanceEntry-name">name</a> of `PerformanceEntry` object.</dd>
+          <dt>DOMString entryType</dt>
+          <dd><a href="#widl-PerformanceEntry-type">entryType</a> of `PerformanceEntry` object.</dd>
+          <dt>DOMString initiatorType</dt>
+          <dd><a href="http://www.w3.org/TR/resource-timing/#widl-PerformanceResourceTiming-initiatorType">initiatorType</a> of `PerformanceEntry` object.</dd>
+        </dl>
+
         <dl title='partial interface Performance' class='idl'>
-          <dt>PerformanceEntryList getEntries()</dt>
-          <dd>This method returns a <a>PerformanceEntryList</a> object that contains a copy of all <a>PerformanceEntry</a> objects in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>.</dd>
+          <dt>PerformanceEntryList getEntries(optional FilterOptions filter)</dt>
+          <dd>
+            <p>This method returns a <a>PerformanceEntryList</a> object that contains a list of <a>PerformanceEntry</a> objects, sorted in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>, that match the following criteria:</p>
+
+            <ol>
+              <li>Let the <dfn>list of entry objects</dfn> be the empty <a>PerformanceEntryList</a>.</li>
+              <li> Let the <dfn>set of filter properties</dfn> be a set of pairs where the first element is the _name_ of a <a href="http://www.w3.org/TR/WebIDL/#dfn-dictionary-member">dictionary member</a> of `filter` that is present and the second element is the _value_ of that <a href="http://www.w3.org/TR/WebIDL/#dfn-dictionary-member">dictionary member</a>.</li>
+              <li>For each available <a>PerformanceEntry</a> object (<dfn>entryObject</dfn>), in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>:</li>
+                <ol>
+                <li>For each _name_ and _value_ pair in <a>set of filter properties</a>:</li>
+                  <ol>
+                  <li>If the <a>entryObject</a> does not contain an attribute whose name matches _name_, go to next <a>entryObject</a>.</li>
+                  <li>Otherwise, if the <a>entryObject</a> contains an attribute whose name matches _name_, and its value does not match _value_, go to next <a>entryObject</a>.</li>
+                  </ol>
+                <li>Add <a>entryObject</a> to the <a>list of entry objects</a>.</li>
+                </ol>
+              <li>Return the <a>list of entry objects</a>.</li>
+            </ol>
+          </dd>
 
           <dt>PerformanceEntryList getEntriesByType(DOMString entryType)</dt>
           <dd>This method returns a <a>PerformanceEntryList</a> object returned by `getEntries({'entryType': entryType})`.</dd>
