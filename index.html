@@ -169,9 +169,9 @@
       </section>
 
       <section>
-        <h2>The <dfn>Performance</dfn> interface</h2>
+        <h2>Extensions to the <dfn>Performance</dfn> interface</h2>
 
-        <p>The <a>Performance</a> interface hosts performance related attributes and methods used to retrieve the performance metric data from the <a>Performance Timeline</a>.</p>
+        <p>This extends the <a href='http://www.w3.org/TR/hr-time/#idl-def-Performance'>Performance</a> interface [[!HR-TIME-2]] and hosts performance related attributes and methods used to retrieve the performance metric data from the <a>Performance Timeline</a>.</p>
 
         <dl title='dictionary FilterOptions' class='idl'>
           <dt>DOMString name</dt>
@@ -182,7 +182,7 @@
           <dd><a href="http://www.w3.org/TR/resource-timing/#widl-PerformanceResourceTiming-initiatorType">initiatorType</a> of `PerformanceEntry` object.</dd>
         </dl>
 
-        <dl title='[Exposed=(Window,Worker)] interface Performance : EventTarget' class='idl'>
+        <dl title='partial interface Performance' class='idl'>
           <dt>PerformanceEntryList getEntries(optional FilterOptions filter)</dt>
           <dd>
             <p>This method returns a <a>PerformanceEntryList</a> object that contains a list of <a>PerformanceEntry</a> objects, sorted in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>, that match the following criteria:</p>
