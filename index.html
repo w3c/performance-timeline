@@ -144,7 +144,7 @@
 
     <ul>
       <li>MUST extend the <a>PerformanceEntry</a> interface</li>
-      <li>MUST be supported by the <a href="#widl-Performance-getEntries-PerformanceEntryList">getEntries</a>, <a href="#widl-Performance-getEntriesByType-PerformanceEntryList">getEntriesByType</a>, and <a href="#widl-Performance-getEntriesByName-PerformanceEntryList">getEntriesByName</a> methods.</li>
+      <li>MUST be supported by the <a href="#widl-PerformanceObserverEntryList-getEntries-PerformanceEntryList-FilterOptions-filter">getEntries</a>, <a href="#widl-PerformanceObserverEntryList-getEntriesByType-PerformanceEntryList-DOMString-entryType">getEntriesByType</a>, and <a href="#widl-PerformanceObserverEntryList-getEntriesByName-PerformanceEntryList-DOMString-name-DOMString-entryType">getEntriesByName</a> methods.</li>
       <li>SHOULD surface new performance metrics in a timely manner
       <ul>
         <li>The user agent is NOT REQUIRED to provide synchronous access to new performance metrics</li>
@@ -163,9 +163,9 @@
           <dt>readonly attribute DOMString entryType</dt>
           <dd>This attribute MUST return a <a href="http://www.w3.org/TR/WebIDL/#idl-DOMString">DOMString</a> that describes the <a href="http://www.w3.org/wiki/Web_Performance/EntryType">type of the interface</a> represented by this <a>PerformanceEntry</a> object.</dd>
           <dt>readonly attribute DOMString startTime</dt>
-          <dd>The attribute MUST return a <a href="http://www.w3.org/TR/hr-time/#domhighrestimestamp">DOMHighResTimeStamp</a> that contains the time value of the first recorded timestamp of this performance metric.</dd>
+          <dd>The attribute MUST return a <a href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp">DOMHighResTimeStamp</a> that contains the time value of the first recorded timestamp of this performance metric.</dd>
           <dt>readonly attribute DOMString duration</dt>
-          <dd>The attribute MUST return a <a href="http://www.w3.org/TR/hr-time/#domhighrestimestamp">DOMHighResTimeStamp</a> that contains the time value of the duration of the entire event being recorded by this <a>PerformanceEntry</a>. Typically, this would be the time difference between the last recorded timestamp and the first recorded timestamp of this <a>PerformanceEntry</a>. If the duration concept doesn't apply, a performance metric may choose to return a `duration` of 0.</dd>
+          <dd>The attribute MUST return a <a href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp">DOMHighResTimeStamp</a> that contains the time value of the duration of the entire event being recorded by this <a>PerformanceEntry</a>. Typically, this would be the time difference between the last recorded timestamp and the first recorded timestamp of this <a>PerformanceEntry</a>. If the duration concept doesn't apply, a performance metric may choose to return a `duration` of 0.</dd>
           <dt>serializer = { attribute }</dt>
         </dl>
       </section>
@@ -173,7 +173,7 @@
       <section>
         <h2>Extensions to the <dfn>Performance</dfn> interface</h2>
 
-        <p>This extends the <a href='http://www.w3.org/TR/hr-time/#idl-def-Performance'>Performance</a> interface [[!HR-TIME-2]] and hosts performance related attributes and methods used to retrieve the performance metric data from the <a>Performance Timeline</a>.</p>
+        <p>This extends the <a href='https://w3c.github.io/hr-time/#idl-def-Performance'>Performance</a> interface [[!HR-TIME-2]] and hosts performance related attributes and methods used to retrieve the performance metric data from the <a>Performance Timeline</a>.</p>
 
         <dl title='dictionary FilterOptions' class='idl'>
           <dt>DOMString name</dt>
@@ -269,11 +269,11 @@
 
         <dl title='[Exposed=(Window,Worker)] interface PerformanceObserverEntryList' class='idl'>
           <dt>PerformanceEntryList getEntries(optional FilterOptions filter)</dt>
-          <dd>See <a href="#widl-Performance-getEntries-PerformanceEntryList">performance.getEntries</a>.</dd>
+          <dd>See <a href="#widl-PerformanceObserverEntryList-getEntries-PerformanceEntryList-FilterOptions-filter">performance.getEntries</a>.</dd>
           <dt>PerformanceEntryList getEntriesByType(DOMString entryType)</dt>
-          <dd>See <a href="#widl-Performance-getEntriesByType-PerformanceEntryList">performance.getEntriesByType</a>.</dd>
+          <dd>See <a href="#widl-PerformanceObserverEntryList-getEntriesByType-PerformanceEntryList-DOMString-entryType">performance.getEntriesByType</a>.</dd>
           <dt>PerformanceEntryList getEntriesByName(DOMString name, optional DOMString entryType)</dt>
-          <dd>See <a href="#widl-Performance-getEntriesByName-PerformanceEntryList">performance.getEntriesByName</a>.</dd>
+          <dd>See <a href="#widl-PerformanceObserverEntryList-getEntriesByName-PerformanceEntryList-DOMString-name-DOMString-entryType">performance.getEntriesByName</a>.</dd>
         </dl>
       </section>
 
