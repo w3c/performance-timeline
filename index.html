@@ -57,7 +57,7 @@
   </section>
 
   <section id='sotd'>
-    <p>This new version is aligned with [[HR-TIME-2]] and introduces <a href='#dictionary-filteroptions-members'>filtering</a> and <a href="#the-performance-observer-interface">performance observers</a>.</p>
+    <p>This new version is aligned with [[HR-TIME-2]] and introduces <a href='#dictionary-PerformanceEntryFilterOptions-members'>filtering</a> and <a href="#the-performance-observer-interface">performance observers</a>.</p>
     <p>This is a <strong>work in progress</strong> and may change without any notices.</p>
   </section>
 
@@ -128,7 +128,7 @@
     });
 
     // subscribe to Frame-Timing and User-Timing events
-    observer.observe({typeFilter: ['render', 'composite', 'mark', 'measure']});
+    observer.observe({entryType: ['render', 'composite', 'mark', 'measure']});
     &lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;
@@ -144,7 +144,7 @@
 
     <ul>
       <li>MUST extend the <a>PerformanceEntry</a> interface</li>
-      <li>MUST be supported by the <a href="#widl-PerformanceObserverEntryList-getEntries-PerformanceEntryList-FilterOptions-filter">getEntries</a>, <a href="#widl-PerformanceObserverEntryList-getEntriesByType-PerformanceEntryList-DOMString-entryType">getEntriesByType</a>, and <a href="#widl-PerformanceObserverEntryList-getEntriesByName-PerformanceEntryList-DOMString-name-DOMString-entryType">getEntriesByName</a> methods.</li>
+      <li>MUST be supported by the <a href="#widl-PerformanceObserverEntryList-getEntries-PerformanceEntryList-PerformanceEntryFilterOptions-filter">getEntries</a>, <a href="#widl-PerformanceObserverEntryList-getEntriesByType-PerformanceEntryList-DOMString-entryType">getEntriesByType</a>, and <a href="#widl-PerformanceObserverEntryList-getEntriesByName-PerformanceEntryList-DOMString-name-DOMString-entryType">getEntriesByName</a> methods.</li>
       <li>SHOULD surface new performance metrics in a timely manner
       <ul>
         <li>The user agent is NOT REQUIRED to provide synchronous access to new performance metrics</li>
@@ -161,7 +161,11 @@
           <dt>readonly attribute DOMString name</dt>
           <dd>The attribute MUST return a <a href="http://www.w3.org/TR/WebIDL/#idl-DOMString">DOMString</a> identifier for this <a>PerformanceEntry</a> object. This identifier does not have to be unique.</dd>
           <dt>readonly attribute DOMString entryType</dt>
-          <dd>This attribute MUST return a <a href="http://www.w3.org/TR/WebIDL/#idl-DOMString">DOMString</a> that describes the <a href="http://www.w3.org/wiki/Web_Performance/EntryType">type of the interface</a> represented by this <a>PerformanceEntry</a> object.</dd>
+          <dd>This attribute MUST return the <a href="http://www.w3.org/TR/WebIDL/#idl-DOMString">DOMString</a> that describes the type of the interface represented by this <a>PerformanceEntry</a> object.
+          <p class="note">
+            Valid entryType values are: composite [[!FRAME-TIMING]], mark [[!USER-TIMING]], measure [[!USER-TIMING]], navigation [[!NAVIGATION-TIMING]], render [[!FRAME-TIMING]], resource [[!RESOURCE-TIMING]], server [[!SERVER-TIMING]].
+          </p>
+          </dd>
           <dt>readonly attribute DOMHighResTimeStamp startTime</dt>
           <dd>The attribute MUST return a <a href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp">DOMHighResTimeStamp</a> that contains the time value of the first recorded timestamp of this performance metric.</dd>
           <dt>readonly attribute DOMHighResTimeStamp duration</dt>
@@ -175,17 +179,17 @@
 
         <p>This extends the <a href='https://w3c.github.io/hr-time/#idl-def-Performance'>Performance</a> interface [[!HR-TIME-2]] and hosts performance related attributes and methods used to retrieve the performance metric data from the <a>Performance Timeline</a>.</p>
 
-        <dl title='dictionary FilterOptions' class='idl'>
+        <dl title='dictionary PerformanceEntryFilterOptions' class='idl'>
           <dt>DOMString name</dt>
           <dd><a href="#widl-PerformanceEntry-name">name</a> of `PerformanceEntry` object.</dd>
           <dt>DOMString entryType</dt>
-          <dd><a href="#widl-PerformanceEntry-type">entryType</a> of `PerformanceEntry` object.</dd>
+          <dd><a href="#widl-PerformanceEntry-entryType">entryType</a> of `PerformanceEntry` object.</dd>
           <dt>DOMString initiatorType</dt>
           <dd><a href="http://www.w3.org/TR/resource-timing/#widl-PerformanceResourceTiming-initiatorType">initiatorType</a> of `PerformanceEntry` object.</dd>
         </dl>
 
         <dl title='partial interface Performance' class='idl'>
-          <dt>PerformanceEntryList getEntries(optional FilterOptions filter)</dt>
+          <dt>PerformanceEntryList getEntries(optional PerformanceEntryFilterOptions filter)</dt>
           <dd>
             <p>This method returns a <a>PerformanceEntryList</a> object that contains a list of <a>PerformanceEntry</a> objects, sorted in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>, that match the following criteria:</p>
 
@@ -207,11 +211,11 @@
             </ol>
           </dd>
 
-          <dt>PerformanceEntryList getEntriesByType(DOMString entryType)</dt>
-          <dd>This method returns a <a>PerformanceEntryList</a> object returned by `getEntries({'entryType': entryType})`.</dd>
+          <dt>PerformanceEntryList getEntriesByType(DOMString type)</dt>
+          <dd>This method returns a <a>PerformanceEntryList</a> object returned by `getEntries({'entryType': type})`.</dd>
 
-          <dt>PerformanceEntryList getEntriesByName(DOMString name, optional DOMString entryType)</dt>
-          <dd>This method returns a <a>PerformanceEntryList</a> object returned by `getEntries({'name': name})` if optional `entryType` is omitted, and `getEntries({'name': name, 'entryType': entryType})` otherwise.</dd>
+          <dt>PerformanceEntryList getEntriesByName(DOMString name, optional DOMString type)</dt>
+          <dd>This method returns a <a>PerformanceEntryList</a> object returned by `getEntries({'name': name})` if optional `entryType` is omitted, and `getEntries({'name': name, 'entryType': type})` otherwise.</dd>
         </dl>
 
         <dl class='idl' title='typedef sequence<PerformanceEntry> PerformanceEntryList'></dl>
@@ -236,7 +240,7 @@
           <dt>void observe(PerformanceObserverInit options)</dt>
           <dd>This method instructs the user agent to <dfn>register the observer</dfn> and report any new performance entries based on the criteria given by <a>options</a>.
             <dl title='dictionary PerformanceObserverInit' class='idl'>
-              <dt>required sequence&lt;DOMString&gt; typeFilter</dt>
+              <dt>required sequence&lt;DOMString&gt; entryType</dt>
               <dd>
                 <p>A list of valid <a href="#widl-PerformanceEntry-entryType">entryType names</a> to be observed. The list MUST NOT be empty and types not recognized by the user agent MUST be ignored.</p>
 
@@ -246,9 +250,9 @@
 
             <p>The `observe(options)` method must run these steps:</p>
             <ol>
-              <li>If _options'_ `typeFilter` attribute is not present, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `TypeError`.</li>
-              <li>Filter unsupported <a href="#widl-PerformanceEntry-entryType">entryType names</a> within the `typeFilter` sequence, and replace the `typeFilter` sequence with the new filtered sequence.</li>
-              <li>If the _options'_ `typeFilter` attribute is an empty sequence, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `TypeError`.</li>
+              <li>If _options'_ `entryType` attribute is not present, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `TypeError`.</li>
+              <li>Filter unsupported <a href="#widl-PerformanceEntry-entryType">entryType names</a> within the `entryType` sequence, and replace the `entryType` sequence with the new filtered sequence.</li>
+              <li>If the _options'_ `entryType` attribute is an empty sequence, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `TypeError`.</li>
               <li>Add a new <a>registered performance observer</a> with the <a href="http://www.w3.org/TR/dom/#context-object">context object</a> as the <dfn>observer</dfn> and _options_ as the `options`.</li>
             </ol>
           </dd>
@@ -264,11 +268,11 @@
 
 
         <dl title='[Exposed=(Window,Worker)] interface PerformanceObserverEntryList' class='idl'>
-          <dt>PerformanceEntryList getEntries(optional FilterOptions filter)</dt>
-          <dd>See <a href="#widl-PerformanceObserverEntryList-getEntries-PerformanceEntryList-FilterOptions-filter">performance.getEntries</a>.</dd>
-          <dt>PerformanceEntryList getEntriesByType(DOMString entryType)</dt>
+          <dt>PerformanceEntryList getEntries(optional PerformanceEntryFilterOptions filter)</dt>
+          <dd>See <a href="#widl-PerformanceObserverEntryList-getEntries-PerformanceEntryList-PerformanceEntryFilterOptions-filter">performance.getEntries</a>.</dd>
+          <dt>PerformanceEntryList getEntriesByType(DOMString type)</dt>
           <dd>See <a href="#widl-PerformanceObserverEntryList-getEntriesByType-PerformanceEntryList-DOMString-entryType">performance.getEntriesByType</a>.</dd>
-          <dt>PerformanceEntryList getEntriesByName(DOMString name, optional DOMString entryType)</dt>
+          <dt>PerformanceEntryList getEntriesByName(DOMString name, optional DOMString type)</dt>
           <dd>See <a href="#widl-PerformanceObserverEntryList-getEntriesByName-PerformanceEntryList-DOMString-name-DOMString-entryType">performance.getEntriesByName</a>.</dd>
         </dl>
       </section>
