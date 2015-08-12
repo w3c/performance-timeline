@@ -111,7 +111,7 @@
   &lt;body&gt;
     &lt;img id="image0" src="http://www.w3.org/Icons/w3c_main.png" /&gt;
     &lt;script&gt;
-    var observer = window.performance.createPerformanceObserver(function(list) {
+    var observer = new PerformanceObserver(function(list) {
       var doneObservingEvents = false;
       var perfEntries = list.getEntries();
       for (var i = 0; i &lt; perfEntries.length; i++)
@@ -128,7 +128,7 @@
     });
 
     // subscribe to Frame-Timing and User-Timing events
-    observer.observe({entryType: ['render', 'composite', 'mark', 'measure']});
+    observer.observe({entryTypes: ['render', 'composite', 'mark', 'measure']});
     &lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;
@@ -225,42 +225,36 @@
       <h2>The <dfn>Performance Observer</dfn> interface</h2>
 
       <p>The <a>PerformanceObserver</a> interface can be used to observe the <a>Performance Timeline</a> and be notified of new performance entries as they are recorded by the user agent. A <dfn>registered performance observer</dfn> consists of an observer (a <a>PerformanceObserver</a> object) and options (a <a>PerformanceObserverInit</a> dictionary).</p>
-      <section>
-        <h2>Extensions to the <a>Performance</a> interface</h2>
-        <dl title='callback PerformanceObserverCallback = void (PerformanceObserverEntryList entries, PerformanceObserver observer)' class='idl'></dl>
-        <dl title='partial interface Performance' class='idl'>
-          <dt>PerformanceObserver createPerformanceObserver(PerformanceObserverCallback callback) </dt>
-          <dd>This method creates a new <a>PerformanceObserver</a> and associates it with the <a>Performance Timeline</a></dd>.
-        </dl>
-      </section>
-      <section>
-        <h2>The <dfn>PerformanceObserver</dfn> interface</h2>
-        <dl title='[Exposed=(Window,Worker)] interface PerformanceObserver' class='idl'>
 
-          <dt>void observe(PerformanceObserverInit options)</dt>
-          <dd>This method instructs the user agent to <dfn>register the observer</dfn> and report any new performance entries based on the criteria given by <a>options</a>.
-            <dl title='dictionary PerformanceObserverInit' class='idl'>
-              <dt>required sequence&lt;DOMString&gt; entryType</dt>
-              <dd>
-                <p>A list of valid <a href="#widl-PerformanceEntry-entryType">entryType names</a> to be observed. The list MUST NOT be empty and types not recognized by the user agent MUST be ignored.</p>
+      <dl title='callback PerformanceObserverCallback = void (PerformanceObserverEntryList entries, PerformanceObserver observer)' class='idl'></dl>
 
-                <p class="note">To keep the performance overhead to minimum the application should only subscribe to event types that it is interested in, and disconnect the observer once it no longer needs to observe the performance data. Filtering by name is not supported, as it would implicitly require a subscription for all event types &mdash; this is possible, but discouraged, as it will generate a significant volume of events.</p>
-              </dd>
-            </dl>
+      <dl title='[Constructor(PerformanceObserverCallback callback), Exposed=(Window,Worker)] interface PerformanceObserver' class='idl'>
 
-            <p>The `observe(options)` method must run these steps:</p>
-            <ol>
-              <li>If _options'_ `entryType` attribute is not present, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `TypeError`.</li>
-              <li>Filter unsupported <a href="#widl-PerformanceEntry-entryType">entryType names</a> within the `entryType` sequence, and replace the `entryType` sequence with the new filtered sequence.</li>
-              <li>If the _options'_ `entryType` attribute is an empty sequence, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `TypeError`.</li>
-              <li>Add a new <a>registered performance observer</a> with the <a href="http://www.w3.org/TR/dom/#context-object">context object</a> as the <dfn>observer</dfn> and _options_ as the `options`.</li>
-            </ol>
-          </dd>
+        <dt>void observe(PerformanceObserverInit options)</dt>
+        <dd>This method instructs the user agent to <dfn>register the observer</dfn> and report any new performance entries based on the criteria given by <a>options</a>.
+          <dl title='dictionary PerformanceObserverInit' class='idl'>
+            <dt>required sequence&lt;DOMString&gt; entryTypes</dt>
+            <dd>
+              <p>A list of valid <a href="#widl-PerformanceEntry-entryType">entryType names</a> to be observed. The list MUST NOT be empty and types not recognized by the user agent MUST be ignored.</p>
 
-          <dt>void disconnect()</dt>
-          <dd>This method must remove the <a>registered performance observer</a> from the <a>Performance Timeline</a> for which the <a href="http://www.w3.org/TR/dom/#context-object">context object</a> is the <a>observer</a>.</dd>
-        </dl>
-      </section>
+              <p class="note">To keep the performance overhead to minimum the application should only subscribe to event types that it is interested in, and disconnect the observer once it no longer needs to observe the performance data. Filtering by name is not supported, as it would implicitly require a subscription for all event types &mdash; this is possible, but discouraged, as it will generate a significant volume of events.</p>
+            </dd>
+          </dl>
+
+          <p>The `observe(options)` method must run these steps:</p>
+          <ol>
+            <li>If _options'_ `entryTypes` attribute is not present, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `TypeError`.</li>
+            <li>Filter unsupported <a href="#widl-PerformanceEntry-entryType">entryType names</a> within the `entryTypes` sequence, and replace the `entryTypes` sequence with the new filtered sequence.</li>
+            <li>If the _options'_ `entryTypes` attribute is an empty sequence, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `TypeError`.</li>
+            <li>If the <a>performance observer</a> is already registered with a <a>Performance Timeline</a>, update the <a>performance observer</a> `options` with _options_.</li>
+            <li>Otherwise, register the <a>performance observer</a> as an <dfn>observer</dfn> with the `options` as _options_ on the <a>Performance Timeline</a> visible from the <a>performance observer</a>'s context.</li>
+          </ol>
+        </dd>
+
+        <dt>void disconnect()</dt>
+        <dd>This method must remove the <a>registered performance observer</a> from the <a>Performance Timeline</a> for which it is an <a>observer</a>.</dd>
+      </dl>
+
       <section>
         <h2>The <dfn>PerformanceObserverEntryList</dfn> interface</h2>
 
