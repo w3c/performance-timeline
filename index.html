@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <title>Performance Timeline Level 2</title>
   <meta charset='utf-8'>
-  <script src='//www.w3.org/Tools/respec/respec-w3c-common' async class='remove'></script>
+  <script src='//www.w3.org/Tools/respec/respec-w3c-common' async class=
+  'remove'>
+  </script>
   <script class='remove'>
   var respecConfig = {
     shortName: "performance-timeline-2",
@@ -50,24 +51,36 @@
   };
   </script>
 </head>
-
 <body>
   <section id='abstract'>
-    <p>This specification extends the High Resolution Time specification [[!HR-TIME-2]] by providing methods to store and retrieve high resolution performance metric data.</p>
+    <p>This specification extends the High Resolution Time specification
+    [[!HR-TIME-2]] by providing methods to store and retrieve high resolution
+    performance metric data.</p>
   </section>
-
   <section id='sotd'>
-    <p>This new version is aligned with [[HR-TIME-2]] and introduces <a href='#dictionary-PerformanceEntryFilterOptions-members'>filtering</a> and <a href="#the-performance-observer-interface">performance observers</a>.</p>
-    <p>This is a <strong>work in progress</strong> and may change without any notices.</p>
+    <p>This new version is aligned with [[HR-TIME-2]] and introduces <a href=
+    '#dictionary-PerformanceEntryFilterOptions-members'>filtering</a> and
+    <a href="#the-performance-observer-interface">performance
+    observers</a>.</p>
+    <p>This is a <strong>work in progress</strong> and may change without any
+    notices.</p>
   </section>
-
   <section class='informative'>
     <h2>Introduction</h2>
-
-    <p>Accurately measuring performance characteristics of web applications is an important aspect of making web applications faster. This specification defines the necessary <a>Performance Timeline</a> primitives that enable web developers to access, instrument, and retrieve various performance metrics from the full lifecycle of a web application.</p>
-
-    <p>[[NAVIGATION-TIMING-2]], [[RESOURCE-TIMING]], and [[USER-TIMING]] are examples of specifications that define timing information related to the navigation of the document, resources on the page, and developer scripts, respectively. Together these and other performance interfaces define performance metrics that describe the <a>Performance Timeline</a> of a web application. For example, the following script shows how a developer can access the <a>Performance Timeline</a> to obtain performance metrics related to the navigation of the document, resources on the page, and developer scripts:</p>
-
+    <p>Accurately measuring performance characteristics of web applications is
+    an important aspect of making web applications faster. This specification
+    defines the necessary <a>Performance Timeline</a> primitives that enable
+    web developers to access, instrument, and retrieve various performance
+    metrics from the full lifecycle of a web application.</p>
+    <p>[[NAVIGATION-TIMING-2]], [[RESOURCE-TIMING]], and [[USER-TIMING]] are
+    examples of specifications that define timing information related to the
+    navigation of the document, resources on the page, and developer scripts,
+    respectively. Together these and other performance interfaces define
+    performance metrics that describe the <a>Performance Timeline</a> of a web
+    application. For example, the following script shows how a developer can
+    access the <a>Performance Timeline</a> to obtain performance metrics
+    related to the navigation of the document, resources on the page, and
+    developer scripts:</p>
     <pre class="highlight example">
 &lt;!doctype html&gt;
 &lt;html&gt;
@@ -81,10 +94,8 @@
             performance.mark("startWork"); // see [[User Timing]]
             doWork(); // Some developer code
             performance.mark("endWork");
-
             measurePerf();
        }
-
        function measurePerf()
        {
            var perfEntries = performance.getEntries();
@@ -99,10 +110,11 @@
     &lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;
-    </pre>
-
-    <p>Alternatively, instead of processing metrics at a predefined time, or having to periodically poll the timeline for new metrics, the developer may also observe the <a>Performance Timeline</a> and be notified of new performance metrics via a <a>Performance Observer</a>:</p>
-
+</pre>
+    <p>Alternatively, instead of processing metrics at a predefined time, or
+    having to periodically poll the timeline for new metrics, the developer may
+    also observe the <a>Performance Timeline</a> and be notified of new
+    performance metrics via a <a>Performance Observer</a>:</p>
     <pre class="highlight example">
 &lt;!doctype html&gt;
 &lt;html&gt;
@@ -126,7 +138,6 @@
            observer.disconnect();
       }
     });
-
     // subscribe to Frame-Timing and User-Timing events
     observer.observe({entryTypes: ['render', 'composite', 'mark', 'measure']});
     &lt;/script&gt;
@@ -134,140 +145,260 @@
 &lt;/html&gt;
 </pre>
   </section>
-
   <section>
     <h2><dfn>Performance Timeline</dfn></h2>
-
-    <p>The <a>Performance Timeline</a> enables the user agent and application developers to access, instrument, and retrieve various performance metrics from the full lifecycle of a web application.</p>
-
-    <p>All interfaces that participate in the <a>Performance Timeline</a> MUST adhere to the following rules:</p>
-
+    <p>The <a>Performance Timeline</a> enables the user agent and application
+    developers to access, instrument, and retrieve various performance metrics
+    from the full lifecycle of a web application.</p>
+    <p>All interfaces that participate in the <a>Performance Timeline</a> MUST
+    adhere to the following rules:</p>
     <ul>
-      <li>MUST extend the <a>PerformanceEntry</a> interface</li>
-      <li>MUST be supported by the <a href="#widl-PerformanceObserverEntryList-getEntries-PerformanceEntryList-PerformanceEntryFilterOptions-filter">getEntries</a>, <a href="#widl-PerformanceObserverEntryList-getEntriesByType-PerformanceEntryList-DOMString-entryType">getEntriesByType</a>, and <a href="#widl-PerformanceObserverEntryList-getEntriesByName-PerformanceEntryList-DOMString-name-DOMString-entryType">getEntriesByName</a> methods.</li>
+      <li>MUST extend the <a>PerformanceEntry</a> interface
+      </li>
+      <li>MUST be supported by the <a href=
+      "#widl-PerformanceObserverEntryList-getEntries-PerformanceEntryList-PerformanceEntryFilterOptions-filter">
+        getEntries</a>, <a href=
+        "#widl-PerformanceObserverEntryList-getEntriesByType-PerformanceEntryList-DOMString-entryType">
+        getEntriesByType</a>, and <a href=
+        "#widl-PerformanceObserverEntryList-getEntriesByName-PerformanceEntryList-DOMString-name-DOMString-entryType">
+        getEntriesByName</a> methods.
+      </li>
       <li>SHOULD surface new performance metrics in a timely manner
-      <ul>
-        <li>The user agent is NOT REQUIRED to provide synchronous access to new performance metrics</li>
-        <li>The user agent MAY delay reporting the metric to avoid performance bottlenecks</li>
-      </ul>
+        <ul>
+          <li>The user agent is NOT REQUIRED to provide synchronous access to
+          new performance metrics</li>
+          <li>The user agent MAY delay reporting the metric to avoid
+          performance bottlenecks</li>
+        </ul>
       </li>
     </ul>
-
-      <section>
-        <h2>The <dfn>PerformanceEntry</dfn> interface</h2>
-        <p>The <a>PerformanceEntry</a> interface hosts the performance data of various metrics.</p>
-
-        <dl title='[Exposed=(Window,Worker)] interface PerformanceEntry' class='idl'>
-          <dt>readonly attribute DOMString name</dt>
-          <dd>The attribute MUST return a <a href="http://www.w3.org/TR/WebIDL/#idl-DOMString">DOMString</a> identifier for this <a>PerformanceEntry</a> object. This identifier does not have to be unique.</dd>
-          <dt>readonly attribute DOMString entryType</dt>
-          <dd>This attribute MUST return the <a href="http://www.w3.org/TR/WebIDL/#idl-DOMString">DOMString</a> that describes the type of the interface represented by this <a>PerformanceEntry</a> object.
-          <p class="note">
-            Valid entryType values are: composite [[!FRAME-TIMING]], mark [[!USER-TIMING]], measure [[!USER-TIMING]], navigation [[!NAVIGATION-TIMING]], render [[!FRAME-TIMING]], resource [[!RESOURCE-TIMING]], server [[!SERVER-TIMING]].
-          </p>
-          </dd>
-          <dt>readonly attribute DOMHighResTimeStamp startTime</dt>
-          <dd>The attribute MUST return a <a href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp">DOMHighResTimeStamp</a> that contains the time value of the first recorded timestamp of this performance metric.</dd>
-          <dt>readonly attribute DOMHighResTimeStamp duration</dt>
-          <dd>The attribute MUST return a <a href="https://w3c.github.io/hr-time/#dom-domhighrestimestamp">DOMHighResTimeStamp</a> that contains the time value of the duration of the entire event being recorded by this <a>PerformanceEntry</a>. Typically, this would be the time difference between the last recorded timestamp and the first recorded timestamp of this <a>PerformanceEntry</a>. If the duration concept doesn't apply, a performance metric may choose to return a `duration` of 0.</dd>
-          <dt>serializer = { attribute }</dt>
-        </dl>
-      </section>
-
-      <section>
-        <h2>Extensions to the <dfn>Performance</dfn> interface</h2>
-
-        <p>This extends the <a href='https://w3c.github.io/hr-time/#idl-def-Performance'>Performance</a> interface [[!HR-TIME-2]] and hosts performance related attributes and methods used to retrieve the performance metric data from the <a>Performance Timeline</a>.</p>
-
-        <dl title='dictionary PerformanceEntryFilterOptions' class='idl'>
-          <dt>DOMString name</dt>
-          <dd><a href="#widl-PerformanceEntry-name">name</a> of `PerformanceEntry` object.</dd>
-          <dt>DOMString entryType</dt>
-          <dd><a href="#widl-PerformanceEntry-entryType">entryType</a> of `PerformanceEntry` object.</dd>
-          <dt>DOMString initiatorType</dt>
-          <dd><a href="http://www.w3.org/TR/resource-timing/#widl-PerformanceResourceTiming-initiatorType">initiatorType</a> of `PerformanceEntry` object.</dd>
-        </dl>
-
-        <dl title='partial interface Performance' class='idl'>
-          <dt>PerformanceEntryList getEntries(optional PerformanceEntryFilterOptions filter)</dt>
-          <dd>
-            <p>This method returns a <a>PerformanceEntryList</a> object that contains a list of <a>PerformanceEntry</a> objects, sorted in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>, that match the following criteria:</p>
-
-            <ol>
-              <li>Let the <dfn>list of entry objects</dfn> be the empty <a>PerformanceEntryList</a>.</li>
-              <li> Let the <dfn>set of filter properties</dfn> be a set of pairs where the first element is the _name_ of a <a href="http://www.w3.org/TR/WebIDL/#dfn-dictionary-member">dictionary member</a> of `filter` that is present and the second element is the _value_ of that <a href="http://www.w3.org/TR/WebIDL/#dfn-dictionary-member">dictionary member</a>.</li>
-              <li>For each available <a>PerformanceEntry</a> object (<dfn>entryObject</dfn>), in chronological order with respect to <a href="#widl-PerformanceEntry-startTime">startTime</a>:
-                <ol>
-                <li>For each _name_ and _value_ pair in <a>set of filter properties</a>:
+    <section>
+      <h2>The <dfn>PerformanceEntry</dfn> interface</h2>
+      <p>The <a>PerformanceEntry</a> interface hosts the performance data of
+      various metrics.</p>
+      <dl title='[Exposed=(Window,Worker)] interface PerformanceEntry' class=
+      'idl'>
+        <dt>readonly attribute DOMString name</dt>
+        <dd>
+          The attribute MUST return a <a href=
+          "http://www.w3.org/TR/WebIDL/#idl-DOMString">DOMString</a> identifier
+          for this <a>PerformanceEntry</a> object. This identifier does not
+          have to be unique.
+        </dd>
+        <dt>readonly attribute DOMString entryType</dt>
+        <dd>
+          This attribute MUST return the <a href=
+          "http://www.w3.org/TR/WebIDL/#idl-DOMString">DOMString</a> that
+          describes the type of the interface represented by this
+          <a>PerformanceEntry</a> object.
+          <p class="note">Valid entryType values are: composite
+          [[!FRAME-TIMING]], mark [[!USER-TIMING]], measure [[!USER-TIMING]],
+          navigation [[!NAVIGATION-TIMING]], render [[!FRAME-TIMING]], resource
+          [[!RESOURCE-TIMING]], server [[!SERVER-TIMING]].</p>
+        </dd>
+        <dt>readonly attribute DOMHighResTimeStamp startTime</dt>
+        <dd>
+          The attribute MUST return a <a href=
+          "https://w3c.github.io/hr-time/#dom-domhighrestimestamp">DOMHighResTimeStamp</a>
+          that contains the time value of the first recorded timestamp of this
+          performance metric.
+        </dd>
+        <dt>readonly attribute DOMHighResTimeStamp duration</dt>
+        <dd>
+          The attribute MUST return a <a href=
+          "https://w3c.github.io/hr-time/#dom-domhighrestimestamp">DOMHighResTimeStamp</a>
+          that contains the time value of the duration of the entire event
+          being recorded by this <a>PerformanceEntry</a>. Typically, this would
+          be the time difference between the last recorded timestamp and the
+          first recorded timestamp of this <a>PerformanceEntry</a>. If the
+          duration concept doesn't apply, a performance metric may choose to
+          return a `duration` of 0.
+        </dd>
+        <dt>serializer = { attribute }</dt>
+      </dl>
+    </section>
+    <section>
+      <h2>Extensions to the <dfn>Performance</dfn> interface</h2>
+      <p>This extends the <a href=
+      'https://w3c.github.io/hr-time/#idl-def-Performance'>Performance</a>
+      interface [[!HR-TIME-2]] and hosts performance related attributes and
+      methods used to retrieve the performance metric data from the
+      <a>Performance Timeline</a>.</p>
+      <dl title='dictionary PerformanceEntryFilterOptions' class='idl'>
+        <dt>DOMString name</dt>
+        <dd>
+          <a href="#widl-PerformanceEntry-name">name</a> of `PerformanceEntry`
+          object.
+        </dd>
+        <dt>DOMString entryType</dt>
+        <dd>
+          <a href="#widl-PerformanceEntry-entryType">entryType</a> of
+          `PerformanceEntry` object.
+        </dd>
+        <dt>DOMString initiatorType</dt>
+        <dd>
+          <a href=
+          "http://www.w3.org/TR/resource-timing/#widl-PerformanceResourceTiming-initiatorType">
+          initiatorType</a> of `PerformanceEntry` object.
+        </dd>
+      </dl>
+      <dl title='partial interface Performance' class='idl'>
+        <dt>PerformanceEntryList getEntries(optional
+        PerformanceEntryFilterOptions filter)</dt>
+        <dd>
+          <p>This method returns a <a>PerformanceEntryList</a> object that
+          contains a list of <a>PerformanceEntry</a> objects, sorted in
+          chronological order with respect to <a href=
+          "#widl-PerformanceEntry-startTime">startTime</a>, that match the
+          following criteria:</p>
+          <ol>
+            <li>Let the <dfn>list of entry objects</dfn> be the empty
+            <a>PerformanceEntryList</a>.
+            </li>
+            <li>Let the <dfn>set of filter properties</dfn> be a set of pairs
+            where the first element is the _name_ of a <a href=
+            "http://www.w3.org/TR/WebIDL/#dfn-dictionary-member">dictionary
+            member</a> of `filter` that is present and the second element is
+            the _value_ of that <a href=
+            "http://www.w3.org/TR/WebIDL/#dfn-dictionary-member">dictionary
+            member</a>.
+            </li>
+            <li>For each available <a>PerformanceEntry</a> object
+            (<dfn>entryObject</dfn>), in chronological order with respect to
+            <a href="#widl-PerformanceEntry-startTime">startTime</a>:
+              <ol>
+                <li>For each _name_ and _value_ pair in <a>set of filter
+                properties</a>:
                   <ol>
-                  <li>If the <a>entryObject</a> does not contain an attribute whose name matches _name_, go to next <a>entryObject</a>.</li>
-                  <li>Otherwise, if the <a>entryObject</a> contains an attribute whose name matches _name_, and its value does not match _value_, go to next <a>entryObject</a>.</li>
+                    <li>If the <a>entryObject</a> does not contain an attribute
+                    whose name matches _name_, go to next <a>entryObject</a>.
+                    </li>
+                    <li>Otherwise, if the <a>entryObject</a> contains an
+                    attribute whose name matches _name_, and its value does not
+                    match _value_, go to next <a>entryObject</a>.
+                    </li>
                   </ol>
                 </li>
-                <li>Add <a>entryObject</a> to the <a>list of entry objects</a>.</li>
-                </ol>
-              </li>
-              <li>Return the <a>list of entry objects</a>.</li>
-            </ol>
-          </dd>
-
-          <dt>PerformanceEntryList getEntriesByType(DOMString type)</dt>
-          <dd>This method returns a <a>PerformanceEntryList</a> object returned by `getEntries({'entryType': type})`.</dd>
-
-          <dt>PerformanceEntryList getEntriesByName(DOMString name, optional DOMString type)</dt>
-          <dd>This method returns a <a>PerformanceEntryList</a> object returned by `getEntries({'name': name})` if optional `entryType` is omitted, and `getEntries({'name': name, 'entryType': type})` otherwise.</dd>
-        </dl>
-
-        <dl class='idl' title='typedef sequence<PerformanceEntry> PerformanceEntryList'></dl>
-      </section>
-
+                <li>Add <a>entryObject</a> to the <a>list of entry objects</a>.
+                </li>
+              </ol>
+            </li>
+            <li>Return the <a>list of entry objects</a>.
+            </li>
+          </ol>
+        </dd>
+        <dt>PerformanceEntryList getEntriesByType(DOMString type)</dt>
+        <dd>
+          This method returns a <a>PerformanceEntryList</a> object returned by
+          `getEntries({'entryType': type})`.
+        </dd>
+        <dt>PerformanceEntryList getEntriesByName(DOMString name, optional
+        DOMString type)</dt>
+        <dd>
+          This method returns a <a>PerformanceEntryList</a> object returned by
+          `getEntries({'name': name})` if optional `entryType` is omitted, and
+          `getEntries({'name': name, 'entryType': type})` otherwise.
+        </dd>
+      </dl>
+      <dl class='idl' title=
+      'typedef sequence&lt;PerformanceEntry&gt; PerformanceEntryList'></dl>
+    </section>
     <section>
       <h2>The <dfn>Performance Observer</dfn> interface</h2>
-
-      <p>The <a>PerformanceObserver</a> interface can be used to observe the <a>Performance Timeline</a> and be notified of new performance entries as they are recorded by the user agent. A <dfn>registered performance observer</dfn> consists of an observer (a <a>PerformanceObserver</a> object) and options (a <a>PerformanceObserverInit</a> dictionary).</p>
-
-      <dl title='callback PerformanceObserverCallback = void (PerformanceObserverEntryList entries, PerformanceObserver observer)' class='idl'></dl>
-
-      <dl title='[Constructor(PerformanceObserverCallback callback), Exposed=(Window,Worker)] interface PerformanceObserver' class='idl'>
-
+      <p>The <a>PerformanceObserver</a> interface can be used to observe the
+      <a>Performance Timeline</a> and be notified of new performance entries as
+      they are recorded by the user agent. A <dfn>registered performance
+      observer</dfn> consists of an observer (a <a>PerformanceObserver</a>
+      object) and options (a <a>PerformanceObserverInit</a> dictionary).</p>
+      <dl title=
+      'callback PerformanceObserverCallback = void (PerformanceObserverEntryList entries, PerformanceObserver observer)'
+      class='idl'></dl>
+      <dl title=
+      '[Constructor(PerformanceObserverCallback callback), Exposed=(Window,Worker)] interface PerformanceObserver'
+      class='idl'>
         <dt>void observe(PerformanceObserverInit options)</dt>
-        <dd>This method instructs the user agent to <dfn>register the observer</dfn> and report any new performance entries based on the criteria given by <a>options</a>.
+        <dd>
+          This method instructs the user agent to <dfn>register the
+          observer</dfn> and report any new performance entries based on the
+          criteria given by <a>options</a>.
           <dl title='dictionary PerformanceObserverInit' class='idl'>
             <dt>required sequence&lt;DOMString&gt; entryTypes</dt>
             <dd>
-              <p>A list of valid <a href="#widl-PerformanceEntry-entryType">entryType names</a> to be observed. The list MUST NOT be empty and types not recognized by the user agent MUST be ignored.</p>
-
-              <p class="note">To keep the performance overhead to minimum the application should only subscribe to event types that it is interested in, and disconnect the observer once it no longer needs to observe the performance data. Filtering by name is not supported, as it would implicitly require a subscription for all event types &mdash; this is possible, but discouraged, as it will generate a significant volume of events.</p>
+              <p>A list of valid <a href=
+              "#widl-PerformanceEntry-entryType">entryType names</a> to be
+              observed. The list MUST NOT be empty and types not recognized by
+              the user agent MUST be ignored.</p>
+              <p class="note">To keep the performance overhead to minimum the
+              application should only subscribe to event types that it is
+              interested in, and disconnect the observer once it no longer
+              needs to observe the performance data. Filtering by name is not
+              supported, as it would implicitly require a subscription for all
+              event types — this is possible, but discouraged, as it will
+              generate a significant volume of events.</p>
             </dd>
           </dl>
-
           <p>The `observe(options)` method must run these steps:</p>
           <ol>
-            <li>If _options'_ `entryTypes` attribute is not present, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `TypeError`.</li>
-            <li>Filter unsupported <a href="#widl-PerformanceEntry-entryType">entryType names</a> within the `entryTypes` sequence, and replace the `entryTypes` sequence with the new filtered sequence.</li>
-            <li>If the _options'_ `entryTypes` attribute is an empty sequence, <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript `TypeError`.</li>
-            <li>If the <a>performance observer</a> is already registered with a <a>Performance Timeline</a>, update the <a>performance observer</a> `options` with _options_.</li>
-            <li>Otherwise, register the <a>performance observer</a> as an <dfn>observer</dfn> with the `options` as _options_ on the <a>Performance Timeline</a> visible from the <a>performance observer</a>'s context.</li>
+            <li>If _options'_ `entryTypes` attribute is not present, <a href=
+            "http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript
+            `TypeError`.
+            </li>
+            <li>Filter unsupported <a href="#widl-PerformanceEntry-entryType">
+              entryType names</a> within the `entryTypes` sequence, and replace
+              the `entryTypes` sequence with the new filtered sequence.
+            </li>
+            <li>If the _options'_ `entryTypes` attribute is an empty sequence,
+            <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a
+            JavaScript `TypeError`.
+            </li>
+            <li>If the <a>performance observer</a> is already registered with a
+            <a>Performance Timeline</a>, update the <a>performance observer</a>
+            `options` with _options_.
+            </li>
+            <li>Otherwise, register the <a>performance observer</a> as an <dfn>
+              observer</dfn> with the `options` as _options_ on the
+              <a>Performance Timeline</a> visible from the <a>performance
+              observer</a>'s context.
+            </li>
           </ol>
         </dd>
-
         <dt>void disconnect()</dt>
-        <dd>This method must remove the <a>registered performance observer</a> from the <a>Performance Timeline</a> for which it is an <a>observer</a>.</dd>
+        <dd>
+          This method must remove the <a>registered performance observer</a>
+          from the <a>Performance Timeline</a> for which it is an
+          <a>observer</a>.
+        </dd>
       </dl>
-
       <section>
         <h2>The <dfn>PerformanceObserverEntryList</dfn> interface</h2>
-
-        <p>The <a>PerformanceObserverEntryList</a> interface provides the same `getEntries`, `getEntriesByType`, `getEntriesByName` methods as the <a>Performance</a> interface, except that <a>PerformanceObserverEntryList</a> operates on the observed emitted list of events instead of the global timeline.</p>
-
-
-        <dl title='[Exposed=(Window,Worker)] interface PerformanceObserverEntryList' class='idl'>
-          <dt>PerformanceEntryList getEntries(optional PerformanceEntryFilterOptions filter)</dt>
-          <dd>See <a href="#widl-PerformanceObserverEntryList-getEntries-PerformanceEntryList-PerformanceEntryFilterOptions-filter">performance.getEntries</a>.</dd>
+        <p>The <a>PerformanceObserverEntryList</a> interface provides the same
+        `getEntries`, `getEntriesByType`, `getEntriesByName` methods as the
+        <a>Performance</a> interface, except that
+        <a>PerformanceObserverEntryList</a> operates on the observed emitted
+        list of events instead of the global timeline.</p>
+        <dl title=
+        '[Exposed=(Window,Worker)] interface PerformanceObserverEntryList'
+        class='idl'>
+          <dt>PerformanceEntryList getEntries(optional
+          PerformanceEntryFilterOptions filter)</dt>
+          <dd>
+            See <a href=
+            "#widl-PerformanceObserverEntryList-getEntries-PerformanceEntryList-PerformanceEntryFilterOptions-filter">
+            performance.getEntries</a>.
+          </dd>
           <dt>PerformanceEntryList getEntriesByType(DOMString type)</dt>
-          <dd>See <a href="#widl-PerformanceObserverEntryList-getEntriesByType-PerformanceEntryList-DOMString-entryType">performance.getEntriesByType</a>.</dd>
-          <dt>PerformanceEntryList getEntriesByName(DOMString name, optional DOMString type)</dt>
-          <dd>See <a href="#widl-PerformanceObserverEntryList-getEntriesByName-PerformanceEntryList-DOMString-name-DOMString-entryType">performance.getEntriesByName</a>.</dd>
+          <dd>
+            See <a href=
+            "#widl-PerformanceObserverEntryList-getEntriesByType-PerformanceEntryList-DOMString-entryType">
+            performance.getEntriesByType</a>.
+          </dd>
+          <dt>PerformanceEntryList getEntriesByName(DOMString name, optional
+          DOMString type)</dt>
+          <dd>
+            See <a href=
+            "#widl-PerformanceObserverEntryList-getEntriesByName-PerformanceEntryList-DOMString-name-DOMString-entryType">
+            performance.getEntriesByName</a>.
+          </dd>
         </dl>
       </section>
     </section>
