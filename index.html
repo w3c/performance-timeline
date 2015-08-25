@@ -147,31 +147,80 @@
   </section>
   <section>
     <h2><dfn>Performance Timeline</dfn></h2>
-    <p>The <a>Performance Timeline</a> enables the user agent and application
-    developers to access, instrument, and retrieve various performance metrics
-    from the full lifecycle of a web application.</p>
-    <p>All interfaces that participate in the <a>Performance Timeline</a> MUST
-    adhere to the following rules:</p>
-    <ul>
-      <li>MUST extend the <a>PerformanceEntry</a> interface
+    <p>Each <a href=
+    "https://html.spec.whatwg.org/multipage/browsers.html#unit-of-related-similar-origin-browsing-contexts">
+    unit of related similar-origin browsing contexts</a> has a <dfn>performance
+    observer task queued flag</dfn> and an associated list of <a>registered
+    performance observer</a> objects which is initially empty.</p>
+    <p>To <dfn>queue a PerformanceEntry</dfn> (<i>new entry</i>), run these
+    steps:</p>
+    <ol>
+      <li>Let <i>interested observers</i> be an initially empty set of
+      <a>PerformanceObserver</a> objects.
       </li>
-      <li>MUST be supported by the <a href=
-      "#widl-PerformanceObserverEntryList-getEntries-PerformanceEntryList-PerformanceEntryFilterOptions-filter">
-        getEntries</a>, <a href=
-        "#widl-PerformanceObserverEntryList-getEntriesByType-PerformanceEntryList-DOMString-entryType">
-        getEntriesByType</a>, and <a href=
-        "#widl-PerformanceObserverEntryList-getEntriesByName-PerformanceEntryList-DOMString-name-DOMString-entryType">
-        getEntriesByName</a> methods.
+      <li>For each <a>registered performance observer</a> (<i>observer</i>):
+        <ol>
+          <li>If <i>observer</i>'s <a>PerformanceObserverInit</a> <a href=
+          "#widl-PerformanceObserverInit-entryTypes">entryTypes</a> includes
+          <i>new entry</i>’s <a href=
+          "#widl-PerformanceEntry-entryType">entryType</a> value, append
+          <i>observer</i> to <i>interested observers</i>.
+          </li>
+        </ol>
       </li>
-      <li>SHOULD surface new performance metrics in a timely manner
-        <ul>
-          <li>The user agent is NOT REQUIRED to provide synchronous access to
-          new performance metrics</li>
-          <li>The user agent MAY delay reporting the metric to avoid
-          performance bottlenecks</li>
-        </ul>
+      <li>For each <i>observer</i> in <i>interested observers</i>:
+        <ol>
+          <li>Append <i>new entry</i> to <a>observer buffer</a>.
+          </li>
+        </ol>
       </li>
-    </ul>
+      <li>If the <a>performance observer task queued flag</a> is set, terminate
+      these steps.
+      </li>
+      <li>Set <a>performance observer task queued flag</a>.
+      </li>
+      <li>
+        <a href=
+        "https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task">Queue
+        a task</a> that consists of running the following substeps. The
+        <a href="https://html.spec.whatwg.org/multipage/webappapis.html#task-source">
+        task source</a> for the queued task is the <i>performance timeline</i>
+        task source.
+        <ol>
+          <li>Unset <a>performance observer task queued flag</a>.
+          </li>
+          <li>Let <i>notify list</i> be a copy of <a href=
+          "https://html.spec.whatwg.org/multipage/browsers.html#unit-of-related-similar-origin-browsing-contexts">
+            unit of related similar-origin browsing contexts’</a> list of
+            <a>registered performance observer</a> objects.
+          </li>
+          <li>For each <a>PerformanceObserver</a> object <i>po</i> in <i>notify
+          list</i>, run these steps:
+            <ol>
+              <li>Let <i>entries</i> be a copy of <i>po</i>’s <a>observer
+              buffer</a>.
+              </li>
+              <li>Empty <i>po</i>’s <a>observer buffer</a>.
+              </li>
+              <li>If <i>entries</i> is non-empty, call <i>po</i>’s callback
+              with <i>entries</i> as first argument and <a href=
+              "https://heycam.github.io/webidl/#dfn-callback-this-value">callback
+              this value</a>. If this throws an exception, <a href=
+              "https://html.spec.whatwg.org/multipage/webappapis.html#report-the-exception">
+                report the exception</a>.
+              </li>
+            </ol>
+          </li>
+        </ol>
+      </li>
+    </ol>
+    <p>The <i>performance timeline</i> <a href=
+    "https://html.spec.whatwg.org/multipage/webappapis.html#task-queue">task
+    queue</a> is a low priority queue that, if possible, should be processed by
+    the user agent during idle periods to minimize impact of performance
+    monitoring code. The task queue MUST be processed by the user agent at
+    least once every (TBD: can't starve it)ms if no such idle periods are
+    available.</p>
     <section>
       <h2>The <dfn>PerformanceEntry</dfn> interface</h2>
       <p>The <a>PerformanceEntry</a> interface hosts the performance data of
@@ -309,9 +358,17 @@
       <h2>The <dfn>Performance Observer</dfn> interface</h2>
       <p>The <a>PerformanceObserver</a> interface can be used to observe the
       <a>Performance Timeline</a> and be notified of new performance entries as
-      they are recorded by the user agent. A <dfn>registered performance
-      observer</dfn> consists of an observer (a <a>PerformanceObserver</a>
-      object) and options (a <a>PerformanceObserverInit</a> dictionary).</p>
+      they are recorded by the user agent.</p>
+      <ul>
+        <li>A <dfn>registered performance observer</dfn> consists of an
+        observer (a <a>PerformanceObserver</a> object) and options (a
+        <a>PerformanceObserverInit</a> dictionary).
+        </li>
+        <li>Each <a>registered performance observer</a> object has a private
+        list of <a>PerformanceEntry</a> objects (<dfn>observer buffer</dfn>)
+        which is initially empty.
+        </li>
+      </ul>
       <dl title=
       'callback PerformanceObserverCallback = void (PerformanceObserverEntryList entries, PerformanceObserver observer)'
       class='idl'></dl>
