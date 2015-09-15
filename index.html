@@ -147,11 +147,10 @@
   </section>
   <section>
     <h2><dfn>Performance Timeline</dfn></h2>
-    <p>Each <a href=
-    "https://html.spec.whatwg.org/multipage/browsers.html#unit-of-related-similar-origin-browsing-contexts">
-    unit of related similar-origin browsing contexts</a> has a <dfn>performance
-    observer task queued flag</dfn> and an associated list of <a>registered
-    performance observer</a> objects which is initially empty.</p>
+    <p>Each [unit of related similar-origin browsing contexts'][] has a
+    <dfn>performance observer task queued flag</dfn> and an associated list of
+    <a>registered performance observer</a> objects which is initially
+    empty.</p>
     <p>To <dfn>queue a PerformanceEntry</dfn> (<i>new entry</i>), run these
     steps:</p>
     <ol>
@@ -189,10 +188,9 @@
         <ol>
           <li>Unset <a>performance observer task queued flag</a>.
           </li>
-          <li>Let <i>notify list</i> be a copy of <a href=
-          "https://html.spec.whatwg.org/multipage/browsers.html#unit-of-related-similar-origin-browsing-contexts">
-            unit of related similar-origin browsing contexts’</a> list of
-            <a>registered performance observer</a> objects.
+          <li>Let <i>notify list</i> be a copy of [unit of related
+          similar-origin browsing contexts’][] list of <a>registered
+          performance observer</a> objects.
           </li>
           <li>For each <a>PerformanceObserver</a> object <i>po</i> in <i>notify
           list</i>, run these steps:
@@ -357,16 +355,19 @@
       <p>The <a>PerformanceObserver</a> interface can be used to observe the
       <a>Performance Timeline</a> and be notified of new performance entries as
       they are recorded by the user agent.</p>
+      <p>Each <a>PerformanceObserver</a> has these associated concepts:</p>
       <ul>
-        <li>A <dfn>registered performance observer</dfn> consists of an
-        observer (a <a>PerformanceObserver</a> object) and options (a
-        <a>PerformanceObserverInit</a> dictionary).
-        </li>
-        <li>Each <a>registered performance observer</a> object has a private
-        list of <a>PerformanceEntry</a> objects (<dfn>observer buffer</dfn>)
-        which is initially empty.
+        <li>A <dfn>callback</dfn> set on creation.</li>
+        <li>A list of <a>PerformanceEntry</a> objects called the <dfn>observer
+        buffer</dfn> that is initially empty.
         </li>
       </ul>
+      <p>The `PerformanceObserver(callback)` constructor must create a new
+      <a>PerformanceObserver</a> object with <a>callback</a> set to
+      <var>callback</var> and then return it.</p>
+      <p>A <dfn>registered performance observer</dfn> consists of an observer
+      (a <a>PerformanceObserver</a> object) and options (a
+      <a>PerformanceObserverInit</a> dictionary).</p>
       <dl title=
       'callback PerformanceObserverCallback = void (PerformanceObserverEntryList entries, PerformanceObserver observer)'
       class='idl'></dl>
@@ -375,9 +376,6 @@
       class='idl'>
         <dt>void observe(PerformanceObserverInit options)</dt>
         <dd>
-          This method instructs the user agent to <dfn>register the
-          observer</dfn> and report any new performance entries based on the
-          criteria given by <a>options</a>.
           <dl title='dictionary PerformanceObserverInit' class='idl'>
             <dt>required sequence&lt;DOMString&gt; entryTypes</dt>
             <dd>
@@ -394,7 +392,8 @@
               generate a significant volume of events.</p>
             </dd>
           </dl>
-          <p>The `observe(options)` method must run these steps:</p>
+          <p>This method instructs the user agent to <dfn>register the
+          observer</dfn> and must run these steps:</p>
           <ol>
             <li>If _options'_ `entryTypes` attribute is not present, <a href=
             "http://heycam.github.io/webidl/#dfn-throw">throw</a> a JavaScript
@@ -408,22 +407,26 @@
             <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a
             JavaScript `TypeError`.
             </li>
-            <li>If the <a>performance observer</a> is already registered with a
-            <a>Performance Timeline</a>, replace the <a>performance
-            observer</a> `options` with _options_.
+            <li>If the [unit of related similar-origin browsing contexts'][]
+            list of <a>registered performance observer</a> objects contains a
+            <a>registered performance observer</a> that is the [context
+            object][], replace the [context object][]'s `options` with
+            <var>options</var>.
             </li>
-            <li>Otherwise, register the <a>performance observer</a> as an <dfn>
-              observer</dfn> with the `options` as _options_ on the
-              <a>Performance Timeline</a> visible from the <a>performance
-              observer</a>'s context.
+            <li>Otherwise, append a new <a>registered performance observer</a>
+            object to the [unit of related similar-origin browsing contexts'][]
+            list of <a>registered performance observer</a> objects with the
+            [context object][] as `observer` and <var>options</var> as the
+            `options`.
             </li>
           </ol>
         </dd>
         <dt>void disconnect()</dt>
         <dd>
-          This method must remove the <a>registered performance observer</a>
-          from the <a>Performance Timeline</a> for which it is an
-          <a>observer</a>.
+          This method must remove the [context object][] from the list of
+          <a>PerformanceObserver</a> objects associated with the [unit of
+          related similar-origin browsing contexts'][], and also empty [context
+          object][]'s <a>observer buffer</a>
         </dd>
       </dl>
       <section>
@@ -462,3 +465,7 @@
   </section>
 </body>
 </html>
+
+<!-- preserve before running Tidy -->
+[context object]: https://dom.spec.whatwg.org/#context-object
+[unit of related similar-origin browsing contexts']: https://html.spec.whatwg.org/multipage/browsers.html#unit-of-related-similar-origin-browsing-contexts
