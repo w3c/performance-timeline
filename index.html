@@ -147,10 +147,9 @@
   </section>
   <section>
     <h2><dfn>Performance Timeline</dfn></h2>
-    <p>Each [unit of related similar-origin browsing contexts'][] has a
-    <dfn>performance observer task queued flag</dfn> and an associated list of
-    <a>registered performance observer</a> objects which is initially
-    empty.</p>
+    <p>Each [ECMAScript global environment][es-global] has a <dfn>performance
+    observer task queued flag</dfn> and an associated list of <a>registered
+    performance observer</a> objects which is initially empty.</p>
     <p>To <dfn>queue a PerformanceEntry</dfn> (<i>new entry</i>), run these
     steps:</p>
     <ol>
@@ -188,9 +187,9 @@
         <ol>
           <li>Unset <a>performance observer task queued flag</a>.
           </li>
-          <li>Let <i>notify list</i> be a copy of [unit of related
-          similar-origin browsing contexts’][] list of <a>registered
-          performance observer</a> objects.
+          <li>Let <i>notify list</i> be a copy of [ECMAScript global
+          environment][es-global]'s list of <a>registered performance
+          observer</a> objects.
           </li>
           <li>For each <a>PerformanceObserver</a> object <i>po</i> in <i>notify
           list</i>, run these steps:
@@ -407,26 +406,26 @@
             <a href="http://heycam.github.io/webidl/#dfn-throw">throw</a> a
             JavaScript `TypeError`.
             </li>
-            <li>If the [unit of related similar-origin browsing contexts'][]
-            list of <a>registered performance observer</a> objects contains a
-            <a>registered performance observer</a> that is the [context
-            object][], replace the [context object][]'s `options` with
-            <var>options</var>.
+            <li>If the list of <a>registered performance observer</a> objects
+            associated with the [ECMAScript global environment of the interface
+            object][es-global]'s contains a <a>registered performance
+            observer</a> that is the [context object][], replace the [context
+            object][]'s `options` with <var>options</var>.
             </li>
             <li>Otherwise, append a new <a>registered performance observer</a>
-            object to the [unit of related similar-origin browsing contexts'][]
-            list of <a>registered performance observer</a> objects with the
-            [context object][] as `observer` and <var>options</var> as the
-            `options`.
+            object to the list of <a>registered performance observer</a>
+            objects associated with the [ECMAScript global environment of the
+            interface object][es-global], with the [context object][] as
+            `observer` and <var>options</var> as the `options`.
             </li>
           </ol>
         </dd>
         <dt>void disconnect()</dt>
         <dd>
           This method must remove the [context object][] from the list of
-          <a>PerformanceObserver</a> objects associated with the [unit of
-          related similar-origin browsing contexts'][], and also empty [context
-          object][]'s <a>observer buffer</a>
+          <a>PerformanceObserver</a> objects associated with the [ECMAScript
+          global environment of the interface object][es-global], and also
+          empty [context object][]'s <a>observer buffer</a>.
         </dd>
       </dl>
       <section>
@@ -468,4 +467,4 @@
 
 <!-- preserve before running Tidy -->
 [context object]: https://dom.spec.whatwg.org/#context-object
-[unit of related similar-origin browsing contexts']: https://html.spec.whatwg.org/multipage/browsers.html#unit-of-related-similar-origin-browsing-contexts
+[es-global]: https://heycam.github.io/webidl/#es-environment
