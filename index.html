@@ -30,7 +30,7 @@
       note: "Until July 2013"
     }],
     wg: "Web Performance Working Group",
-    wgURI: "http://www.w3.org/2010/webperf/",
+    wgURI: "https://www.w3.org/2010/webperf/",
     wgPublicList: "public-web-perf",
     subjectPrefix: "[Performance Timeline]",
     format: "markdown",
@@ -47,7 +47,7 @@
         href: 'https://github.com/w3c/performance-timeline/issues'
       }]
     }],
-    wgPatentURI:  "http://www.w3.org/2004/01/pp-impl/45211/status"
+    wgPatentURI:  "https://www.w3.org/2004/01/pp-impl/45211/status"
   };
   </script>
 </head>
@@ -87,7 +87,7 @@
   &lt;head&gt;
   &lt;/head&gt;
   &lt;body onload="init()"&gt;
-    &lt;img id="image0" src="http://www.w3.org/Icons/w3c_main.png" /&gt;
+    &lt;img id="image0" src="https://www.w3.org/Icons/w3c_main.png" /&gt;
     &lt;script&gt;
        function init()
        {
@@ -121,7 +121,7 @@
   &lt;head&gt;
   &lt;/head&gt;
   &lt;body&gt;
-    &lt;img id="image0" src="http://www.w3.org/Icons/w3c_main.png" /&gt;
+    &lt;img id="image0" src="https://www.w3.org/Icons/w3c_main.png" /&gt;
     &lt;script&gt;
     var observer = new PerformanceObserver(function(list) {
       var doneObservingEvents = false;
@@ -225,14 +225,14 @@
         <dt>readonly attribute DOMString name</dt>
         <dd>
           The attribute MUST return a <a href=
-          "http://www.w3.org/TR/WebIDL/#idl-DOMString">DOMString</a> identifier
+          "https://heycam.github.io/webidl/#idl-DOMString">DOMString</a> identifier
           for this <a>PerformanceEntry</a> object. This identifier does not
           have to be unique.
         </dd>
         <dt>readonly attribute DOMString entryType</dt>
         <dd>
           This attribute MUST return the <a href=
-          "http://www.w3.org/TR/WebIDL/#idl-DOMString">DOMString</a> that
+          "https://heycam.github.io/webidl/#idl-DOMString">DOMString</a> that
           describes the type of the interface represented by this
           <a>PerformanceEntry</a> object.
           <p class="note">Valid entryType values are: composite
@@ -282,8 +282,8 @@
         <dt>DOMString initiatorType</dt>
         <dd>
           <a href=
-          "http://www.w3.org/TR/resource-timing/#widl-PerformanceResourceTiming-initiatorType">
-          initiatorType</a> of `PerformanceEntry` object.
+          "https://w3c.github.io/resource-timing/#widl-PerformanceResourceTiming-initiatorType">
+          initiatorType</a> of <a href='https://w3c.github.io/resource-timing/#idl-def-PerformanceResourceTiming'>`PerformanceResourceTiming`</a> object.
         </dd>
       </dl>
       <dl title='partial interface Performance' class='idl'>
@@ -301,10 +301,10 @@
             </li>
             <li>Let the <dfn>set of filter properties</dfn> be a set of pairs
             where the first element is the _name_ of a <a href=
-            "http://www.w3.org/TR/WebIDL/#dfn-dictionary-member">dictionary
+            "https://heycam.github.io/webidl/#dfn-dictionary-member">dictionary
             member</a> of `filter` that is present and the second element is
             the _value_ of that <a href=
-            "http://www.w3.org/TR/WebIDL/#dfn-dictionary-member">dictionary
+            "https://heycam.github.io/webidl/#dfn-dictionary-member">dictionary
             member</a>.
             </li>
             <li>For each <a>PerformanceEntry</a> object
