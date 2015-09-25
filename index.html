@@ -139,11 +139,21 @@
       }
     });
     // subscribe to Frame-Timing and User-Timing events
-    observer.observe({entryTypes: ['render', 'composite', 'mark', 'measure']});
+    observer.observe({entryTypes: ['render', 'frame', 'mark', 'measure']});
     &lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;
 </pre>
+  </section>
+  <section id="conformance">
+  <p>Conformance requirements phrased as algorithms or specific steps may be
+  implemented in any manner, so long as the end result is equivalent. (In
+  particular, the algorithms defined in this specification are intended to be
+  easy to follow, and not intended to be performant.) </p>
+
+  <p>The IDL fragments in this specification must be interpreted as required for
+  <a href='https://heycam.github.io/webidl/#dfn-conforming-idl-fragment'>conforming
+  IDL fragments</a>, as described in the Web IDL specification. [[!WebIDL]]</p>
   </section>
   <section>
     <h2><dfn>Performance Timeline</dfn></h2>
