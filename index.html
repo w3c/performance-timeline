@@ -171,9 +171,14 @@
   </section>
   <section>
     <h2><dfn>Performance Timeline</dfn></h2>
-    <p>Each [ECMAScript global environment][es-global] has a <dfn>performance
-    observer task queued flag</dfn> and an associated list of <a>registered
-    performance observer</a> objects which is initially empty.</p>
+    <p>Each [ECMAScript global environment][es-global] has:</p>
+    <ul>
+     <li>a <dfn>performance
+      observer task queued flag</dfn> and an associated list of <a>registered
+      performance observer</a> objects which is initially empty.</li>
+      <li>a <dfn>performance entry buffer</dfn> to store <a>PerformanceEntry</a>
+      objects. It is initially empty.</li>
+    </ul>
     <p>To <dfn>queue a PerformanceEntry</dfn> (<i>new entry</i>), run these
     steps:</p>
     <ol>
@@ -324,7 +329,7 @@ typedef sequence&lt;PerformanceEntry> PerformanceEntryList;</pre>
         the _value_ of that [dictionary member].
         </li>
         <li>For each <a>PerformanceEntry</a> object
-        (<dfn>entryObject</dfn>) associated with the [context object], in
+        (<dfn>entryObject</dfn>) in the <a>performance entry buffer</a>, in
         chronological order with respect to <a for=
         "PerformanceEntry">startTime</a>:
         <ol>
