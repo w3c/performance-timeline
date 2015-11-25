@@ -9,6 +9,7 @@
   <script class='remove'>
   var respecConfig = {
     shortName: "performance-timeline-2",
+    useExperimentalStyles: true,
     specStatus: "ED",
     edDraftURI: "https://w3c.github.io/performance-timeline/",
     // publishDate: "2013-10-23",
@@ -116,10 +117,12 @@
            var perfEntries = performance.getEntries();
            for (var i = 0; i &lt; perfEntries.length; i++)
            {
-                 if (window.console) console.log("Name: "        + perfEntries[i].name      +
-                                                 " Entry Type: " + perfEntries[i].entryType +
-                                                 " Start Time: " + perfEntries[i].startTime +
-                                                 " Duration: "   + perfEntries[i].duration  + "\n");
+                 if (window.console) {
+                   console.log("Name: "        + perfEntries[i].name      +
+                               " Entry Type: " + perfEntries[i].entryType +
+                               " Start Time: " + perfEntries[i].startTime +
+                               " Duration: "   + perfEntries[i].duration  + "\n");
+                 }
            }
        }
     &lt;/script&gt;
@@ -143,10 +146,12 @@
       var perfEntries = list.getEntries();
       for (var i = 0; i &lt; perfEntries.length; i++)
       {
-           if (window.console) console.log("Name: "        + perfEntries[i].name      +
-                                           " Entry Type: " + perfEntries[i].entryType +
-                                           " Start Time: " + perfEntries[i].startTime +
-                                           " Duration: "   + perfEntries[i].duration  + "\n");
+           if (window.console) {
+             console.log("Name: "        + perfEntries[i].name      +
+                         " Entry Type: " + perfEntries[i].entryType +
+                         " Start Time: " + perfEntries[i].startTime +
+                         " Duration: "   + perfEntries[i].duration  + "\n");
+           }
       }
       // maybe disconnect after processing the events.
       if (doneObservingEvents) {
@@ -395,7 +400,8 @@ interface PerformanceObserverEntryList {
   PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type);
 };
 
-callback PerformanceObserverCallback = void (PerformanceObserverEntryList entries, PerformanceObserver observer);
+callback PerformanceObserverCallback = void (PerformanceObserverEntryList entries,
+                                             PerformanceObserver observer);
 
 [Constructor(PerformanceObserverCallback callback), Exposed=(Window,Worker)]
 interface PerformanceObserver {
