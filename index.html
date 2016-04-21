@@ -129,10 +129,9 @@
   &lt;/body&gt;
 &lt;/html&gt;
 </pre>
-    <p>Alternatively, instead of processing metrics at a predefined time, or
-    having to periodically poll the timeline for new metrics, the developer may
-    also observe the <a>Performance Timeline</a> and be notified of new
-    performance metrics via a <a>PerformanceObserver</a> object:</p>
+    <p>Alternatively, the developer can observe the <a>Performance Timeline</a>
+    and be notified of new performance metrics via the
+    <a>PerformanceObserver</a> interface:</p>
     <pre class="highlight example">
 &lt;!doctype html&gt;
 &lt;html&gt;
@@ -164,6 +163,19 @@
   &lt;/body&gt;
 &lt;/html&gt;
 </pre>
+  <p>The <a>PerformanceObserver</a> interface was added in Performance
+  Timeline Level 2 and is designed to address limitations of the buffer-based
+  approach shown in the first example. By using the PerformanceObserver
+  interface, the application can:</p>
+  <ul>
+    <li>Avoid polling the timeline to detect new metrics
+    <li>Eliminate costly deduplication logic to identify new metrics
+    <li>Eliminate race conditions with other consumers that may want to
+    manipulate the buffer
+  </ul>
+  <p>The developer is encouraged to use <a>PerformanceObserver</a> where
+  possible. Further, new performance API's and metrics may only be available
+  through the <a>PerformanceObserver</a> interface.</p>
   </section>
   <section id="conformance">
   <p>Conformance requirements phrased as algorithms or specific steps may be
