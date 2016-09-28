@@ -355,11 +355,11 @@ typedef sequence&lt;PerformanceEntry> PerformanceEntryList;</pre>
           properties</a>:
             <ol>
               <li>If the <a>entryObject</a> does not contain an attribute
-              whose name matches _name_, go to next <a>entryObject</a>.
+              whose name matches _name_ in a [case-sensitive] manner, go to next <a>entryObject</a>.
               </li>
               <li>Otherwise, if the <a>entryObject</a> contains an
-              attribute whose name matches _name_, and its value does not
-              match _value_, go to next <a>entryObject</a>.
+              attribute whose name matches _name_ in a [case-sensitive] manner, and its value does not
+              match _value_ in a [case-sensitive] manner, go to next <a>entryObject</a>.
               </li>
             </ol>
           </li>
@@ -490,6 +490,7 @@ interface PerformanceObserver {
 [queue a task]: https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task
 [task queue]: https://html.spec.whatwg.org/multipage/webappapis.html#task-queue
 [report the exception]: https://html.spec.whatwg.org/multipage/webappapis.html#report-the-exception
+[case-sensitive]: https://html.spec.whatwg.org/multipage/infrastructure.html#case-sensitive
 [conforming IDL fragments]: https://heycam.github.io/webidl/#dfn-conforming-idl-fragment
 [es-global]: https://heycam.github.io/webidl/#es-environment
 [dictionary member]: https://heycam.github.io/webidl/#dfn-dictionary-member
