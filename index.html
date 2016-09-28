@@ -75,10 +75,8 @@
     performance metric data.</p>
   </section>
   <section id='sotd'>
-    <p>This new version is aligned with [[HR-TIME-2]] and introduces <a data-lt=
-    'PerformanceEntryFilterOptions'>filtering</a> and
-    <a data-lt='PerformanceObserver'>performance
-    observers</a>.</p>
+    <p>This new version is aligned with [[HR-TIME-2]] and introduces support for
+    <a data-lt='PerformanceObserver'>performance observers</a>.</p>
     <p>This is a <strong>work in progress</strong> and may change without any
     notices.</p>
   </section>
@@ -158,8 +156,8 @@
            observer.disconnect();
       }
     });
-    // subscribe to Frame-Timing and User-Timing events
-    observer.observe({entryTypes: ['frame', 'mark', 'measure']});
+    // subscribe to Resource-Timing and User-Timing events
+    observer.observe({entryTypes: ['resource', 'mark', 'measure']});
     &lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;
@@ -279,8 +277,7 @@ interface PerformanceEntry {
         <a>PerformanceEntry</a> object.
         <p class="note">Valid entryType values are: <code>"mark</code> [[USER-TIMING]],
         <code>"measure"</code> [[USER-TIMING]], <code>"navigation"</code> [[NAVIGATION-TIMING-2]],
-        <code>"frame"</code> [[FRAME-TIMING]], <code>"resource"</code> [[RESOURCE-TIMING]],
-        <code>"server"</code> [[SERVER-TIMING]].</p>
+        <code>"resource"</code> [[RESOURCE-TIMING]].</p>
       </p>
       <p>
         The <dfn for="PerformanceEntry">startTime</dfn> attribute MUST return
@@ -303,85 +300,31 @@ interface PerformanceEntry {
       interface [[!HR-TIME-2]] and hosts performance related attributes and
       methods used to retrieve the performance metric data from the
       <a>Performance Timeline</a>.</p>
-      <pre class="idl">dictionary PerformanceEntryFilterOptions {
-             DOMString name;
-             DOMString entryType;
-             DOMString initiatorType;
-};</pre>
-      <p>
-        The <dfn for="PerformanceEntryFilterOptions">name</dfn> dictionary
-        member filters the <a for="PerformanceEntry">name</a> of
-        <a>PerformanceEntry</a> object.
-      </p>
-      <p>
-        The <dfn for="PerformanceEntryFilterOptions">entryType</dfn> dictionary
-        member filters the <a for="PerformanceEntry">entryType</a> of
-        <a>PerformanceEntry</a> object.
-      </p>
-      <p>
-        The <dfn for="PerformanceEntryFilterOptions">initiatorType</dfn>
-        dictionary member filters the <code>[initiatorType]</code> of
-        `[PerformanceResourceTiming]` object.
-      </p>
       <pre class="idl">partial interface Performance {
-    PerformanceEntryList getEntries (optional PerformanceEntryFilterOptions filter);
+    PerformanceEntryList getEntries ();
     PerformanceEntryList getEntriesByType (DOMString type);
     PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type);
 };
 typedef sequence&lt;PerformanceEntry> PerformanceEntryList;</pre>
       <p>
         The <dfn for="Performance">getEntries</dfn>
-        method returns a <a>PerformanceEntryList</a> object that
-        contains a list of <a>PerformanceEntry</a> objects, sorted in
-        chronological order with respect to <a for=
-        "PerformanceEntry">startTime</a>, that match the
-        following criteria:
-      </p>
-      <ol>
-        <li>Let the <dfn>list of entry objects</dfn> be the empty
-        <a>PerformanceEntryList</a>.
-        </li>
-        <li>Let the <dfn>set of filter properties</dfn> be a set of pairs
-        where the first element is the _name_ of a [dictionary member] of
-        `filter` that is present and the second element is
-        the _value_ of that [dictionary member].
-        </li>
-        <li>For each <a>PerformanceEntry</a> object
-        (<dfn>entryObject</dfn>) in the <a>performance entry buffer</a>, in
-        chronological order with respect to <a for=
-        "PerformanceEntry">startTime</a>:
-        <ol>
-          <li>For each _name_ and _value_ pair in <a>set of filter
-          properties</a>:
-            <ol>
-              <li>If the <a>entryObject</a> does not contain an attribute
-              whose name matches _name_ in a [case-sensitive] manner, go to next <a>entryObject</a>.
-              </li>
-              <li>Otherwise, if the <a>entryObject</a> contains an
-              attribute whose name matches _name_ in a [case-sensitive] manner, and its value does not
-              match _value_ in a [case-sensitive] manner, go to next <a>entryObject</a>.
-              </li>
-            </ol>
-          </li>
-          <li>Add <a>entryObject</a> to the <a>list of entry objects</a>.
-            </li>
-          </ol>
-        </li>
-        <li>Return the <a>list of entry objects</a>.
-        </li>
-      </ol>
+        method returns a <a>PerformanceEntryList</a> object returned by
+        <a href="#filter-performance-entry-buffer-by-name-and-type"></a>
+        algorithm with <var>name</var> and <var>type</var> set to `null`.</p>
       <p>
         The <dfn for="Performance">getEntriesByType</dfn> method
         returns a <a>PerformanceEntryList</a> object returned by
-          <a for='Performance' data-lt='getEntries'>getEntries({'entryType': type})</a>.
+        <a href="#filter-performance-entry-buffer-by-name-and-type"></a>
+        algorithm with <var>name</var> set to `null` and <var>type</var> set to
+        `type`.
       </p>
       <p>
         The <dfn for="Performance">getEntriesByName</dfn> method
         returns a <a>PerformanceEntryList</a> object returned by
-        <a for='Performance' data-lt='getEntries'>getEntries({'name': name})</a>
-        if optional `entryType` is omitted, and
-        <a for='Performance' data-lt='getEntries'>getEntries({'name': name, 'entryType': type})</a>
-        otherwise.
+        <a href="#filter-performance-entry-buffer-by-name-and-type"></a>
+        algorithm with <var>name</var> set to `name` and <var>type</var> set to
+        `null` if optional `entryType` is omitted, and <var>type</var> set to
+        `type` otherwise.
       </p>
     </section>
     <section>
@@ -408,7 +351,7 @@ typedef sequence&lt;PerformanceEntry> PerformanceEntryList;</pre>
 
 [Exposed=(Window,Worker)]
 interface PerformanceObserverEntryList {
-  PerformanceEntryList getEntries (optional PerformanceEntryFilterOptions filter);
+  PerformanceEntryList getEntries ();
   PerformanceEntryList getEntriesByType (DOMString type);
   PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type);
 };
@@ -479,6 +422,34 @@ interface PerformanceObserver {
         global environment of the interface object][es-global], and also
         empty [context object]'s <a>observer buffer</a>.
       </p>
+    </section>
+  </section>
+  <section>
+    <h2>Processing</h2>
+    <section>
+      <h2>Filter <a>performance entry buffer</a> by <var>name</var> and <var>type</var></h2>
+      <p>Given optional <var>name</var> and <var>type</var> string values this
+      algorithm returns a <a>PerformanceEntryList</a> object that contains a
+      list of <a>PerformanceEntry</a> objects, sorted in chronological order
+      with respect to <a for="PerformanceEntry">startTime</a>.</p>
+
+      <ol>
+        <li>Let the <dfn>list of entry objects</dfn> be the empty
+        <a>PerformanceEntryList</a>.</li>
+        <li>For each <a>PerformanceEntry</a> object (<dfn>entryObject</dfn>)
+        in the <a>performance entry buffer</a>, in chronological order with
+        respect to <a for="PerformanceEntry">startTime</a>:</li>
+        <ol>
+          <li>If <var>name</var> is not `null` and <a>entryObject</a>'s `name`
+          attribute does not match <var>name</var> in a [case-sensitive] manner,
+          go to next <a>entryObject</a>.</li>
+          <li>If <var>type</var> is not `null` and <a>entryObject</a>'s `type`
+          attribute does not match <var>type</var> in a [case-sensitive] manner,
+          go to next <a>entryObject</a>.</li>
+          <li>Add <a>entryObject</a> to the <a>list of entry objects</a>.</li>
+        </ol>
+        <li>Return the <a>list of entry objects</a>.</li>
+      <ol>
     </section>
   </section>
 </body>
