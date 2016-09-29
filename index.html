@@ -438,7 +438,7 @@ interface PerformanceObserver {
         <a>PerformanceEntryList</a>.</li>
         <li>For each <a>PerformanceEntry</a> object (<dfn>entryObject</dfn>)
         in the <a>performance entry buffer</a>, in chronological order with
-        respect to <a for="PerformanceEntry">startTime</a>:</li>
+        respect to <a for="PerformanceEntry">startTime</a>:
         <ol>
           <li>If <var>name</var> is not `null` and <a>entryObject</a>'s `name`
           attribute does not match <var>name</var> in a [case-sensitive] manner,
@@ -448,6 +448,7 @@ interface PerformanceObserver {
           go to next <a>entryObject</a>.</li>
           <li>Add <a>entryObject</a> to the <a>list of entry objects</a>.</li>
         </ol>
+        </li>
         <li>Return the <a>list of entry objects</a>.</li>
       <ol>
     </section>
