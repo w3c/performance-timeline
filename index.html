@@ -46,7 +46,7 @@
         href: 'https://github.com/w3c/performance-timeline/commits/gh-pages/index.html'
       }, {
         value: 'File a bug',
-        href: 'https://github.com/w3c/performance-timeline/issues'
+        href: 'https://github.com/w3c/performance-timeline/issues?q=milestone:%22Level%202%22'
       }]
     },{
       key: 'Mailing list',
@@ -75,10 +75,12 @@
     performance metric data.</p>
   </section>
   <section id='sotd'>
-    <p>This new version is aligned with [[HR-TIME-2]] and introduces support for
-    <a data-lt='PerformanceObserver'>performance observers</a>.</p>
-    <p>This is a <strong>work in progress</strong> and may change without any
-    notices.</p>
+    <p>Performance Timeline Level 2 replaces the first version of [[PERFORMANCE-TIMELINE]] and includes:</p>
+    <ul>
+      <li>Extends the base definition of the <a>Performance</a> interface defined by [[HR-TIME-2]];</li>
+      <li>Exposes <a>PerformanceEntry</a> in Web Workers [[WORKERS]];
+      <li>Adds support for <a data-lt='PerformanceObserver'>performance observers</a>.</li>
+    </ul>
   </section>
   <section class='informative'>
     <h2>Introduction</h2>
