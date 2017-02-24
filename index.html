@@ -89,7 +89,7 @@
     defines the necessary <a>Performance Timeline</a> primitives that enable
     web developers to access, instrument, and retrieve various performance
     metrics from the full lifecycle of a web application.</p>
-    <p>[[NAVIGATION-TIMING-2]], [[RESOURCE-TIMING]], and [[USER-TIMING]] are
+    <p>[[NAVIGATION-TIMING-2]], [[RESOURCE-TIMING-2]], and [[USER-TIMING-2]] are
     examples of specifications that define timing information related to the
     navigation of the document, resources on the page, and developer scripts,
     respectively. Together these and other performance interfaces define
@@ -108,7 +108,7 @@
     &lt;script&gt;
        function init()
        {
-            performance.mark("startWork"); // see [<a href='#bib-USER-TIMING'>USER-TIMING</a>]
+            performance.mark("startWork"); // see [<a href='#bib-USER-TIMING'>USER-TIMING-2</a>]
             doWork(); // Some developer code
             performance.mark("endWork");
             measurePerf();
@@ -278,9 +278,9 @@ interface PerformanceEntry {
         The <dfn for='PerformanceEntry'>entryType</dfn> attribute MUST return
         the type of the interface represented by this
         <a>PerformanceEntry</a> object.
-        <p class="note">Valid entryType values are: <code>"mark</code> [[USER-TIMING]],
-        <code>"measure"</code> [[USER-TIMING]], <code>"navigation"</code> [[NAVIGATION-TIMING-2]],
-        <code>"resource"</code> [[RESOURCE-TIMING]].</p>
+        <p class="note">Valid entryType values are: <code>"mark</code> [[USER-TIMING-2]],
+        <code>"measure"</code> [[USER-TIMING-2]], <code>"navigation"</code> [[NAVIGATION-TIMING-2]],
+        <code>"resource"</code> [[RESOURCE-TIMING-2]].</p>
       </p>
       <p>
         The <dfn for="PerformanceEntry">startTime</dfn> attribute MUST return
