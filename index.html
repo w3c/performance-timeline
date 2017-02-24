@@ -278,9 +278,13 @@ interface PerformanceEntry {
         The <dfn for='PerformanceEntry'>entryType</dfn> attribute MUST return
         the type of the interface represented by this
         <a>PerformanceEntry</a> object.
-        <p class="note">Valid entryType values are: <code>"mark</code> [[USER-TIMING-2]],
-        <code>"measure"</code> [[USER-TIMING-2]], <code>"navigation"</code> [[NAVIGATION-TIMING-2]],
-        <code>"resource"</code> [[RESOURCE-TIMING-2]].</p>
+        <p class="note">Example `entryType` values defined by other
+        specifications include:
+        <code>"mark"</code> and <code>"measure"</code> [[USER-TIMING-2]],
+        <code>"navigation"</code> [[NAVIGATION-TIMING-2]],
+        <code>"resource"</code> [[RESOURCE-TIMING-2]],
+        <!-- TODO: add long task spec reference -->
+        and <code>"longtask"</code>.</p>
       </p>
       <p>
         The <dfn for="PerformanceEntry">startTime</dfn> attribute MUST return
