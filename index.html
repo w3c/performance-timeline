@@ -437,8 +437,9 @@ interface PerformanceObserver {
       <h2>Filter <a>performance entry buffer</a> by <var>name</var> and <var>type</var></h2>
       <p>Given optional <var>name</var> and <var>type</var> string values this
       algorithm returns a <a>PerformanceEntryList</a> object that contains a
-      list of <a>PerformanceEntry</a> objects, sorted in chronological order
-      with respect to <a for="PerformanceEntry">startTime</a>.</p>
+      list of <a>PerformanceEntry</a> objects sorted in chronological order
+      with respect to <a for="PerformanceEntry">startTime</a>; objects with the
+      same <a for="PerformanceEntry">startTime</a> have unspecified ordering.</p>
 
       <ol>
         <li>Let the <dfn>list of entry objects</dfn> be the empty
