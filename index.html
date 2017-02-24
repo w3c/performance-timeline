@@ -400,6 +400,12 @@ interface PerformanceObserver {
           entryType names</a> within the `entryTypes` sequence, and replace
           the `entryTypes` sequence with the new filtered sequence.
         </li>
+        <p class="note">In some cases the developer may want to distinguish
+        between absence and lack of support for a particular type of entry. In
+        such cases they can feature detect the presense of the relevant
+        interface—e.g. to detect if User Timing entries are supported, the
+        developer can test for `PerformanceMark` and `PerformanceMeasure`
+        interfaces.</p>
         <li>If the _options'_ <a for="PerformanceObserverInit">entryTypes</a>
         attribute is an empty sequence,
         [throw] a
