@@ -205,10 +205,8 @@
       </li>
       <li>For each <a>registered performance observer</a> (<i>observer</i>):
         <ol>
-          <li>If <i>observer</i>'s <a>PerformanceObserverInit</a> <a for=
-          "PerformanceObserverInit">entryTypes</a> includes
-          <i>new entry</i>’s <a for=
-          "PerformanceEntry">entryType</a> value, append
+          <li>If <i>observer</i>'s <a>PerformanceObserverInit</a> <a data-dfn-for="PerformanceObserverInit">entryTypes</a> includes
+          <i>new entry</i>’s <a data-dfn-for="PerformanceEntry">entryType</a> value, append
           <i>observer</i> to <i>interested observers</i>.
           </li>
         </ol>
@@ -270,12 +268,12 @@ interface PerformanceEntry {
     serializer = {attribute};
 };</pre>
       <p>
-        The <dfn for='PerformanceEntry'>name</dfn> attribute MUST return an
+        The <dfn data-dfn-for='PerformanceEntry'>name</dfn> attribute MUST return an
         identifier for this <a>PerformanceEntry</a> object. This identifier does
         not have to be unique.
       </p>
       <p>
-        The <dfn for='PerformanceEntry'>entryType</dfn> attribute MUST return
+        The <dfn data-dfn-for='PerformanceEntry'>entryType</dfn> attribute MUST return
         the type of the interface represented by this
         <a>PerformanceEntry</a> object.
         <p class="note">Example `entryType` values defined by other
@@ -285,14 +283,13 @@ interface PerformanceEntry {
         <code>"resource"</code> [[RESOURCE-TIMING-2]],
         <!-- TODO: add long task spec reference -->
         and <code>"longtask"</code>.</p>
-      </p>
       <p>
-        The <dfn for="PerformanceEntry">startTime</dfn> attribute MUST return
+        The <dfn data-dfn-for="PerformanceEntry">startTime</dfn> attribute MUST return
         the time value of the first recorded timestamp of this
         performance metric.
       </p>
       <p>
-        The <dfn for='PerformanceEntry'>duration</dfn> attribute MUST return the
+        The <dfn data-dfn-for='PerformanceEntry'>duration</dfn> attribute MUST return the
         time value of the duration of the entire event
         being recorded by this <a>PerformanceEntry</a>. Typically, this would
         be the time difference between the last recorded timestamp and the
@@ -314,19 +311,19 @@ interface PerformanceEntry {
 };
 typedef sequence&lt;PerformanceEntry> PerformanceEntryList;</pre>
       <p>
-        The <dfn for="Performance">getEntries</dfn>
+        The <dfn data-dfn-for="Performance">getEntries</dfn>
         method returns a <a>PerformanceEntryList</a> object returned by
         <a href="#filter-performance-entry-buffer-by-name-and-type"></a>
         algorithm with <var>name</var> and <var>type</var> set to `null`.</p>
       <p>
-        The <dfn for="Performance">getEntriesByType</dfn> method
+        The <dfn data-dfn-for="Performance">getEntriesByType</dfn> method
         returns a <a>PerformanceEntryList</a> object returned by
         <a href="#filter-performance-entry-buffer-by-name-and-type"></a>
         algorithm with <var>name</var> set to `null` and <var>type</var> set to
         `type`.
       </p>
       <p>
-        The <dfn for="Performance">getEntriesByName</dfn> method
+        The <dfn data-dfn-for="Performance">getEntriesByName</dfn> method
         returns a <a>PerformanceEntryList</a> object returned by
         <a href="#filter-performance-entry-buffer-by-name-and-type"></a>
         algorithm with <var>name</var> set to `name` and <var>type</var> set to
@@ -372,8 +369,7 @@ interface PerformanceObserver {
   void disconnect ();
 };</pre>
       <p>
-        <dfn>PerformanceObserverInit.entryTypes</dfn> is a list of valid <a for=
-        "PerformanceEntry">entryType</a> names to be
+        <dfn>PerformanceObserverInit.entryTypes</dfn> is a list of valid <a data-dfn-for="PerformanceEntry">entryType</a> names to be
         observed. The list MUST NOT be empty and types not recognized by
         the user agent MUST be ignored.</p>
       <p class="note">To keep the performance overhead to minimum the
@@ -385,26 +381,25 @@ interface PerformanceObserver {
         generate a significant volume of events.
       </p>
       <p>The <a>PerformanceObserverEntryList</a> interface provides the same
-        <a for='Performance'>getEntries</a>, <a for='Performance'>getEntriesByType</a>,
-        <a for='Performance'>getEntriesByName</a> methods as the
+        <a data-dfn-for='Performance'>getEntries</a>, <a data-dfn-for='Performance'>getEntriesByType</a>,
+        <a data-dfn-for='Performance'>getEntriesByName</a> methods as the
         <a>Performance</a> interface, except that
         <a>PerformanceObserverEntryList</a> operates on the observed emitted
         list of events instead of the global timeline.</p>
       <p>
-        The <dfn for='PerformanceObserver'>observe</dfn> method instructs the
+        The <dfn data-dfn-for='PerformanceObserver'>observe</dfn> method instructs the
         user agent to <dfn>register the observer</dfn> and must run these
         steps:
       </p>
       <ol>
-        <li>If _options'_ <a for="PerformanceObserverInit">entryTypes</a>
+        <li>If _options'_ <a data-dfn-for="PerformanceObserverInit">entryTypes</a>
         attribute is not present, [throw] a JavaScript
         `TypeError`.
         </li>
-        <li>Filter unsupported <a for="PerformanceEntry">entryType</a>
-          entryType names</a> within the `entryTypes` sequence, and replace
+        <li>Filter unsupported <a data-dfn-for="PerformanceEntry">entryType</a> names within the `entryTypes` sequence, and replace
           the `entryTypes` sequence with the new filtered sequence.
         </li>
-        <li>If the _options'_ <a for="PerformanceObserverInit">entryTypes</a>
+        <li>If the _options'_ <a data-dfn-for="PerformanceObserverInit">entryTypes</a>
         attribute is an empty sequence,
         [throw] a
         JavaScript `TypeError`.
@@ -423,7 +418,7 @@ interface PerformanceObserver {
         </li>
       </ol>
       <p>
-        The <dfn for='PerformanceObserver'>disconnect</dfn> method must
+        The <dfn data-dfn-for='PerformanceObserver'>disconnect</dfn> method must
         remove the [context object] from the list of
         <a>PerformanceObserver</a> objects associated with the [ECMAScript
         global environment of the interface object][es-global], and also
@@ -438,15 +433,15 @@ interface PerformanceObserver {
       <p>Given optional <var>name</var> and <var>type</var> string values this
       algorithm returns a <a>PerformanceEntryList</a> object that contains a
       list of <a>PerformanceEntry</a> objects sorted in chronological order
-      with respect to <a for="PerformanceEntry">startTime</a>; objects with the
-      same <a for="PerformanceEntry">startTime</a> have unspecified ordering.</p>
+      with respect to <a data-dfn-for="PerformanceEntry">startTime</a>; objects with the
+      same <a data-dfn-for="PerformanceEntry">startTime</a> have unspecified ordering.</p>
 
       <ol>
         <li>Let the <dfn>list of entry objects</dfn> be the empty
         <a>PerformanceEntryList</a>.</li>
         <li>For each <a>PerformanceEntry</a> object (<dfn>entryObject</dfn>)
         in the <a>performance entry buffer</a>, in chronological order with
-        respect to <a for="PerformanceEntry">startTime</a>:
+        respect to <a data-dfn-for="PerformanceEntry">startTime</a>:
         <ol>
           <li>If <var>name</var> is not `null` and <a>entryObject</a>'s `name`
           attribute does not match <var>name</var> in a [case-sensitive] manner,
@@ -487,6 +482,7 @@ interface PerformanceObserver {
 </html>
 
 <!-- preserve before running Tidy -->
+<!--
 [context object]: https://dom.spec.whatwg.org/#context-object
 [task source]: https://html.spec.whatwg.org/multipage/webappapis.html#task-source
 [queue a task]: https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task
@@ -501,3 +497,4 @@ interface PerformanceObserver {
 [Performance]: https://w3c.github.io/hr-time/#idl-def-Performance
 [initiatorType]: https://w3c.github.io/resource-timing/#widl-PerformanceResourceTiming-initiatorType
 [PerformanceResourceTiming]: https://w3c.github.io/resource-timing/#idl-def-PerformanceResourceTiming
+-->
