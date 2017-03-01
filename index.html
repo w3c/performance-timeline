@@ -400,12 +400,6 @@ interface PerformanceObserver {
           entryType names</a> within the `entryTypes` sequence, and replace
           the `entryTypes` sequence with the new filtered sequence.
         </li>
-        <p class="note">In some cases the developer may want to distinguish
-        between absence and lack of support for a particular type of entry. In
-        such cases they can feature detect the presense of the relevant
-        interface—e.g. to detect if User Timing entries are supported, the
-        developer can test for `PerformanceMark` and `PerformanceMeasure`
-        interfaces.</p>
         <li>If the _options'_ <a for="PerformanceObserverInit">entryTypes</a>
         attribute is an empty sequence,
         [throw] a
@@ -424,6 +418,15 @@ interface PerformanceObserver {
         `observer` and <var>options</var> as the `options`.
         </li>
       </ol>
+      <p class="note">
+        In some cases developers may want to distinguish between the absence
+        of an entry in the timeline and lack of support for that entry, or may
+        want to conditionally create alternative measurements for unsupported
+        entry types. In such cases they can feature-detect the presence of the
+        relevant interface—e.g. to detect if User Timing entries are
+        supported, the developer can test for `PerformanceMark` and
+        `PerformanceMeasure` constructors.
+      </p>
       <p>
         The <dfn for='PerformanceObserver'>disconnect</dfn> method must
         remove the [context object] from the list of
@@ -467,7 +470,7 @@ interface PerformanceObserver {
     <p>This specification extends the <a>Performance</a> interface defined by
     [[HR-TIME-2]] and provides methods to queue and retrieve entries from the
     <a>performance timeline</a>. Please refer to [[HR-TIME-2]] for privacy and
-    security considerations of exposing high-resoluting timing information.</p>
+    security considerations of exposing high-resolution timing information.</p>
   </section>
   <section class="appendix">
     <h2>Acknowledgments</h2>
