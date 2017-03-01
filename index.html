@@ -278,6 +278,7 @@ interface PerformanceEntry {
         The <dfn for='PerformanceEntry'>entryType</dfn> attribute MUST return
         the type of the interface represented by this
         <a>PerformanceEntry</a> object.
+      </p>
         <p class="note">Example `entryType` values defined by other
         specifications include:
         <code>"mark"</code> and <code>"measure"</code> [[USER-TIMING-2]],
@@ -285,7 +286,6 @@ interface PerformanceEntry {
         <code>"resource"</code> [[RESOURCE-TIMING-2]],
         <!-- TODO: add long task spec reference -->
         and <code>"longtask"</code>.</p>
-      </p>
       <p>
         The <dfn for="PerformanceEntry">startTime</dfn> attribute MUST return
         the time value of the first recorded timestamp of this
@@ -400,8 +400,7 @@ interface PerformanceObserver {
         attribute is not present, [throw] a JavaScript
         `TypeError`.
         </li>
-        <li>Filter unsupported <a for="PerformanceEntry">entryType</a>
-          entryType names</a> within the `entryTypes` sequence, and replace
+        <li>Filter unsupported <a for="PerformanceEntry">entryType</a> names within the `entryTypes` sequence, and replace
           the `entryTypes` sequence with the new filtered sequence.
         </li>
         <li>If the _options'_ <a for="PerformanceObserverInit">entryTypes</a>
