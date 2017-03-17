@@ -318,9 +318,6 @@
       <p>The <dfn>observe()</dfn> method instructs the user agent to
       <dfn>register the observer</dfn> and must run these steps:</p>
       <ol data-link-for="PerformanceObserverInit">
-        <li>If _options'_ <a>entryTypes</a> attribute is not present,
-        <a>throw</a> a JavaScript `TypeError`.
-        </li>
         <li>Filter unsupported names within the `entryTypes` sequence, and
         replace the `entryTypes` sequence with the new filtered sequence.</li>
         <li>If the _options'_ <a>entryTypes</a> attribute is an empty sequence,
