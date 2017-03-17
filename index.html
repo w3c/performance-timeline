@@ -3,9 +3,8 @@
 <head>
   <title>Performance Timeline Level 2</title>
   <meta charset='utf-8'>
-  <script src='//www.w3.org/Tools/respec/respec-w3c-common' async class=
-  'remove'>
-  </script>
+  <script src='https://www.w3.org/Tools/respec/respec-w3c-common' async class=
+  'remove'></script>
   <script class='remove'>
   var respecConfig = {
     shortName: "performance-timeline-2",
@@ -75,11 +74,17 @@
     performance metric data.</p>
   </section>
   <section id='sotd'>
-    <p>Performance Timeline Level 2 replaces the first version of [[PERFORMANCE-TIMELINE]] and includes:</p>
+    <p>Performance Timeline Level 2 replaces the first version of
+    [[PERFORMANCE-TIMELINE]] and includes:</p>
     <ul>
-      <li>Extends the base definition of the <a>Performance</a> interface defined by [[HR-TIME-2]];</li>
+      <li>Extends the base definition of the <a>Performance</a> interface
+      defined by [[HR-TIME-2]];
+      </li>
       <li>Exposes <a>PerformanceEntry</a> in Web Workers [[WORKERS]];
-      <li>Adds support for <a data-lt='PerformanceObserver'>performance observers</a>.</li>
+      </li>
+      <li>Adds support for <a data-lt='PerformanceObserver'>performance
+      observers</a>.
+      </li>
     </ul>
   </section>
   <section class='informative'>
@@ -89,113 +94,107 @@
     defines the necessary <a>Performance Timeline</a> primitives that enable
     web developers to access, instrument, and retrieve various performance
     metrics from the full lifecycle of a web application.</p>
-    <p>[[NAVIGATION-TIMING-2]], [[RESOURCE-TIMING-2]], and [[USER-TIMING-2]] are
-    examples of specifications that define timing information related to the
-    navigation of the document, resources on the page, and developer scripts,
-    respectively. Together these and other performance interfaces define
-    performance metrics that describe the <a>Performance Timeline</a> of a web
-    application. For example, the following script shows how a developer can
-    access the <a>Performance Timeline</a> to obtain performance metrics
+    <p>[[NAVIGATION-TIMING-2]], [[RESOURCE-TIMING-2]], and [[USER-TIMING-2]]
+    are examples of specifications that define timing information related to
+    the navigation of the document, resources on the page, and developer
+    scripts, respectively. Together these and other performance interfaces
+    define performance metrics that describe the <a>Performance Timeline</a> of
+    a web application. For example, the following script shows how a developer
+    can access the <a>Performance Timeline</a> to obtain performance metrics
     related to the navigation of the document, resources on the page, and
     developer scripts:</p>
-    <pre class="highlight example">
-&lt;!doctype html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-  &lt;/head&gt;
-  &lt;body onload="init()"&gt;
-    &lt;img id="image0" src="https://www.w3.org/Icons/w3c_main.png" /&gt;
-    &lt;script&gt;
-       function init()
-       {
-            performance.mark("startWork"); // see [<a href='#bib-USER-TIMING'>USER-TIMING-2</a>]
+    <pre class="example html">
+      &lt;!doctype html&gt;
+      &lt;html&gt;
+      &lt;head&gt;&lt;/head&gt;
+      &lt;body onload="init()"&gt;
+        &lt;img id="image0" src="https://www.w3.org/Icons/w3c_main.png" /&gt;
+        &lt;script&gt;
+          function init() {
+            // see [[USER-TIMING-2]]
+            performance.mark("startWork");
             doWork(); // Some developer code
             performance.mark("endWork");
             measurePerf();
-       }
-       function measurePerf()
-       {
-           var perfEntries = performance.getEntries();
-           for (var i = 0; i &lt; perfEntries.length; i++)
-           {
-                 if (window.console) {
-                   console.log("Name: "        + perfEntries[i].name      +
-                               " Entry Type: " + perfEntries[i].entryType +
-                               " Start Time: " + perfEntries[i].startTime +
-                               " Duration: "   + perfEntries[i].duration  + "\n");
-                 }
-           }
-       }
-    &lt;/script&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-</pre>
+          }
+          function measurePerf() {
+            performance
+              .getEntries()
+              .map(entry =&gt; JSON.stringify(entry, null, 2))
+              .forEach(json =&gt; console.log(json));
+          }
+        &lt;/script&gt;
+        &lt;/body&gt;
+      &lt;/html&gt;
+    </pre>
     <p>Alternatively, the developer can observe the <a>Performance Timeline</a>
     and be notified of new performance metrics via the
     <a>PerformanceObserver</a> interface:</p>
-    <pre class="highlight example">
-&lt;!doctype html&gt;
-&lt;html&gt;
-  &lt;head&gt;
-  &lt;/head&gt;
-  &lt;body&gt;
+    <pre class="example">
+    &lt;!doctype html&gt;
+    &lt;html&gt;
+    &lt;head&gt;&lt;/head&gt;
+    &lt;body&gt;
     &lt;img id="image0" src="https://www.w3.org/Icons/w3c_main.png" /&gt;
     &lt;script&gt;
-    var doneObservingEvents = false;
-    var observer = new PerformanceObserver(function(list) {
-      var perfEntries = list.getEntries();
-      for (var i = 0; i &lt; perfEntries.length; i++)
-      {
-           if (window.console) {
-             console.log("Name: "        + perfEntries[i].name      +
-                         " Entry Type: " + perfEntries[i].entryType +
-                         " Start Time: " + perfEntries[i].startTime +
-                         " Duration: "   + perfEntries[i].duration  + "\n");
-           }
-      }
+    const observer = new PerformanceObserver(list =&gt; {
+      list
+        .getEntries()
+        // Get the values we are interested in
+        .map(({ name, entryType, startTime, duration }) =&gt; {
+          const obj = {
+            "Duration": duration,
+            "Entry Type": entryType,
+            "Name": name,
+            "Start Time": startTime,
+          };
+          return JSON.stringify(obj, null, 2);
+        })
+        // Display them to the console
+        .forEach(console.log);
       // maybe disconnect after processing the events.
-      if (doneObservingEvents) {
-           observer.disconnect();
-      }
+      observer.disconnect();
     });
     // subscribe to Resource-Timing and User-Timing events
-    observer.observe({entryTypes: ['resource', 'mark', 'measure']});
+    observer.observe({ entryTypes: ["resource", "mark", "measure"] });
     &lt;/script&gt;
-  &lt;/body&gt;
-&lt;/html&gt;
-</pre>
-  <p>The <a>PerformanceObserver</a> interface was added in Performance
-  Timeline Level 2 and is designed to address limitations of the buffer-based
-  approach shown in the first example. By using the PerformanceObserver
-  interface, the application can:</p>
-  <ul>
-    <li>Avoid polling the timeline to detect new metrics
-    <li>Eliminate costly deduplication logic to identify new metrics
-    <li>Eliminate race conditions with other consumers that may want to
-    manipulate the buffer
-  </ul>
-  <p>The developer is encouraged to use <a>PerformanceObserver</a> where
-  possible. Further, new performance API's and metrics may only be available
-  through the <a>PerformanceObserver</a> interface.</p>
+    &lt;/body&gt;
+    &lt;/html&gt;
+    </pre>
+    <p>The <a>PerformanceObserver</a> interface was added in Performance
+    Timeline Level 2 and is designed to address limitations of the buffer-based
+    approach shown in the first example. By using the PerformanceObserver
+    interface, the application can:</p>
+    <ul>
+      <li>Avoid polling the timeline to detect new metrics</li>
+      <li>Eliminate costly deduplication logic to identify new metrics</li>
+      <li>Eliminate race conditions with other consumers that may want to
+      manipulate the buffer</li>
+    </ul>
+    <p>The developer is encouraged to use <a>PerformanceObserver</a> where
+    possible. Further, new performance API's and metrics may only be available
+    through the <a>PerformanceObserver</a> interface.</p>
   </section>
   <section id="conformance">
-  <p>Conformance requirements phrased as algorithms or specific steps may be
-  implemented in any manner, so long as the end result is equivalent. (In
-  particular, the algorithms defined in this specification are intended to be
-  easy to follow, and not intended to be performant.) </p>
-
-  <p>The IDL fragments in this specification must be interpreted as required for
-  [conforming IDL fragments], as described in the Web IDL specification. [[!WebIDL]]</p>
+    <p>Conformance requirements phrased as algorithms or specific steps may be
+    implemented in any manner, so long as the end result is equivalent. (In
+    particular, the algorithms defined in this specification are intended to be
+    easy to follow, and not intended to be performant.)</p>
+    <p>The IDL fragments in this specification must be interpreted as required
+    for [conforming IDL fragments], as described in the Web IDL specification.
+    [[!WebIDL]]</p>
   </section>
   <section>
     <h2><dfn>Performance Timeline</dfn></h2>
-    <p>Each [ECMAScript global environment][es-global] has:</p>
+    <p>Each <a>ECMAScript global environment</a> has:</p>
     <ul>
-     <li>a <dfn>performance
-      observer task queued flag</dfn> and an associated list of <a>registered
-      performance observer</a> objects which is initially empty.</li>
-      <li>a <dfn>performance entry buffer</dfn> to store <a>PerformanceEntry</a>
-      objects. It is initially empty.</li>
+      <li>a <dfn>performance observer task queued flag</dfn> and an associated
+      list of <a>registered performance observer</a> objects which is initially
+      empty.
+      </li>
+      <li>a <dfn>performance entry buffer</dfn> to store
+      <a>PerformanceEntry</a> objects. It is initially empty.
+      </li>
     </ul>
     <p>To <dfn>queue a PerformanceEntry</dfn> (<i>new entry</i>), run these
     steps:</p>
@@ -205,11 +204,10 @@
       </li>
       <li>For each <a>registered performance observer</a> (<i>observer</i>):
         <ol>
-          <li>If <i>observer</i>'s <a>PerformanceObserverInit</a> <a for=
-          "PerformanceObserverInit">entryTypes</a> includes
-          <i>new entry</i>’s <a for=
-          "PerformanceEntry">entryType</a> value, append
-          <i>observer</i> to <i>interested observers</i>.
+          <li>If <i>observer</i>'s <a>PerformanceObserverInit</a> <a data-lt=
+          "PerformanceObserverInit.entryTypes">entryTypes</a> includes <i>new
+          entry</i>’s <a data-lt="PerformanceEntry.entryType">entryType</a>
+          value, append <i>observer</i> to <i>interested observers</i>.
           </li>
         </ol>
       </li>
@@ -225,15 +223,15 @@
       <li>Set <a>performance observer task queued flag</a>.
       </li>
       <li>
-        [Queue a task] that consists of running the following substeps. The
-        [task source] for the queued task is the <i>performance timeline</i>
-        task source.
+        <a>Queue a task</a> that consists of running the following substeps.
+        The <a>task source</a> for the queued task is the <i>performance
+        timeline</i> task source.
         <ol>
           <li>Unset <a>performance observer task queued flag</a>.
           </li>
-          <li>Let <i>notify list</i> be a copy of [ECMAScript global
-          environment][es-global]'s list of <a>registered performance
-          observer</a> objects.
+          <li>Let <i>notify list</i> be a copy of <a>ECMAScript global
+          environment</a>'s list of <a>registered performance observer</a>
+          objects.
           </li>
           <li>For each <a>PerformanceObserver</a> object <i>po</i> in <i>notify
           list</i>, run these steps:
@@ -245,267 +243,270 @@
               </li>
               <li>If <i>entries</i> is non-empty, call <i>po</i>’s callback
               with <i>entries</i> as first argument and <i>po</i> as the second
-              argument and [callback this value]. If this throws an exception,
-              [report the exception].
+              argument and <a>callback this value</a>. If this throws an
+              exception, <a>report the exception</a>.
               </li>
             </ol>
           </li>
         </ol>
       </li>
     </ol>
-    <p>The <i>performance timeline</i> [task
-    queue] is a low priority queue that, if possible, should be processed by
-    the user agent during idle periods to minimize impact of performance
-    monitoring code.</p>
-    <section>
+    <p>The <i>performance timeline</i> <a>task queue</a> is a low priority
+    queue that, if possible, should be processed by the user agent during idle
+    periods to minimize impact of performance monitoring code.</p>
+    <section data-dfn-for="PerformanceEntry" data-link-for="PerformanceEntry">
       <h2>The <dfn>PerformanceEntry</dfn> interface</h2>
       <p>The <a>PerformanceEntry</a> interface hosts the performance data of
       various metrics.</p>
-      <pre class='idl'>[Exposed=(Window,Worker)]
-interface PerformanceEntry {
-    readonly    attribute DOMString           name;
-    readonly    attribute DOMString           entryType;
-    readonly    attribute DOMHighResTimeStamp startTime;
-    readonly    attribute DOMHighResTimeStamp duration;
-    serializer = {attribute};
-};</pre>
-      <p>
-        The <dfn for='PerformanceEntry'>name</dfn> attribute MUST return an
-        identifier for this <a>PerformanceEntry</a> object. This identifier does
-        not have to be unique.
-      </p>
-      <p>
-        The <dfn for='PerformanceEntry'>entryType</dfn> attribute MUST return
-        the type of the interface represented by this
-        <a>PerformanceEntry</a> object.
-      </p>
-        <p class="note">Example `entryType` values defined by other
-        specifications include:
-        <code>"mark"</code> and <code>"measure"</code> [[USER-TIMING-2]],
-        <code>"navigation"</code> [[NAVIGATION-TIMING-2]],
-        <code>"resource"</code> [[RESOURCE-TIMING-2]],
-        <!-- TODO: add long task spec reference -->
-        and <code>"longtask"</code>.</p>
-      <p>
-        The <dfn for="PerformanceEntry">startTime</dfn> attribute MUST return
-        the time value of the first recorded timestamp of this
-        performance metric.
-      </p>
-      <p>
-        The <dfn for='PerformanceEntry'>duration</dfn> attribute MUST return the
-        time value of the duration of the entire event
-        being recorded by this <a>PerformanceEntry</a>. Typically, this would
-        be the time difference between the last recorded timestamp and the
-        first recorded timestamp of this <a>PerformanceEntry</a>. If the
-        duration concept doesn't apply, a performance metric may choose to
-        return a `duration` of <code>0</code>.
-      </p>
+      <pre class='idl'>
+      [Exposed=(Window,Worker)]
+      interface PerformanceEntry {
+        readonly    attribute DOMString           name;
+        readonly    attribute DOMString           entryType;
+        readonly    attribute DOMHighResTimeStamp startTime;
+        readonly    attribute DOMHighResTimeStamp duration;
+        serializer = {attribute};
+      };</pre>
+      <p>The <dfn>name</dfn> attribute MUST return an identifier for this
+      <a>PerformanceEntry</a> object. This identifier does not have to be
+      unique.</p>
+      <p>The <dfn>entryType</dfn> attribute MUST return the type of the
+      interface represented by this <a>PerformanceEntry</a> object.</p>
+      <p class="note">Example `entryType` values defined by other
+      specifications include: <code>"mark"</code> and <code>"measure"</code>
+      [[USER-TIMING-2]], <code>"navigation"</code> [[NAVIGATION-TIMING-2]],
+      <code>"resource"</code> [[RESOURCE-TIMING-2]], 
+      <!-- TODO: add long task spec reference -->
+       and <code>"longtask"</code>.</p>
+      <p>The <dfn>startTime</dfn> attribute MUST return the time value of the
+      first recorded timestamp of this performance metric.</p>
+      <p>The <dfn>duration</dfn> attribute MUST return the time value of the
+      duration of the entire event being recorded by this
+      <a>PerformanceEntry</a>. Typically, this would be the time difference
+      between the last recorded timestamp and the first recorded timestamp of
+      this <a>PerformanceEntry</a>. If the duration concept doesn't apply, a
+      performance metric may choose to return a `duration` of
+      <code>0</code>.</p>
+      <p>As a convenience for developers, instances of <a>PerformanceEntry</a>
+      include a <dfn>serializer</dfn>. When called, attributes are
+      <a data-cite="WEBIDL#dfn-convert-to-serialized-value">converted to
+      serialized values</a> as per [[!WEBIDL]].</p>
     </section>
-    <section>
-      <h2>Extensions to the <dfn>Performance</dfn> interface</h2>
-      <p>This extends the [Performance]
-      interface [[!HR-TIME-2]] and hosts performance related attributes and
-      methods used to retrieve the performance metric data from the
-      <a>Performance Timeline</a>.</p>
-      <pre class="idl">partial interface Performance {
-    PerformanceEntryList getEntries ();
-    PerformanceEntryList getEntriesByType (DOMString type);
-    PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type);
-};
-typedef sequence&lt;PerformanceEntry> PerformanceEntryList;</pre>
-      <p>
-        The <dfn for="Performance">getEntries</dfn>
-        method returns a <a>PerformanceEntryList</a> object returned by
-        <a href="#filter-performance-entry-buffer-by-name-and-type"></a>
-        algorithm with <var>name</var> and <var>type</var> set to `null`.</p>
-      <p>
-        The <dfn for="Performance">getEntriesByType</dfn> method
-        returns a <a>PerformanceEntryList</a> object returned by
-        <a href="#filter-performance-entry-buffer-by-name-and-type"></a>
-        algorithm with <var>name</var> set to `null` and <var>type</var> set to
-        `type`.
-      </p>
-      <p>
-        The <dfn for="Performance">getEntriesByName</dfn> method
-        returns a <a>PerformanceEntryList</a> object returned by
-        <a href="#filter-performance-entry-buffer-by-name-and-type"></a>
-        algorithm with <var>name</var> set to `name` and <var>type</var> set to
-        `null` if optional `entryType` is omitted, and <var>type</var> set to
-        `type` otherwise.
-      </p>
+    <section data-dfn-for="Performance" data-link-for="Performance">
+      <h2>Extensions to the <a>Performance</a> interface</h2>
+      <p>This extends the <a>Performance</a> interface [[!HR-TIME-2]] and hosts
+      performance related attributes and methods used to retrieve the
+      performance metric data from the <a>Performance Timeline</a>.</p>
+      <pre class="idl">
+      partial interface Performance {
+        PerformanceEntryList getEntries ();
+        PerformanceEntryList getEntriesByType (DOMString type);
+        PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type);
+      };
+      typedef sequence&lt;PerformanceEntry&gt; PerformanceEntryList;
+      </pre>
+      <p>The <dfn>PerformanceEntryList</dfn> represents a sequence of
+      <a>PerformanceEntry</a>, providing developers with all the convenience
+      methods found on JavaScript arrays.</p>
+      <p>The <dfn>getEntries()</dfn> method returns a
+      <a>PerformanceEntryList</a> object returned by <a href=
+      "#filter-performance-entry-buffer-by-name-and-type"></a> algorithm with
+      <var>name</var> and <var>type</var> set to `null`.</p>
+      <p>The <dfn>getEntriesByType()</dfn> method returns a
+      <a>PerformanceEntryList</a> object returned by <a href=
+      "#filter-performance-entry-buffer-by-name-and-type"></a> algorithm with
+      <var>name</var> set to `null` and <var>type</var> set to `type`.</p>
+      <p>The <dfn>getEntriesByName()</dfn> method returns a
+      <a>PerformanceEntryList</a> object returned by <a href=
+      "#filter-performance-entry-buffer-by-name-and-type"></a> algorithm with
+      <var>name</var> set to `name` and <var>type</var> set to `null` if
+      optional `entryType` is omitted, and <var>type</var> set to `type`
+      otherwise.</p>
     </section>
-    <section>
-      <h2>The <dfn>PerformanceObserver</dfn> interface</h2>
+    <section data-dfn-for="PerformanceObserverInit" data-link-for=
+    "PerformanceObserverInit">
+      <h2><dfn>PerformanceObserverInit</dfn> dictionary</h2>
+      <pre class="idl">
+      dictionary PerformanceObserverInit {
+        required sequence&lt;DOMString&gt; entryTypes;
+      };
+      </pre>
+      <dl>
+        <dt><dfn>entryTypes</dfn></dt>
+        <dd>A list of entry names to be observed. The list MUST NOT be empty
+        and types not recognized by the user agent MUST be ignored.</dd>
+      </dl>
+    </section>
+    <section data-link-for="PerformanceObserver" data-dfn-for=
+    "PerformanceObserver">
+      <h2><dfn>PerformanceObserver</dfn> interface</h2>
       <p>The <a>PerformanceObserver</a> interface can be used to observe the
       <a>Performance Timeline</a> and be notified of new performance entries as
       they are recorded.</p>
       <p>Each <a>PerformanceObserver</a> has these associated concepts:</p>
       <ul>
-        <li>A <dfn>callback</dfn> set on creation.</li>
+        <li>A <dfn>PerformanceObserverCallback</dfn> set on creation.</li>
         <li>A list of <a>PerformanceEntry</a> objects called the <dfn>observer
         buffer</dfn> that is initially empty.
         </li>
       </ul>
       <p>The `PerformanceObserver(callback)` constructor must create a new
-      <a>PerformanceObserver</a> object with <a>callback</a> set to
-      <var>callback</var> and then return it.</p>
+      <a>PerformanceObserver</a> object with <a>PerformanceObserverCallback</a>
+      set to <var>callback</var> and then return it.</p>
       <p>A <dfn>registered performance observer</dfn> consists of an observer
       (a <a>PerformanceObserver</a> object) and options (a
       <a>PerformanceObserverInit</a> dictionary).</p>
-      <pre class="idl">dictionary PerformanceObserverInit {
-  required sequence&lt;DOMString> entryTypes;
-};
-
-[Exposed=(Window,Worker)]
-interface PerformanceObserverEntryList {
-  PerformanceEntryList getEntries ();
-  PerformanceEntryList getEntriesByType (DOMString type);
-  PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type);
-};
-
-callback PerformanceObserverCallback = void (PerformanceObserverEntryList entries,
-                                             PerformanceObserver observer);
-
-[Constructor(PerformanceObserverCallback callback), Exposed=(Window,Worker)]
-interface PerformanceObserver {
-  void observe (PerformanceObserverInit options);
-  void disconnect ();
-};</pre>
-      <p>
-        <dfn>PerformanceObserverInit.entryTypes</dfn> is a list of valid <a for=
-        "PerformanceEntry">entryType</a> names to be
-        observed. The list MUST NOT be empty and types not recognized by
-        the user agent MUST be ignored.</p>
+      <pre class="idl">
+      callback PerformanceObserverCallback = void (PerformanceObserverEntryList entries,
+                                                   PerformanceObserver observer);
+      [Constructor(PerformanceObserverCallback callback), Exposed=(Window,Worker)]
+      interface PerformanceObserver {
+        void observe (PerformanceObserverInit options);
+        void disconnect ();
+      };
+      </pre>
       <p class="note">To keep the performance overhead to minimum the
-        application should only subscribe to event types that it is
-        interested in, and disconnect the observer once it no longer
-        needs to observe the performance data. Filtering by name is not
-        supported, as it would implicitly require a subscription for all
-        event types — this is possible, but discouraged, as it will
-        generate a significant volume of events.
-      </p>
-      <p>The <a>PerformanceObserverEntryList</a> interface provides the same
-        <a for='Performance'>getEntries</a>, <a for='Performance'>getEntriesByType</a>,
-        <a for='Performance'>getEntriesByName</a> methods as the
-        <a>Performance</a> interface, except that
-        <a>PerformanceObserverEntryList</a> operates on the observed emitted
-        list of events instead of the global timeline.</p>
-      <p>
-        The <dfn for='PerformanceObserver'>observe</dfn> method instructs the
-        user agent to <dfn>register the observer</dfn> and must run these
-        steps:
-      </p>
-      <ol>
-        <li>If _options'_ <a for="PerformanceObserverInit">entryTypes</a>
-        attribute is not present, [throw] a JavaScript
-        `TypeError`.
+      application should only subscribe to event types that it is interested
+      in, and disconnect the observer once it no longer needs to observe the
+      performance data. Filtering by name is not supported, as it would
+      implicitly require a subscription for all event types — this is possible,
+      but discouraged, as it will generate a significant volume of events.</p>
+      <p>The <dfn>observe()</dfn> method instructs the user agent to
+      <dfn>register the observer</dfn> and must run these steps:</p>
+      <ol data-link-for="PerformanceObserverInit">
+        <li>If _options'_ <a>entryTypes</a> attribute is not present,
+        <a>throw</a> a JavaScript `TypeError`.
         </li>
-        <li>Filter unsupported <a for="PerformanceEntry">entryType</a> names within the `entryTypes` sequence, and replace
-          the `entryTypes` sequence with the new filtered sequence.
-        </li>
-        <li>If the _options'_ <a for="PerformanceObserverInit">entryTypes</a>
-        attribute is an empty sequence,
-        [throw] a
-        JavaScript `TypeError`.
+        <li>Filter unsupported names within the `entryTypes` sequence, and
+        replace the `entryTypes` sequence with the new filtered sequence.</li>
+        <li>If the _options'_ <a>entryTypes</a> attribute is an empty sequence,
+        <a>throw</a> a JavaScript `TypeError`.
         </li>
         <li>If the list of <a>registered performance observer</a> objects
-        associated with the [ECMAScript global environment of the interface
-        object][es-global]'s contains a <a>registered performance
-        observer</a> that is the [context object][], replace the [context
-        object][]'s `options` with <var>options</var>.
+        associated with the <a>ECMAScript global environment</a> of the
+        interface object's contains a <a>registered performance observer</a>
+        that is the <a>context object</a>, replace the <a>context object</a>'s
+        `options` with <var>options</var>.
         </li>
         <li>Otherwise, append a new <a>registered performance observer</a>
-        object to the list of <a>registered performance observer</a>
-        objects associated with the [ECMAScript global environment of the
-        interface object][es-global], with the [context object][] as
-        `observer` and <var>options</var> as the `options`.
+        object to the list of <a>registered performance observer</a> objects
+        associated with the <a>ECMAScript global environment</a> of the
+        interface object, with the <a>context object</a> as `observer` and
+        <var>options</var> as the `options`.
         </li>
       </ol>
-      <p class="note">
-        In some cases developers may want to distinguish between the absence
-        of an entry in the timeline and lack of support for that entry, or may
-        want to conditionally create alternative measurements for unsupported
-        entry types. In such cases they can feature-detect the presence of the
-        relevant interface—e.g. to detect if User Timing entries are
-        supported, the developer can test for `PerformanceMark` and
-        `PerformanceMeasure` constructors.
-      </p>
-      <p>
-        The <dfn for='PerformanceObserver'>disconnect</dfn> method must
-        remove the [context object] from the list of
-        <a>PerformanceObserver</a> objects associated with the [ECMAScript
-        global environment of the interface object][es-global], and also
-        empty [context object]'s <a>observer buffer</a>.
-      </p>
+      <section>
+        <h3><dfn>disconnect()</dfn></h3>
+        <p>The <a>disconnect()</a> method must remove the <a>context object</a>
+        from the list of <a>PerformanceObserver</a> objects associated with the
+        <a>ECMAScript global environment</a> of the interface object, and also
+        empty <a>context object</a>'s <a>observer buffer</a>.</p>
+      </section>
+    </section>
+  </section>
+  <section data-dfn-for="PerformanceObserverEntryList" data-link-for=
+  "PerformanceObserverEntryList">
+    <h2><dfn>PerformanceObserverEntryList</dfn> interface</h2>
+    <pre class="idl">
+    [Exposed=(Window,Worker)]
+    interface PerformanceObserverEntryList {
+      PerformanceEntryList getEntries();
+      PerformanceEntryList getEntriesByType (DOMString type);
+      PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type);
+    };
+    </pre>
+    <section>
+      <h2><dfn>getEntries()</dfn> method</h2>
+      <p>...</p>
+    </section>
+    <section>
+      <h2><dfn>getEntriesByType()</dfn> method</h2>
+      <p>...</p>
+    </section>
+    <section>
+      <h2><dfn>getEntriesByName()</dfn> method</h2>
+      <p>...</p>
     </section>
   </section>
   <section>
     <h2>Processing</h2>
-    <section>
-      <h2>Filter <a>performance entry buffer</a> by <var>name</var> and <var>type</var></h2>
+    <section data-link-for="PerformanceEntry">
+      <h2>Filter <a>performance entry buffer</a> by <var>name</var> and
+      <var>type</var></h2>
       <p>Given optional <var>name</var> and <var>type</var> string values this
       algorithm returns a <a>PerformanceEntryList</a> object that contains a
       list of <a>PerformanceEntry</a> objects sorted in chronological order
-      with respect to <a for="PerformanceEntry">startTime</a>; objects with the
-      same <a for="PerformanceEntry">startTime</a> have unspecified ordering.</p>
-
+      with respect to <a>startTime</a>; objects with the same <a>startTime</a>
+      have unspecified ordering.</p>
       <ol>
         <li>Let the <dfn>list of entry objects</dfn> be the empty
-        <a>PerformanceEntryList</a>.</li>
-        <li>For each <a>PerformanceEntry</a> object (<dfn>entryObject</dfn>)
-        in the <a>performance entry buffer</a>, in chronological order with
-        respect to <a for="PerformanceEntry">startTime</a>:
-        <ol>
-          <li>If <var>name</var> is not `null` and <a>entryObject</a>'s `name`
-          attribute does not match <var>name</var> in a [case-sensitive] manner,
-          go to next <a>entryObject</a>.</li>
-          <li>If <var>type</var> is not `null` and <a>entryObject</a>'s `type`
-          attribute does not match <var>type</var> in a [case-sensitive] manner,
-          go to next <a>entryObject</a>.</li>
-          <li>Add <a>entryObject</a> to the <a>list of entry objects</a>.</li>
-        </ol>
+        <a>PerformanceEntryList</a>.
         </li>
-        <li>Return the <a>list of entry objects</a>.</li>
+        <li>For each <a>PerformanceEntry</a> object (<dfn>entryObject</dfn>) in
+        the <a>performance entry buffer</a>, in chronological order with
+        respect to <a>startTime</a>:
+          <ol>
+            <li>If <var>name</var> is not `null` and <a>entryObject</a>'s
+            `name` attribute does not match <var>name</var> in a
+            <a>case-sensitive</a> manner, go to next <a>entryObject</a>.
+            </li>
+            <li>If <var>type</var> is not `null` and <a>entryObject</a>'s
+            `type` attribute does not match <var>type</var> in a
+            <a>case-sensitive</a> manner, go to next <a>entryObject</a>.
+            </li>
+            <li>Add <a>entryObject</a> to the <a>list of entry objects</a>.
+            </li>
+          </ol>
+        </li>
+        <li>Return the <a>list of entry objects</a>.
+        </li>
       </ol>
     </section>
+  </section>
+  <section>
+    <h2>Dependencies</h2>
+    <p>This specification depends on the following interfaces, attributes,
+    concepts, and terms which are defined in their linked specifications.</p>
+    <ul>
+      <li><code><dfn data-cite=
+      "!hr-time-2#idl-def-Performance">Performance</dfn></code> interface</li>
+      <li><code><dfn data-cite=
+      "!resource-timing#idl-def-PerformanceResourceTiming">PerformanceResourceTiming</dfn></code>
+      interface</li>
+      <li><dfn data-cite=
+      "!resource-timing#widl-PerformanceResourceTiming-initiatorType">initiatorType</dfn></li>
+      <li><dfn data-cite="!WebIDL#dfn-callback-this-value">callback this
+      value</dfn></li>
+      <li><dfn data-cite="!WebIDL#dfn-conforming-idl-fragment">conforming IDL
+      fragments</dfn></li>
+      <li><dfn data-cite="!WebIDL#dfn-dictionary-member">dictionary
+      member</dfn></li>
+      <li><dfn data-cite="!WebIDL#dfn-throw">throw</dfn></li>
+      <li><dfn data-cite="!WebIDL#es-environment">ECMAScript global
+      environment</dfn></li>
+      <li><dfn data-cite="!WHATWG-DOM#context-object">context object</dfn></li>
+      <li><dfn data-cite=
+      "!WHATWG-HTML#case-sensitive">case-sensitive</dfn></li>
+      <li><dfn data-cite="!WHATWG-HTML#queue-a-task">queue a task</dfn></li>
+      <li><dfn data-cite="!WHATWG-HTML#report-the-exception">report the
+      exception</dfn></li>
+      <li><dfn data-cite="!WHATWG-HTML#task-queue">task queue</dfn></li>
+      <li><dfn data-cite="!WHATWG-HTML#task-source">task source</dfn></li>
+    </ul>
   </section>
   <section id="privacy-security">
     <h3>Privacy and Security</h3>
     <p>This specification extends the <a>Performance</a> interface defined by
     [[HR-TIME-2]] and provides methods to queue and retrieve entries from the
     <a>performance timeline</a>. Please refer to [[HR-TIME-2]] for privacy and
-    security considerations of exposing high-resolution timing information.</p>
+    security considerations of exposing high-resoluting timing information.</p>
   </section>
+  <section class="appendix" id="idl-index"></section>
   <section class="appendix">
     <h2>Acknowledgments</h2>
-    <p>Thanks to
-    Arvind Jain,
-    Boris Zbarsky,
-    Jatinder Mann,
-    Nat Duca,
-    Philippe Le Hegaret,
-    Ryosuke Niwa,
-    Shubhie Panicker,
-    Todd Reifsteck,
-    Yoav Weiss, and
-    Zhiheng Wang,
-    for their contributions to this work.</p>
+    <p>Thanks to Arvind Jain, Boris Zbarsky, Jatinder Mann, Nat Duca, Philippe
+    Le Hegaret, Ryosuke Niwa, Shubhie Panicker, Todd Reifsteck, Yoav Weiss, and
+    Zhiheng Wang, for their contributions to this work.</p>
   </section>
 </body>
 </html>
-
-<!-- preserve before running Tidy -->
-[context object]: https://dom.spec.whatwg.org/#context-object
-[task source]: https://html.spec.whatwg.org/multipage/webappapis.html#task-source
-[queue a task]: https://html.spec.whatwg.org/multipage/webappapis.html#queue-a-task
-[task queue]: https://html.spec.whatwg.org/multipage/webappapis.html#task-queue
-[report the exception]: https://html.spec.whatwg.org/multipage/webappapis.html#report-the-exception
-[case-sensitive]: https://html.spec.whatwg.org/multipage/infrastructure.html#case-sensitive
-[conforming IDL fragments]: https://heycam.github.io/webidl/#dfn-conforming-idl-fragment
-[es-global]: https://heycam.github.io/webidl/#es-environment
-[dictionary member]: https://heycam.github.io/webidl/#dfn-dictionary-member
-[throw]: http://heycam.github.io/webidl/#dfn-throw
-[callback this value]: https://heycam.github.io/webidl/#dfn-callback-this-value
-[Performance]: https://w3c.github.io/hr-time/#idl-def-Performance
-[initiatorType]: https://w3c.github.io/resource-timing/#widl-PerformanceResourceTiming-initiatorType
-[PerformanceResourceTiming]: https://w3c.github.io/resource-timing/#idl-def-PerformanceResourceTiming
