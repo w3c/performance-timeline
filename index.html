@@ -128,7 +128,8 @@
       &lt;/html&gt;
     </pre>
     <p>Alternatively, the developer can observe the <a>Performance Timeline</a>
-    and be notified of new performance metrics via the
+    and be notified of new performance metrics and, optionally, previously
+    buffered performance metrics of specified type, via the
     <a>PerformanceObserver</a> interface:</p>
     <pre class="example">
     &lt;!doctype html&gt;
@@ -155,8 +156,12 @@
       // maybe disconnect after processing the events.
       observer.disconnect();
     });
-    // subscribe to Resource-Timing and User-Timing events
-    observer.observe({ entryTypes: ["resource", "mark", "measure"] });
+    // retrieve buffered events and subscribe to new events
+    // for Resource-Timing and User-Timing
+    observer.observe({
+      entryTypes: ["resource", "mark", "measure"],
+      buffered: true
+    });
     &lt;/script&gt;
     &lt;/body&gt;
     &lt;/html&gt;
@@ -266,7 +271,9 @@
          and <code>"longtask"</code>.</p></dd>
         <dt><dfn>startTime</dfn></dt>
         <dd>This attribute MUST return the time value of the
-        first recorded timestamp of this performance metric.</dd>
+        first recorded timestamp of this performance metric. If the startTime
+        concept doesn't apply, a performance metric may choose to return a 
+        `startTime` of <code>0</code>.</dd>
         <dt><dfn>duration</dfn></dt>
         <dd>This attribute MUST return the time value of the
       duration of the entire event being recorded by this
@@ -285,8 +292,8 @@
     "PerformanceObserver">
       <h2>The <dfn>PerformanceObserver</dfn> interface</h2>
       <p>The <a>PerformanceObserver</a> interface can be used to observe the
-      <a>Performance Timeline</a> and be notified of new performance entries as
-      they are recorded.</p>
+      <a>Performance Timeline</a> to be notified of new performance metrics as
+      they are recorded, and optionally buffered performance metrics.
       <p>Each <a>PerformanceObserver</a> has these associated concepts:</p>
       <ul>
         <li>A <dfn>PerformanceObserverCallback</dfn> set on creation.</li>
@@ -329,6 +336,21 @@
         that is the <a>context object</a>, replace the <a>context object</a>'s
         `options` with <var>options</var>.
         </li>
+        <li>If _options'_ <a for="PerformanceObserverInit">buffered</a> flag is
+          set, for each <dfn>entryType</dfn> of the `entryTypes` sequence:
+          <ol>
+            <li>Let <dfn>entries</dfn> be the <a>PerformanceEntryList</a>
+            object returned by the
+            <a href="#filter-buffer-by-name-and-type"></a> algorithm with
+            <var>buffer</var> set to <a>performance entry buffer</a>,
+            <var>name</var> set to `null` and <var>type</var> set to
+            <var>entryType</var>.
+            </li>
+            <li>Append <var>entries</var> to the <a>context object</a>'s
+            <a>observer buffer</a>.
+            </li>
+          </ol>
+        </li>
         <li>Otherwise, append a new <a>registered performance observer</a>
         object to the list of <a>registered performance observer</a> objects
         associated with the <a>ECMAScript global environment</a> of the
@@ -349,12 +371,18 @@
         <pre class="idl">
         dictionary PerformanceObserverInit {
           required sequence&lt;DOMString&gt; entryTypes;
+          boolean buffered = false;
         };
         </pre>
         <dl>
           <dt><dfn>entryTypes</dfn></dt>
           <dd>A list of entry names to be observed. The list MUST NOT be empty
           and types not recognized by the user agent MUST be ignored.</dd>
+        </dl>
+        <dl>
+          <dt><dfn>buffered</dfn></dt>
+          <dd>A flag to indicate whether buffered entries should be queued into
+          observer's buffer.</dd>
         </dl>
       </section>
       <section data-dfn-for="PerformanceObserverEntryList" data-link-for=
@@ -399,8 +427,9 @@
     <h2>Processing</h2>
     <section data-link-for="PerformanceObserver">
     <h2>Queue a <code>PerformanceEntry</code></h2>
-    <p>To <dfn>queue a PerformanceEntry</dfn> (<i>new entry</i>), run these
-    steps:</p>
+      <p>To <dfn>queue a PerformanceEntry</dfn> (<var>new entry</var>) with an
+      optional <var>add to performance entry buffer</var> flag, which is unset
+      by default, run these steps:</p>
     <ol>
       <li>Let <i>interested observers</i> be an initially empty set of
       <a>PerformanceObserver</a> objects.
@@ -452,6 +481,9 @@
             </ol>
           </li>
         </ol>
+      </li>
+      <li>If the <var>add to performance entry buffer</var> flag is set, add
+      <i>new entry</i> to the <a>performance entry buffer.</a>
       </li>
     </ol>
     <p>The <i>performance timeline</i> <a>task queue</a> is a low priority
