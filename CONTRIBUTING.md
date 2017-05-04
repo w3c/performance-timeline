@@ -3,6 +3,8 @@ Contributions to this repository are intended to become part of Recommendation-t
 [Software and Document License](http://www.w3.org/Consortium/Legal/copyright-software). To make substantive contributions to specifications, you must either participate
 in the relevant W3C Working Group or make a non-member patent licensing commitment.
 
+For our editing test-driven process, see [CONTRIBUTING.md](https://github.com/w3c/web-performance/blob/gh-pages/CONTRIBUTING.md).
+
 If you are not the sole contributor to a contribution (pull request), please identify all 
 contributors in the pull request comment.
 
