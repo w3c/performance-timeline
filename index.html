@@ -336,6 +336,12 @@
         that is the <a>context object</a>, replace the <a>context object</a>'s
         `options` with <var>options</var>.
         </li>
+       <li>Otherwise, append a new <a>registered performance observer</a>
+        object to the list of <a>registered performance observer</a> objects
+        associated with the <a>ECMAScript global environment</a> of the
+        interface object, with the <a>context object</a> as `observer` and
+        <var>options</var> as the `options`.
+        </li>
         <li>If _options'_ <a for="PerformanceObserverInit">buffered</a> flag is
           set, for each <dfn>entryType</dfn> of the `entryTypes` sequence:
           <ol>
@@ -350,12 +356,6 @@
             <a>observer buffer</a>.
             </li>
           </ol>
-        </li>
-        <li>Otherwise, append a new <a>registered performance observer</a>
-        object to the list of <a>registered performance observer</a> objects
-        associated with the <a>ECMAScript global environment</a> of the
-        interface object, with the <a>context object</a> as `observer` and
-        <var>options</var> as the `options`.
         </li>
       </ol>
       <section>
