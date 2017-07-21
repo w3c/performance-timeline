@@ -253,7 +253,7 @@
         readonly    attribute DOMString           entryType;
         readonly    attribute DOMHighResTimeStamp startTime;
         readonly    attribute DOMHighResTimeStamp duration;
-        serializer = {attribute};
+        [Default] object toJSON();
       };</pre>
       <dl>
         <dt><dfn>name</dfn></dt>
@@ -272,7 +272,7 @@
         <dt><dfn>startTime</dfn></dt>
         <dd>This attribute MUST return the time value of the
         first recorded timestamp of this performance metric. If the startTime
-        concept doesn't apply, a performance metric may choose to return a 
+        concept doesn't apply, a performance metric may choose to return a
         `startTime` of <code>0</code>.</dd>
         <dt><dfn>duration</dfn></dt>
         <dd>This attribute MUST return the time value of the
@@ -283,10 +283,9 @@
       performance metric may choose to return a `duration` of
       <code>0</code>.</dd>
       </dl>
-      <p>As a convenience for developers, instances of <a>PerformanceEntry</a>
-      include a <dfn>serializer</dfn>. When called, attributes are
-      <a data-cite="WEBIDL#dfn-convert-to-serialized-value">converted to
-      serialized values</a> as per [[!WEBIDL]].</p>
+      <p>When <dfn>toJSON</dfn> is called, run [[!WebIDL]]'s
+      <a data-cite="WEBIDL#default-tojson-operation">default toJSON
+      operation</a>.</p>
     </section>
     <section data-link-for="PerformanceObserver" data-dfn-for=
     "PerformanceObserver">
