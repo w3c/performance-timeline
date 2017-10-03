@@ -325,9 +325,12 @@
       <dfn>register the observer</dfn> and must run these steps:</p>
       <ol data-link-for="PerformanceObserverInit">
         <li>Filter unsupported names within the `entryTypes` sequence, and
-        replace the `entryTypes` sequence with the new filtered sequence.</li>
-        <li>If the _options'_ <a>entryTypes</a> attribute is an empty sequence,
-        <a>throw</a> a JavaScript `TypeError`.
+        replace the `entryTypes` sequence with the new filtered sequence.
+        </li>
+        <li>If the resulting '<a>entryTypes</a>' sequence is an empty sequence, abort
+          these steps. The user agent SHOULD notify developers when the steps are
+          aborted. A console warning listing ignored unsupported names in `entryTypes`
+          might be appropriate, for example.
         </li>
         <li>If the list of <a>registered performance observer</a> objects
         associated with the <a>ECMAScript global environment</a> of the
