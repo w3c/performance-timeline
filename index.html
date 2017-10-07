@@ -312,6 +312,7 @@
       interface PerformanceObserver {
         void observe (PerformanceObserverInit options);
         void disconnect ();
+        PerformanceEntryList takeRecords();
       };
       </pre>
       <p class="note">To keep the performance overhead to minimum the
@@ -415,6 +416,15 @@
             to `type` otherwise.</p>
           </section>
         </section>
+      </section>
+      <section>
+        <h2><dfn>takeRecords()</dfn> method</h2>
+        <p>The <a>takeRecords()</a> method instructs the user agent to flush  entries in <a>context object</a>'s <a>observer buffer</a> and must run these steps:</p>
+        <ol data-link-for="PerformanceObserver">
+          <li>Let <var>entries</var> be a copy of <a>context object</a>'s <a>observer buffer</a>.</li>
+          <li>Empty <a>context object</a>'s <a>observer buffer</a>.</li>
+          <li>Return <var>entries</var>.</li>
+        </ol>
       </section>
       <section>
         <h2><dfn>disconnect()</dfn> method</h2>
