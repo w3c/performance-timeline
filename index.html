@@ -324,9 +324,7 @@
       <p>The <dfn>observe()</dfn> method instructs the user agent to
       <dfn>register the observer</dfn> and must run these steps:</p>
       <ol data-link-for="PerformanceObserverInit">
-        <li>Filter unsupported names within the `entryTypes` sequence, and
-        replace the `entryTypes` sequence with the new filtered sequence.
-        </li>
+        <li>Remove all unsupported names from the entryTypes sequence.</li>
         <li>If the resulting '<a>entryTypes</a>' sequence is an empty sequence, abort
           these steps. The user agent SHOULD notify developers when the steps are
           aborted. A console warning listing ignored unsupported names in `entryTypes`
