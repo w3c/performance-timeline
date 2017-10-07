@@ -324,8 +324,8 @@
       <p>The <dfn>observe()</dfn> method instructs the user agent to
       <dfn>register the observer</dfn> and must run these steps:</p>
       <ol data-link-for="PerformanceObserverInit">
-        <li>Let <var>entry types</var> be <var>option</var>'s
-          <a for="PerformanceObserverInit">entryType</a> sequence.</li>
+        <li>Let <var>entry types</var> be <var>option</var>'s <a>entryTypes</a>
+          sequence.</li>
         <li>Remove all unsupported types from <var>entry types</var>. The user
           agent SHOULD notify developers if <var>entry types</var> is modified.
           For example, a console warning listing removed types might be appropriate.</li>
@@ -345,15 +345,15 @@
         interface object, with the <a>context object</a> as `observer` and
         <var>options</var> as the `options`.
         </li>
-        <li>If _options'_ <a for="PerformanceObserverInit">buffered</a> flag is
-          set, for each <dfn>entryType</dfn> of the `entryTypes` sequence:
+        <li>If _options'_ <a>buffered</a> flag is set, for each
+          <var>entry type</var> in <var>entry types</var> sequence:
           <ol>
-            <li>Let <dfn>entries</dfn> be the <a>PerformanceEntryList</a>
+            <li>Let <var>entries</var> be the <a>PerformanceEntryList</a>
             object returned by the
             <a href="#filter-buffer-by-name-and-type"></a> algorithm with
             <var>buffer</var> set to <a>performance entry buffer</a>,
             <var>name</var> set to `null` and <var>type</var> set to
-            <var>entryType</var>.
+            <var>entry type</var>.
             </li>
             <li>Append <var>entries</var> to the <a>context object</a>'s
             <a>observer buffer</a>.
@@ -379,7 +379,7 @@
         </pre>
         <dl>
           <dt><dfn>entryTypes</dfn></dt>
-          <dd>A list of entry names to be observed. The list MUST NOT be empty
+          <dd>A list of entry types to be observed. The list MUST NOT be empty
           and types not recognized by the user agent MUST be ignored.</dd>
         </dl>
         <dl>
