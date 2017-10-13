@@ -194,12 +194,12 @@
     <p>Each <a>ECMAScript global environment</a> has:</p>
     <ul>
       <li>a <dfn>performance observer task queued flag</dfn></li>
-      <li>a <dfn>list of <a>registered performance observer</a> objects</dfn> that is initially
-      empty</li>
+      <li>a <dfn>list of <a>registered performance observer</a> objects</dfn> that is initially empty</li>
       <li>a <dfn>performance entry buffer</dfn> to store
-      <a>PerformanceEntry</a> objects. It is initially empty.
+      <a>PerformanceEntry</a> objects that is initially empty
       </li>
     </ul>
+    <p>The <dfn>relevant performance entry buffer</dfn> is the <a>performance entry buffer</a> associated with the <a>relevant global object</a>.</p>
     <section data-dfn-for="Performance" data-link-for="Performance">
       <h2>Extensions to the <a>Performance</a> interface</h2>
       <p>This extends the <a>Performance</a> interface [[!HR-TIME-2]] and hosts
@@ -220,14 +220,14 @@
         <h2><dfn>getEntries()</dfn> method</h2>
         <p>Returns a <a>PerformanceEntryList</a> object returned by
         <a href="#filter-buffer-by-name-and-type"></a> algorithm with
-        <var>buffer</var> set to <a>performance entry buffer</a>, and
+        <var>buffer</var> set to <a>relevant performance entry buffer</a>, and
         <var>name</var> and <var>type</var> set to `null`.</p>
       </section>
       <section>
         <h2><dfn>getEntriesByType()</dfn> method</h2>
         <p>Returns a <a>PerformanceEntryList</a> object returned by
         <a href="#filter-buffer-by-name-and-type"></a> algorithm with
-        <var>buffer</var> set to <a>performance entry buffer</a>,
+        <var>buffer</var> set to <a>relevant performance entry buffer</a>,
         <var>name</var> set to `null`, and <var>type</var> set
         to `type`.</p>
       </section>
@@ -235,7 +235,7 @@
         <h2><dfn>getEntriesByName()</dfn> method</h2>
         <p>Returns a <a>PerformanceEntryList</a> object returned by
         <a href="#filter-buffer-by-name-and-type"></a> algorithm with
-        <var>buffer</var> set to <a>performance entry buffer</a>,
+        <var>buffer</var> set to <a>relevant performance entry buffer</a>,
         <var>name</var> set to `name`, and <var>type</var> set
         to `null` if optional `entryType` is omitted, and <var>type</var> set
         to `type` otherwise.</p>
@@ -334,8 +334,7 @@
           example, a console warning might be appropriate.</li>
         <li>If the <a>list of registered performance observer objects</a> of
           <a>relevant global object</a> contains a <a>registered performance
-          observer</a> that is the <a>context object</a>, replace its `options`,
-          with <var>options</var>.
+          observer</a> whose `observer` is the <a>context object</a>, replace its `options`, with <var>options</var>.
         </li>
        <li>Otherwise, append a new <a>registered performance observer</a>
         object to the <a>list of registered performance observer objects</a> of
@@ -348,7 +347,7 @@
             <li>Let <var>entries</var> be the <a>PerformanceEntryList</a>
             object returned by the
             <a href="#filter-buffer-by-name-and-type"></a> algorithm with
-            <var>buffer</var> set to <a>performance entry buffer</a>,
+            <var>buffer</var> set to <a>relevant performance entry buffer</a>,
             <var>name</var> set to `null` and <var>type</var> set to
             <var>entry type</var>.
             </li>
@@ -462,11 +461,9 @@
         The <a>task source</a> for the queued task is the <i>performance
         timeline</i> task source.
         <ol>
-          <li>Unset <a>performance observer task queued flag</a>.
-          </li>
-          <li>Let <i>notify list</i> be a copy of <a>ECMAScript global
-          environment</a>'s <a>list of registered performance observer
-          objects</a>.
+          <li>Unset <a>performance observer task queued flag</a> for the
+            <a>relevant global object</a>.</li>
+          <li>Let <i>notify list</i> be a copy of <a>relevant global object</a>'s <a>list of registered performance observer objects</a>.
           </li>
           <li>For each <a>PerformanceObserver</a> object <i>po</i> in <i>notify
           list</i>, run these steps:
