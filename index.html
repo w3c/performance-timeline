@@ -333,13 +333,13 @@
           steps are aborted to notify that registration has been aborted. For
           example, a console warning might be appropriate.</li>
         <li>If the <a>list of registered performance observer objects</a> of
-          <a>current global object</a> contains a <a>registered performance
+          <a>relevant global object</a> contains a <a>registered performance
           observer</a> that is the <a>context object</a>, replace its `options`,
           with <var>options</var>.
         </li>
        <li>Otherwise, append a new <a>registered performance observer</a>
         object to the <a>list of registered performance observer objects</a> of
-        <a>current global object</a>, with the <a>context object</a> as
+        <a>relevant global object</a>, with the <a>context object</a> as
         `observer` and <var>options</var> as the `options`.
         </li>
         <li>If <var>options</var>' <a>buffered</a> flag is set, for each
@@ -362,7 +362,7 @@
         <h2><dfn>disconnect()</dfn> method</h2>
         <p>The <a>disconnect()</a> method must remove the <a>context object</a>
         from the <a>list of registered performance observer objects</a> of
-        <a>current global object</a>, and also empty <a>context object</a>'s
+        <a>relevant global object</a>, and also empty <a>context object</a>'s
         <a>observer buffer</a>.</p>
       </section>
       <section data-dfn-for="PerformanceObserverInit" data-link-for=
@@ -552,7 +552,7 @@
       exception</dfn></li>
       <li><dfn data-cite="!WHATWG-HTML#task-queue">task queue</dfn></li>
       <li><dfn data-cite="!WHATWG-HTML#task-source">task source</dfn></li>
-      <li><dfn data-cite="!WHATWG-HTML#current-global-object">current global object</dfn></li>
+      <li><dfn data-cite="!WHATWG-HTML#relevant-global-object">relevant global object</dfn></li>
       <li><dfn data-cite="!WHATWG-INFRA#struct">struct</dfn></li>
     </ul>
   </section>
