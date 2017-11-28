@@ -312,6 +312,7 @@
       interface PerformanceObserver {
         void observe (PerformanceObserverInit options);
         void disconnect ();
+        PerformanceEntryList takeRecords();
       };
       </pre>
       <p class="note">To keep the performance overhead to minimum the
@@ -363,6 +364,11 @@
         from the <a>list of registered performance observer objects</a> of
         <a>relevant global object</a>, and also empty <a>context object</a>'s
         <a>observer buffer</a>.</p>
+      </section>
+      <section>
+        <h2><dfn>takeRecords()</dfn> method</h2>
+        <p>The <a>takeRecords()</a> method returns a copy of the <a>observer
+          buffer</a> and empties the observer buffer.</p>
       </section>
       <section data-dfn-for="PerformanceObserverInit" data-link-for=
       "PerformanceObserverInit">
