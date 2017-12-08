@@ -359,6 +359,62 @@
             </ol>
           </li>
         </ol>
+        <section data-dfn-for="PerformanceObserverInit" data-link-for=
+      "PerformanceObserverInit">
+          <h2><dfn>PerformanceObserverInit</dfn> dictionary</h2>
+          <pre class="idl">
+          dictionary PerformanceObserverInit {
+            required sequence&lt;DOMString&gt; entryTypes;
+            boolean buffered = false;
+          };
+          </pre>
+          <dl>
+            <dt><dfn>entryTypes</dfn></dt>
+            <dd>A list of entry types to be observed. The list MUST NOT be empty
+            and types not recognized by the user agent MUST be ignored.</dd>
+          </dl>
+          <dl>
+            <dt><dfn>buffered</dfn></dt>
+            <dd>A flag to indicate whether buffered entries should be queued into
+            observer's buffer.</dd>
+          </dl>
+        </section>
+        <section data-dfn-for="PerformanceObserverEntryList" data-link-for=
+        "PerformanceObserverEntryList">
+          <h2><dfn>PerformanceObserverEntryList</dfn> interface</h2>
+          <pre class="idl">
+          [Exposed=(Window,Worker)]
+          interface PerformanceObserverEntryList {
+            PerformanceEntryList getEntries();
+            PerformanceEntryList getEntriesByType (DOMString type);
+            PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type);
+          };
+          </pre>
+          <section>
+            <h2><dfn>getEntries()</dfn> method</h2>
+            <p>Returns a <a>PerformanceEntryList</a> object returned by
+            <a href="#filter-buffer-by-name-and-type"></a> algorithm with
+            <var>buffer</var> set to <a>observer buffer</a>, and
+            <var>name</var> and <var>type</var> set to `null`.</p>
+          </section>
+          <section>
+            <h2><dfn>getEntriesByType()</dfn> method</h2>
+            <p>Returns a <a>PerformanceEntryList</a> object returned by
+            <a href="#filter-buffer-by-name-and-type"></a> algorithm with
+            <var>buffer</var> set to <a>observer buffer</a>,
+            <var>name</var> set to `null`, and <var>type</var> set
+            to `type`.</p>
+          </section>
+          <section>
+            <h2><dfn>getEntriesByName()</dfn> method</h2>
+            <p>Returns a <a>PerformanceEntryList</a> object returned by
+            <a href="#filter-buffer-by-name-and-type"></a> algorithm with
+            <var>buffer</var> set to <a>observer buffer</a>,
+            <var>name</var> set to `name`, and <var>type</var> set
+            to `null` if optional `entryType` is omitted, and <var>type</var> set
+            to `type` otherwise.</p>
+          </section>
+        </section>
       </section>
       <section>
         <h2><dfn>disconnect()</dfn> method</h2>
@@ -366,62 +422,6 @@
         from the <a>list of registered performance observer objects</a> of
         <a>relevant global object</a>, and also empty <a>context object</a>'s
         <a>observer buffer</a>.</p>
-      </section>
-      <section data-dfn-for="PerformanceObserverInit" data-link-for=
-      "PerformanceObserverInit">
-        <h2><dfn>PerformanceObserverInit</dfn> dictionary</h2>
-        <pre class="idl">
-        dictionary PerformanceObserverInit {
-          required sequence&lt;DOMString&gt; entryTypes;
-          boolean buffered = false;
-        };
-        </pre>
-        <dl>
-          <dt><dfn>entryTypes</dfn></dt>
-          <dd>A list of entry types to be observed. The list MUST NOT be empty
-          and types not recognized by the user agent MUST be ignored.</dd>
-        </dl>
-        <dl>
-          <dt><dfn>buffered</dfn></dt>
-          <dd>A flag to indicate whether buffered entries should be queued into
-          observer's buffer.</dd>
-        </dl>
-      </section>
-      <section data-dfn-for="PerformanceObserverEntryList" data-link-for=
-      "PerformanceObserverEntryList">
-        <h2><dfn>PerformanceObserverEntryList</dfn> interface</h2>
-        <pre class="idl">
-        [Exposed=(Window,Worker)]
-        interface PerformanceObserverEntryList {
-          PerformanceEntryList getEntries();
-          PerformanceEntryList getEntriesByType (DOMString type);
-          PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type);
-        };
-        </pre>
-        <section>
-          <h2><dfn>getEntries()</dfn> method</h2>
-          <p>Returns a <a>PerformanceEntryList</a> object returned by
-          <a href="#filter-buffer-by-name-and-type"></a> algorithm with
-          <var>buffer</var> set to <a>observer buffer</a>, and
-          <var>name</var> and <var>type</var> set to `null`.</p>
-        </section>
-        <section>
-          <h2><dfn>getEntriesByType()</dfn> method</h2>
-          <p>Returns a <a>PerformanceEntryList</a> object returned by
-          <a href="#filter-buffer-by-name-and-type"></a> algorithm with
-          <var>buffer</var> set to <a>observer buffer</a>,
-          <var>name</var> set to `null`, and <var>type</var> set
-          to `type`.</p>
-        </section>
-        <section>
-          <h2><dfn>getEntriesByName()</dfn> method</h2>
-          <p>Returns a <a>PerformanceEntryList</a> object returned by
-          <a href="#filter-buffer-by-name-and-type"></a> algorithm with
-          <var>buffer</var> set to <a>observer buffer</a>,
-          <var>name</var> set to `name`, and <var>type</var> set
-          to `null` if optional `entryType` is omitted, and <var>type</var> set
-          to `type` otherwise.</p>
-        </section>
       </section>
     </section>
   </section>
