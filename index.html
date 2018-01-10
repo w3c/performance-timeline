@@ -295,7 +295,7 @@
       <p>Each <a>PerformanceObserver</a> has these associated concepts:</p>
       <ul>
         <li>A <dfn>PerformanceObserverCallback</dfn> set on creation.</li>
-        <li>A list of <a>PerformanceEntry</a> objects called the <dfn>observer
+        <li> A <a>PerformanceEntryList</a> object called the <dfn>observer
         buffer</dfn> that is initially empty.
         </li>
       </ul>
@@ -312,6 +312,7 @@
       interface PerformanceObserver {
         void observe (PerformanceObserverInit options);
         void disconnect ();
+        PerformanceEntryList takeRecords();
       };
       </pre>
       <p class="note">To keep the performance overhead to minimum the
@@ -415,6 +416,12 @@
             to `type` otherwise.</p>
           </section>
         </section>
+      </section>
+      <section>
+        <h2><dfn>takeRecords()</dfn> method</h2>
+        <p>The <a>takeRecords()</a> method must return a copy of the
+          <a>context object</a>'s <a>observer buffer</a>, and also empty
+          <a>context object</a>'s <a>observer buffer</a>.</p>
       </section>
       <section>
         <h2><dfn>disconnect()</dfn> method</h2>
