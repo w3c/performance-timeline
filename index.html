@@ -451,14 +451,13 @@
     <h2>Processing</h2>
     <section data-link-for="PerformanceObserver">
     <h2>Queue a <code>PerformanceEntry</code></h2>
-      <p>The <dfn>queue a PerformanceEntry</dfn> algorithm receives these parameters:</p>
-      <li>A PerformanceEntry <var>new entry</var>.</li>
-      <li>An optional <var>add to performance entry buffer</var> flag, which is unset
-      by default.</li>
-      <li>An optional <var>should append to observer</var> closure whose input is a
-        <a>PerformanceObserver</a> and whose output is a boolean. By default this is the
-        closure which always returns true.</li>
-      <p>The algorithm runs these steps:</p>
+      <p><i>Specifications</i> of performance entries may define an algorithm
+        <var>should append to observer</var> which receives a <a>PerformanceEntry</a> and
+        a <a>PerformanceObserver</a> as input and returns a boolean specifying whether the
+        observer should be notified of the entry.
+      <p>The <dfn>queue a PerformanceEntry</dfn> <var>new entry</var> with an optional
+        <var>add to performance entry buffer</var> flag, which is unset by default, run
+        these steps:</p>
     <ol>
       <li>Let <var>interested observers</var> be an initially empty set of
       <a>PerformanceObserver</a> objects.
@@ -471,7 +470,9 @@
           value is in <var>observer</var>'s <a>PerformanceObserverInit</a>: either its
           <a data-lt="PerformanceObserverInit.entryTypes">entryTypes</a> includes it or it
           has a dictionary with that name.</li>
-          <li><var>should append to observer</var>(<var>observer</var>) returns true.</li>
+          <li><var>should append to observer</var>(<var>new entry</var>,
+            <var>observer</var>) returns true, if defined by the <i>specification</i> of
+            the corresponding <a data-lt="PerformanceEntry.entryType">entryType</a>.</li>
           </li>
         </ol>
       </li>
