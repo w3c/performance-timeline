@@ -156,11 +156,11 @@
       // maybe disconnect after processing the events.
       observer.disconnect();
     });
-    // retrieve buffered events and subscribe to new events
-    // for Resource-Timing and User-Timing
+    // subscribe to new events for Resource-Timing and User-Timing
+    // and retrieve buffered events from Resource-Timing 
     observer.observe({
-      entryTypes: ["resource", "mark", "measure"],
-      buffered: true
+      entryTypes: ["mark", "measure"],
+      resource : {buffered: true}
     });
     &lt;/script&gt;
     &lt;/body&gt;
@@ -326,8 +326,10 @@
         <p>The <a>observe()</a> method instructs the user agent to
         <dfn>register the observer</dfn> and must run these steps:</p>
         <ol data-link-for="PerformanceObserverInit">
-          <li>Let <var>entry types</var> be <var>options</var> <a>entryTypes</a>
+          <li>Let <var>entry types</var> be <var>options</var>' <a>entryTypes</a>
             sequence.</li>
+          <li>For each dictionary of name <var>entryType</var> in <var>options</var>,
+            add the string `<var>entryType</var>` to <var>entry types</var>.
           <li>Remove all unsupported types from <var>entry types</var>. The user
             agent SHOULD notify developers if <var>entry types</var> is modified.
             For example, a console warning listing removed types might be appropriate.</li>
@@ -344,8 +346,9 @@
           <a>relevant global object</a>, with the <a>context object</a> as
           `observer` and <var>options</var> as the `options`.
           </li>
-          <li>If <var>options</var>' <a>buffered</a> flag is set, for each
-            <var>entry type</var> in <var>entry types</var> sequence:
+          <li>For each <var>entry type</var> in <var>entry types</var>, if the
+            <a data-link-for="PerformanceEntryObserverOptions">buffered</a> flag is set
+            in <var>options</var>' dictionary named <var>entry type</var>:
             <ol>
               <li>Let <var>entries</var> be the <a>PerformanceEntryList</a>
               object returned by the
@@ -366,7 +369,6 @@
           <pre class="idl">
           dictionary PerformanceObserverInit {
             required sequence&lt;DOMString&gt; entryTypes;
-            boolean buffered = false;
           };
           </pre>
           <dl>
@@ -374,6 +376,19 @@
             <dd>A list of entry types to be observed. The list MUST NOT be empty
             and types not recognized by the user agent MUST be ignored.</dd>
           </dl>
+          <p class="note">Whenever a new kind of <a>PerformanceEntry</a> is defined, this
+          dictionary should be augmented to include a new optional
+          <a>PerformanceEntryObserverOptions</a> dictionary with the name of the new
+          <a data-lt="PerformanceEntry.entryType">entryType</a>.</p>
+        </section>
+        <section data-dfn-for="PerformanceEntryObserverOptions" data-link-for=
+        "PerformanceEntryObserverOptions">
+            <h2><dfn>PerformanceEntryObserverOptions</dfn> dictionary</h2>
+          <pre class="idl">
+          dictionary PerformanceEntryObserverOptions {
+            boolean buffered = false;
+          };
+          </pre>
           <dl>
             <dt><dfn>buffered</dfn></dt>
             <dd>A flag to indicate whether buffered entries should be queued into
@@ -436,30 +451,38 @@
     <h2>Processing</h2>
     <section data-link-for="PerformanceObserver">
     <h2>Queue a <code>PerformanceEntry</code></h2>
-      <p>To <dfn>queue a PerformanceEntry</dfn> (<var>new entry</var>) with an
-      optional <var>add to performance entry buffer</var> flag, which is unset
-      by default, run these steps:</p>
+      <p>The <dfn>queue a PerformanceEntry</dfn> algorithm receives these parameters:</p>
+      <li>A PerformanceEntry <var>new entry</var>.</li>
+      <li>An optional <var>add to performance entry buffer</var> flag, which is unset
+      by default.</li>
+      <li>An optional <var>should append to observer</var> closure whose input is a
+        <a>PerformanceObserver</a> and whose output is a boolean. By default this is the
+        closure which always returns true.</li>
+      <p>The algorithm runs these steps:</p>
     <ol>
-      <li>Let <i>interested observers</i> be an initially empty set of
+      <li>Let <var>interested observers</var> be an initially empty set of
       <a>PerformanceObserver</a> objects.
       </li>
-      <li>For each <a>registered performance observer</a> (<i>observer</i>):
+      <li>For each <a>registered performance observer</a> (<var>observer</var>), append
+        <var>observer</var> to <var>interested observers</var> if all of the following
+        conditions are met:
         <ol>
-          <li>If <i>observer</i>'s <a>PerformanceObserverInit</a> <a data-lt=
-          "PerformanceObserverInit.entryTypes">entryTypes</a> includes <i>new
-          entry</i>’s <a data-lt="PerformanceEntry.entryType">entryType</a>
-          value, append <i>observer</i> to <i>interested observers</i>.
+          <li><var>new entry</var>’s <a data-lt="PerformanceEntry.entryType">entryType</a>
+          value is in <var>observer</var>'s <a>PerformanceObserverInit</a>: either its
+          <a data-lt="PerformanceObserverInit.entryTypes">entryTypes</a> includes it or it
+          has a dictionary with that name.</li>
+          <li><var>should append to observer</var>(<var>observer</var>) returns true.</li>
           </li>
         </ol>
       </li>
-      <li>For each <i>observer</i> in <i>interested observers</i>:
+      <li>For each <var>observer</var> in <var>interested observers</var>:
         <ol>
-          <li>Append <i>new entry</i> to <a>observer buffer</a>.
+          <li>Append <var>new entry</var> to <var>observer</var>'s <a>observer buffer</a>.
           </li>
         </ol>
       </li>
       <li>If the <var>add to performance entry buffer</var> flag is set, add
-        <i>new entry</i> to the <a>performance entry buffer</a>.
+        <var>new entry</var> to the <a>performance entry buffer</a>.
       </li>
       <li>If the <a>performance observer task queued flag</a> is set, terminate
       these steps.
