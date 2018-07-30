@@ -376,10 +376,11 @@
             <dd>A list of entry types to be observed. The list MUST NOT be empty
             and types not recognized by the user agent MUST be ignored.</dd>
           </dl>
-          <p class="note">Whenever a new kind of <a>PerformanceEntry</a> is defined, this
-          dictionary should be augmented to include a new optional
-          <a>PerformanceEntryObserverOptions</a> dictionary with the name of the new
-          <a data-lt="PerformanceEntry.entryType">entryType</a>.</p>
+          <p class="note">Whenever a new kind of <a>PerformanceEntry</a> is defined,
+            the <a>PerformanceObserverInit</a> dictionary should be augmented to
+            include a new optional <a>PerformanceEntryObserverOptions</a> dictionary
+            with the name of the new <a data-lt="PerformanceEntry.entryType">
+            entryType</a>.</p>
         </section>
         <section data-dfn-for="PerformanceEntryObserverOptions" data-link-for=
         "PerformanceEntryObserverOptions">
@@ -455,9 +456,9 @@
         <var>should append to observer</var> which receives a <a>PerformanceEntry</a> and
         a <a>PerformanceObserver</a> as input and returns a boolean specifying whether the
         observer should be notified of the entry.
-      <p>The <dfn>queue a PerformanceEntry</dfn> <var>new entry</var> with an optional
-        <var>add to performance entry buffer</var> flag, which is unset by default, run
-        these steps:</p>
+      <p>To <dfn>queue a PerformanceEntry</dfn> (<var>new entry</var>) with an
+        optional <var>add to performance entry buffer</var> flag, which is unset by
+        default, run these steps:</p>
     <ol>
       <li>Let <var>interested observers</var> be an initially empty set of
       <a>PerformanceObserver</a> objects.
