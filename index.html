@@ -151,13 +151,15 @@
           };
           return JSON.stringify(obj, null, 2);
         })
-        // Display them to the console
+        // Display them to the console.
         .forEach(console.log);
-      // maybe disconnect after processing the events.
+      // Maybe disconnect after processing the events.
       observer.disconnect();
     });
-    // subscribe to new events for Resource-Timing and User-Timing
-    // and retrieve buffered events from Resource-Timing 
+    // Subscribe to new events for User-Timing (marks and measures) via the
+    // |entryTypes| array. The entry-type specific flags are set to their
+    // default values for these entry types. Also subscribe to and retrieve
+    // buffered events from Resource-Timing.
     observer.observe({
       entryTypes: ["mark", "measure"],
       resource : {buffered: true}
