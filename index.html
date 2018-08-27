@@ -300,7 +300,7 @@
         <li> A <a>PerformanceEntryList</a> object called the <dfn>observer
         buffer</dfn> that is initially empty.
         </li>
-        <li>A sequence of strings called <dfn>supported entry types</dfn> that is
+        <li>A sequence of strings called <dfn>observed entry types</dfn> that is
           initially empty.
         </li>
       </ul>
@@ -331,18 +331,18 @@
         <p>The <a>observe()</a> method instructs the user agent to
         <dfn>register the observer</dfn> and must run these steps:</p>
         <ol data-link-for="PerformanceObserverInit">
-          <li>Set <a>supported entry types</a> to a copy of <var>options</var>'
+          <li>Set <a>observed entry types</a> to a copy of <var>options</var>'
             <a>entryTypes</a> sequence.
           </li>
           <li>For each key <var>entryType</var> in the <var>options</var> dictonary that
             is not <a>entryTypes</a>, add the string <var>entryType</var> to
-            <a>supported entry types</a>.
+            <a>observed entry types</a>.
           </li>
-          <li>Remove all unsupported types from <a>supported entry types</a>. The user
-            agent SHOULD notify developers if <a>supported entry types</a> is modified.
+          <li>Remove all unsupported types from <a>observed entry types</a>. The user
+            agent SHOULD notify developers if <a>observed entry types</a> is modified.
             For example, a console warning listing removed types might be appropriate.
           </li>
-          <li>If <a>supported entry types</a> is an empty sequence,
+          <li>If <a>observed entry types</a> is an empty sequence,
             abort these steps. The user agent SHOULD notify developers when the
             steps are aborted to notify that registration has been aborted. For
             example, a console warning might be appropriate.
@@ -357,7 +357,7 @@
           <a>relevant global object</a>, with the <a>context object</a> as
           `observer` and <var>options</var> as the `options`.
           </li>
-          <li>For each <var>entry type</var> in <a>supported entry types</a>, if the
+          <li>For each <var>entry type</var> in <a>observed entry types</a>, if the
             <a data-link-for="PerformanceEntryObserverOptions">buffered</a> flag is set
             in <var>options</var>' dictionary named <var>entry type</var>:
             <ol>
@@ -479,7 +479,7 @@
         conditions are met:
         <ol>
           <li><var>new entry</var>’s <a data-lt="PerformanceEntry.entryType">entryType</a>
-            value is in <var>observer</var>'s <a>supported entry types</a>.
+            value is in <var>observer</var>'s <a>observed entry types</a>.
           </li>
           <li><var>should append to observer</var>(<var>new entry</var>,
             <var>observer</var>) returns true, if defined by the <i>specification</i> of
