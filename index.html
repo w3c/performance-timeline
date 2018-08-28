@@ -328,19 +328,22 @@
       but discouraged, as it will generate a significant volume of events.</p>
       <section>
         <h2><dfn>observe()</dfn> method</h2>
-        <p>The <a>observe()</a> method instructs the user agent to
-        <dfn>register the observer</dfn> and must run these steps:</p>
+        <p>The <a>observe()</a> method receives a <a>PerformanceObserverInit</a>
+          <var>options</var> dictionary. This method instructs the user agent to
+          <dfn>register the observer</dfn> and must run these steps:</p>
         <ol data-link-for="PerformanceObserverInit">
           <li>Set <a>observed entry types</a> to a copy of <var>options</var>'
             <a>entryTypes</a> sequence.
           </li>
-          <li>For each key <var>entryType</var> in the <var>options</var> dictonary that
+          <li>For each key <var>entryType</var> in the <var>options</var> dictionary that
             is not <a>entryTypes</a>, add the string <var>entryType</var> to
             <a>observed entry types</a>.
           </li>
-          <li>Remove all unsupported types from <a>observed entry types</a>. The user
-            agent SHOULD notify developers if <a>observed entry types</a> is modified.
-            For example, a console warning listing removed types might be appropriate.
+          <li> For each string <var>entryType</var> in <a>observed entry types</a>,
+            remove <var>entryType</var> from <a>observed entry types</a> if it is
+            unsupported by the user agent. The user agent SHOULD notify developers if
+            <a>observed entry types</a> is modified at this step. For example, a
+            console warning listing removed types might be appropriate.
           </li>
           <li>If <a>observed entry types</a> is an empty sequence,
             abort these steps. The user agent SHOULD notify developers when the
@@ -390,7 +393,7 @@
           <p class="note">Whenever a new kind of <a>PerformanceEntry</a> is defined,
             the <a>PerformanceObserverInit</a> dictionary should be augmented to
             include a new optional <a>PerformanceEntryObserverOptions</a> dictionary
-            with the name of the new <a data-lt="PerformanceEntry.entryType">
+            whose key is the new <a data-lt="PerformanceEntry.entryType">
             entryType</a>.</p>
         </section>
         <section data-dfn-for="PerformanceEntryObserverOptions" data-link-for=
