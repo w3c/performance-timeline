@@ -383,12 +383,19 @@
           <pre class="idl">
           dictionary PerformanceObserverInit {
             required sequence&lt;DOMString&gt; entryTypes;
+            PerformanceEntryObserverOptions fallback;
           };
           </pre>
           <dl>
             <dt><dfn>entryTypes</dfn></dt>
             <dd>A list of entry types to be observed. The list MUST NOT be empty
             and types not recognized by the user agent MUST be ignored.</dd>
+            <dt><dfn>fallback</dfn></dt>
+            <dd>A dictionary containing the parameters to be applied to all entries
+            observed. These parameters are overriden by entryType-specific dictionaries.
+            That is, if a parameter is present in the `fallback` dictionary but also in
+            the `mark` dictionary, then the value of the `mark` dictionary will be used
+            for entries whose <a data-lt="PerformanceEntry.entryType">entryType</a> is `mark`.</dd>
           </dl>
           <p class="note">Whenever a new kind of <a>PerformanceEntry</a> is defined,
             the <a>PerformanceObserverInit</a> dictionary should be augmented to
