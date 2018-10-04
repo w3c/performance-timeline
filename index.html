@@ -151,16 +151,18 @@
           };
           return JSON.stringify(obj, null, 2);
         })
-        // Display them to the console
+        // Display them to the console.
         .forEach(console.log);
-      // maybe disconnect after processing the events.
+      // Maybe disconnect after processing the events.
       observer.disconnect();
     });
-    // retrieve buffered events and subscribe to new events
-    // for Resource-Timing and User-Timing
+    // Subscribe to new events for User-Timing (marks and measures) via the
+    // |entryTypes| array. The entry-type specific flags are set to their
+    // default values for these entry types. Also subscribe to and retrieve
+    // buffered events from Resource-Timing.
     observer.observe({
-      entryTypes: ["resource", "mark", "measure"],
-      buffered: true
+      entryTypes: ["mark", "measure"],
+      resource : {buffered: true}
     });
     &lt;/script&gt;
     &lt;/body&gt;
@@ -298,6 +300,9 @@
         <li> A <a>PerformanceEntryList</a> object called the <dfn>observer
         buffer</dfn> that is initially empty.
         </li>
+        <li>A sequence of strings called <dfn>observed entry types</dfn> that is
+          initially empty.
+        </li>
       </ul>
       <p>The `PerformanceObserver(callback)` constructor must create a new
       <a>PerformanceObserver</a> object with <a>PerformanceObserverCallback</a>
@@ -323,29 +328,41 @@
       but discouraged, as it will generate a significant volume of events.</p>
       <section>
         <h2><dfn>observe()</dfn> method</h2>
-        <p>The <a>observe()</a> method instructs the user agent to
-        <dfn>register the observer</dfn> and must run these steps:</p>
+        <p>The <a>observe()</a> method receives a <a>PerformanceObserverInit</a>
+          <var>options</var> dictionary. This method instructs the user agent to
+          <dfn>register the observer</dfn> and must run these steps:</p>
         <ol data-link-for="PerformanceObserverInit">
-          <li>Let <var>entry types</var> be <var>options</var> <a>entryTypes</a>
-            sequence.</li>
-          <li>Remove all unsupported types from <var>entry types</var>. The user
-            agent SHOULD notify developers if <var>entry types</var> is modified.
-            For example, a console warning listing removed types might be appropriate.</li>
-          <li>If the resulting <var>entry types</var> sequence is an empty sequence,
+          <li>Set <a>observed entry types</a> to a copy of <var>options</var>'
+            <a>entryTypes</a> sequence.
+          </li>
+          <li>For each key <var>entryType</var> in the <var>options</var> dictionary that
+            is not <a>entryTypes</a>, add the string <var>entryType</var> to
+            <a>observed entry types</a>.
+          </li>
+          <li> For each string <var>entryType</var> in <a>observed entry types</a>,
+            remove <var>entryType</var> from <a>observed entry types</a> if it is
+            unsupported by the user agent. The user agent SHOULD notify developers if
+            <a>observed entry types</a> is modified at this step. For example, a
+            console warning listing removed types might be appropriate.
+          </li>
+          <li>If <a>observed entry types</a> is an empty sequence,
             abort these steps. The user agent SHOULD notify developers when the
             steps are aborted to notify that registration has been aborted. For
-            example, a console warning might be appropriate.</li>
+            example, a console warning might be appropriate.
+          </li>
           <li>If the <a>list of registered performance observer objects</a> of
             <a>relevant global object</a> contains a <a>registered performance
-            observer</a> whose `observer` is the <a>context object</a>, replace its `options`, with <var>options</var>.
+            observer</a> whose `observer` is the <a>context object</a>, replace its
+            `options`, with <var>options</var>.
           </li>
          <li>Otherwise, append a new <a>registered performance observer</a>
           object to the <a>list of registered performance observer objects</a> of
           <a>relevant global object</a>, with the <a>context object</a> as
           `observer` and <var>options</var> as the `options`.
           </li>
-          <li>If <var>options</var>' <a>buffered</a> flag is set, for each
-            <var>entry type</var> in <var>entry types</var> sequence:
+          <li>For each <var>entry type</var> in <a>observed entry types</a>, if the
+            <a data-link-for="PerformanceEntryObserverOptions">buffered</a> flag is set
+            in <var>options</var>' dictionary named <var>entry type</var>:
             <ol>
               <li>Let <var>entries</var> be the <a>PerformanceEntryList</a>
               object returned by the
@@ -366,14 +383,34 @@
           <pre class="idl">
           dictionary PerformanceObserverInit {
             required sequence&lt;DOMString&gt; entryTypes;
-            boolean buffered = false;
+            PerformanceEntryObserverOptions fallback;
           };
           </pre>
           <dl>
             <dt><dfn>entryTypes</dfn></dt>
             <dd>A list of entry types to be observed. The list MUST NOT be empty
             and types not recognized by the user agent MUST be ignored.</dd>
+            <dt><dfn>fallback</dfn></dt>
+            <dd>A dictionary containing the parameters to be applied to all entries
+            observed. These parameters are overriden by entryType-specific dictionaries.
+            That is, if a parameter is present in the `fallback` dictionary but also in
+            the `mark` dictionary, then the value of the `mark` dictionary will be used
+            for entries whose <a data-lt="PerformanceEntry.entryType">entryType</a> is `mark`.</dd>
           </dl>
+          <p class="note">Whenever a new kind of <a>PerformanceEntry</a> is defined,
+            the <a>PerformanceObserverInit</a> dictionary should be augmented to
+            include a new optional <a>PerformanceEntryObserverOptions</a> dictionary
+            whose key is the new <a data-lt="PerformanceEntry.entryType">
+            entryType</a>.</p>
+        </section>
+        <section data-dfn-for="PerformanceEntryObserverOptions" data-link-for=
+        "PerformanceEntryObserverOptions">
+            <h2><dfn>PerformanceEntryObserverOptions</dfn> dictionary</h2>
+          <pre class="idl">
+          dictionary PerformanceEntryObserverOptions {
+            boolean buffered = false;
+          };
+          </pre>
           <dl>
             <dt><dfn>buffered</dfn></dt>
             <dd>A flag to indicate whether buffered entries should be queued into
@@ -436,30 +473,38 @@
     <h2>Processing</h2>
     <section data-link-for="PerformanceObserver">
     <h2>Queue a <code>PerformanceEntry</code></h2>
+      <p><i>Specifications</i> of performance entries may define an algorithm
+        <var>should append to observer</var> which receives a <a>PerformanceEntry</a> and
+        a <a>PerformanceObserver</a> as input and returns a boolean specifying whether the
+        observer should be notified of the entry.
       <p>To <dfn>queue a PerformanceEntry</dfn> (<var>new entry</var>) with an
-      optional <var>add to performance entry buffer</var> flag, which is unset
-      by default, run these steps:</p>
+        optional <var>add to performance entry buffer</var> flag, which is unset by
+        default, run these steps:</p>
     <ol>
-      <li>Let <i>interested observers</i> be an initially empty set of
+      <li>Let <var>interested observers</var> be an initially empty set of
       <a>PerformanceObserver</a> objects.
       </li>
-      <li>For each <a>registered performance observer</a> (<i>observer</i>):
+      <li>For each <a>registered performance observer</a> (<var>observer</var>), append
+        <var>observer</var> to <var>interested observers</var> if all of the following
+        conditions are met:
         <ol>
-          <li>If <i>observer</i>'s <a>PerformanceObserverInit</a> <a data-lt=
-          "PerformanceObserverInit.entryTypes">entryTypes</a> includes <i>new
-          entry</i>’s <a data-lt="PerformanceEntry.entryType">entryType</a>
-          value, append <i>observer</i> to <i>interested observers</i>.
+          <li><var>new entry</var>’s <a data-lt="PerformanceEntry.entryType">entryType</a>
+            value is in <var>observer</var>'s <a>observed entry types</a>.
+          </li>
+          <li><var>should append to observer</var>(<var>new entry</var>,
+            <var>observer</var>) returns true, if defined by the <i>specification</i> of
+            the corresponding <a data-lt="PerformanceEntry.entryType">entryType</a>.
           </li>
         </ol>
       </li>
-      <li>For each <i>observer</i> in <i>interested observers</i>:
+      <li>For each <var>observer</var> in <var>interested observers</var>:
         <ol>
-          <li>Append <i>new entry</i> to <a>observer buffer</a>.
+          <li>Append <var>new entry</var> to <var>observer</var>'s <a>observer buffer</a>.
           </li>
         </ol>
       </li>
       <li>If the <var>add to performance entry buffer</var> flag is set, add
-        <i>new entry</i> to the <a>performance entry buffer</a>.
+        <var>new entry</var> to the <a>performance entry buffer</a>.
       </li>
       <li>If the <a>performance observer task queued flag</a> is set, terminate
       these steps.
