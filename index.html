@@ -138,6 +138,15 @@
     &lt;body&gt;
     &lt;img id="image0" src="https://www.w3.org/Icons/w3c_main.png" /&gt;
     &lt;script&gt;
+    // Know when the entry types we would like to use are not supported.
+    function detectSupport(entryTypes) {
+      for (const entryType of entryTypes) {
+        if (!PerformanceObserver.supportedEntryTypes.includes(entryType)) {
+          console.log(entryType + " is not supported by PerformanceObserver!");
+        }
+      }
+    }
+    detectSupport(["resource", "mark", "measure"]);
     const observer = new PerformanceObserver(list =&gt; {
       list
         .getEntries()
@@ -151,12 +160,12 @@
           };
           return JSON.stringify(obj, null, 2);
         })
-        // Display them to the console
+        // Display them to the console.
         .forEach(console.log);
-      // maybe disconnect after processing the events.
+      // Maybe disconnect after processing the events.
       observer.disconnect();
     });
-    // retrieve buffered events and subscribe to new events
+    // Retrieve buffered events and subscribe to new events
     // for Resource-Timing and User-Timing
     observer.observe({
       entryTypes: ["resource", "mark", "measure"],
@@ -313,6 +322,7 @@
         void observe (PerformanceObserverInit options);
         void disconnect ();
         PerformanceEntryList takeRecords();
+        static readonly attribute FrozenArray&lt;DOMString&gt; supportedEntryTypes;
       };
       </pre>
       <p class="note">To keep the performance overhead to minimum the
@@ -429,6 +439,15 @@
         from the <a>list of registered performance observer objects</a> of
         <a>relevant global object</a>, and also empty <a>context object</a>'s
         <a>observer buffer</a>.</p>
+      </section>
+      <section>
+        <h2><dfn>supportedEntryTypes</dfn> attribute</h2>
+        <p>The <a>supportedEntryTypes</a>'s attribute getter must return a list
+        of entry types which the user agent supports for the
+        <a>PerformanceObserver</a> interface. This attribute allows web
+        developers to easily know which entry types are supported by the user
+        agent and to discover the entry types that exist and are supported by
+        the user agent.</p>
       </section>
     </section>
   </section>
