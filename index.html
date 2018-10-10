@@ -60,7 +60,7 @@
         href: 'http://w3c-test.org/performance-timeline/'
       }, {
         value: 'Test Suite repository',
-        href: 'https://github.com/w3c/web-platform-tests/tree/master/performance-timeline'
+        href: 'https://github.com/web-platform-tests/wpt/tree/master/performance-timeline'
       }]
     }],
     wgPatentURI:  "https://www.w3.org/2004/01/pp-impl/45211/status"
@@ -77,7 +77,7 @@
     <p>Performance Timeline Level 2 replaces the first version of
     [[PERFORMANCE-TIMELINE]] and includes:</p>
     <ul>
-      <li>Extends the base definition of the <a>Performance</a> interface
+      <li>Extends the base definition of the <a data-cite="!hr-time-2#idl-def-Performance">Performance</a> interface
       defined by [[HR-TIME-2]];
       </li>
       <li>Exposes <a>PerformanceEntry</a> in Web Workers [[WORKERS]];
@@ -186,12 +186,12 @@
     particular, the algorithms defined in this specification are intended to be
     easy to follow, and not intended to be performant.)</p>
     <p>The IDL fragments in this specification must be interpreted as required
-    for [conforming IDL fragments], as described in the Web IDL specification.
+    for <a data-cite="!WebIDL#dfn-conforming-idl-fragment">conforming IDL fragments</a>, as described in the Web IDL specification.
     [[!WebIDL]]</p>
   </section>
   <section>
     <h2><dfn>Performance Timeline</dfn></h2>
-    <p>Each <a>ECMAScript global environment</a> has:</p>
+    <p>Each <a data-cite="!WebIDL#es-environment">ECMAScript global environment</a> has:</p>
     <ul>
       <li>a <dfn>performance observer task queued flag</dfn></li>
       <li>a <dfn>list of <a>registered performance observer</a> objects</dfn> that is initially empty</li>
@@ -199,10 +199,11 @@
       <a>PerformanceEntry</a> objects that is initially empty
       </li>
     </ul>
-    <p>The <dfn>relevant performance entry buffer</dfn> is the <a>performance entry buffer</a> associated with the <a>relevant global object</a>.</p>
+    <p>The <dfn>relevant performance entry buffer</dfn> is the <a>performance entry buffer</a> associated with the
+    <a data-cite="!WHATWG-HTML#concept-relevant-global">relevant global object</a>.</p>
     <section data-dfn-for="Performance" data-link-for="Performance">
-      <h2>Extensions to the <a>Performance</a> interface</h2>
-      <p>This extends the <a>Performance</a> interface [[!HR-TIME-2]] and hosts
+      <h2>Extensions to the <a data-cite="!hr-time-2#idl-def-Performance">Performance</a> interface</h2>
+      <p>This extends the <a data-cite="!hr-time-2#idl-def-Performance">Performance</a> interface [[!HR-TIME-2]] and hosts
       performance related attributes and methods used to retrieve the
       performance metric data from the <a>Performance Timeline</a>.</p>
       <pre class="idl">
@@ -295,14 +296,14 @@
       <p>Each <a>PerformanceObserver</a> has these associated concepts:</p>
       <ul>
         <li>A <dfn>PerformanceObserverCallback</dfn> set on creation.</li>
-        <li>A list of <a>PerformanceEntry</a> objects called the <dfn>observer
+        <li> A <a>PerformanceEntryList</a> object called the <dfn>observer
         buffer</dfn> that is initially empty.
         </li>
       </ul>
       <p>The `PerformanceObserver(callback)` constructor must create a new
       <a>PerformanceObserver</a> object with <a>PerformanceObserverCallback</a>
       set to <var>callback</var> and then return it.</p>
-      <p>A <dfn>registered performance observer</dfn> is a <a>struct</a>
+      <p>A <dfn>registered performance observer</dfn> is a <a data-cite="!WHATWG-INFRA#struct">struct</a>
       consisting of an <var>observer</var> (a <a>PerformanceObserver</a> object)
       and <var>options</var> (a <a>PerformanceObserverInit</a> dictionary).</p>
       <pre class="idl">
@@ -312,6 +313,7 @@
       interface PerformanceObserver {
         void observe (PerformanceObserverInit options);
         void disconnect ();
+        PerformanceEntryList takeRecords();
       };
       </pre>
       <p class="note">To keep the performance overhead to minimum the
@@ -320,105 +322,116 @@
       performance data. Filtering by name is not supported, as it would
       implicitly require a subscription for all event types — this is possible,
       but discouraged, as it will generate a significant volume of events.</p>
-      <p>The <dfn>observe()</dfn> method instructs the user agent to
-      <dfn>register the observer</dfn> and must run these steps:</p>
-      <ol data-link-for="PerformanceObserverInit">
-        <li>Let <var>entry types</var> be <var>options</var> <a>entryTypes</a>
-          sequence.</li>
-        <li>Remove all unsupported types from <var>entry types</var>. The user
-          agent SHOULD notify developers if <var>entry types</var> is modified.
-          For example, a console warning listing removed types might be appropriate.</li>
-        <li>If the resulting <var>entry types</var> sequence is an empty sequence,
-          abort these steps. The user agent SHOULD notify developers when the
-          steps are aborted to notify that registration has been aborted. For
-          example, a console warning might be appropriate.</li>
-        <li>If the <a>list of registered performance observer objects</a> of
-          <a>relevant global object</a> contains a <a>registered performance
-          observer</a> whose `observer` is the <a>context object</a>, replace its `options`, with <var>options</var>.
-        </li>
-       <li>Otherwise, append a new <a>registered performance observer</a>
-        object to the <a>list of registered performance observer objects</a> of
-        <a>relevant global object</a>, with the <a>context object</a> as
-        `observer` and <var>options</var> as the `options`.
-        </li>
-        <li>If <var>options</var>' <a>buffered</a> flag is set, for each
-          <var>entry type</var> in <var>entry types</var> sequence:
-          <ol>
-            <li>Let <var>entries</var> be the <a>PerformanceEntryList</a>
-            object returned by the
+      <section>
+        <h2><dfn>observe()</dfn> method</h2>
+        <p>The <a>observe()</a> method instructs the user agent to
+        <dfn>register the observer</dfn> and must run these steps:</p>
+        <ol data-link-for="PerformanceObserverInit">
+          <li>Let <var>entry types</var> be <var>options</var> <a>entryTypes</a>
+            sequence.</li>
+          <li>Remove all unsupported types from <var>entry types</var>. The user
+            agent SHOULD notify developers if <var>entry types</var> is modified.
+            For example, a console warning listing removed types might be appropriate.</li>
+          <li>If the resulting <var>entry types</var> sequence is an empty sequence,
+            abort these steps. The user agent SHOULD notify developers when the
+            steps are aborted to notify that registration has been aborted. For
+            example, a console warning might be appropriate.</li>
+          <li>If the <a>list of registered performance observer objects</a> of
+            <a data-cite="!WHATWG-HTML#concept-relevant-global">relevant global object</a> contains a <a>registered performance
+            observer</a> whose `observer` is the <a data-cite="!WHATWG-DOM#context-object">context object</a>,
+            replace its `options`, with <var>options</var>.
+          </li>
+         <li>Otherwise, append a new <a>registered performance observer</a>
+          object to the <a>list of registered performance observer objects</a> of
+          <a data-cite="!WHATWG-HTML#concept-relevant-global">relevant global object</a>, with the 
+          <a data-cite="!WHATWG-DOM#context-object">context object</a> as `observer` and <var>options</var> as the `options`.
+          </li>
+          <li>If <var>options</var>' <a>buffered</a> flag is set, for each
+            <var>entry type</var> in <var>entry types</var> sequence:
+            <ol>
+              <li>Let <var>entries</var> be the <a>PerformanceEntryList</a>
+              object returned by the
+              <a href="#filter-buffer-by-name-and-type"></a> algorithm with
+              <var>buffer</var> set to <a>relevant performance entry buffer</a>,
+              <var>name</var> set to `null` and <var>type</var> set to
+              <var>entry type</var>.
+              </li>
+              <li>Append <var>entries</var> to the <a data-cite="!WHATWG-DOM#context-object">context object</a>'s
+              <a>observer buffer</a>.
+              </li>
+            </ol>
+          </li>
+        </ol>
+        <section data-dfn-for="PerformanceObserverInit" data-link-for=
+      "PerformanceObserverInit">
+          <h2><dfn>PerformanceObserverInit</dfn> dictionary</h2>
+          <pre class="idl">
+          dictionary PerformanceObserverInit {
+            required sequence&lt;DOMString&gt; entryTypes;
+            boolean buffered = false;
+          };
+          </pre>
+          <dl>
+            <dt><dfn>entryTypes</dfn></dt>
+            <dd>A list of entry types to be observed. The list MUST NOT be empty
+            and types not recognized by the user agent MUST be ignored.</dd>
+          </dl>
+          <dl>
+            <dt><dfn>buffered</dfn></dt>
+            <dd>A flag to indicate whether buffered entries should be queued into
+            observer's buffer.</dd>
+          </dl>
+        </section>
+        <section data-dfn-for="PerformanceObserverEntryList" data-link-for=
+        "PerformanceObserverEntryList">
+          <h2><dfn>PerformanceObserverEntryList</dfn> interface</h2>
+          <pre class="idl">
+          [Exposed=(Window,Worker)]
+          interface PerformanceObserverEntryList {
+            PerformanceEntryList getEntries();
+            PerformanceEntryList getEntriesByType (DOMString type);
+            PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type);
+          };
+          </pre>
+          <section>
+            <h2><dfn>getEntries()</dfn> method</h2>
+            <p>Returns a <a>PerformanceEntryList</a> object returned by
             <a href="#filter-buffer-by-name-and-type"></a> algorithm with
-            <var>buffer</var> set to <a>relevant performance entry buffer</a>,
-            <var>name</var> set to `null` and <var>type</var> set to
-            <var>entry type</var>.
-            </li>
-            <li>Append <var>entries</var> to the <a>context object</a>'s
-            <a>observer buffer</a>.
-            </li>
-          </ol>
-        </li>
-      </ol>
+            <var>buffer</var> set to <a>observer buffer</a>, and
+            <var>name</var> and <var>type</var> set to `null`.</p>
+          </section>
+          <section>
+            <h2><dfn>getEntriesByType()</dfn> method</h2>
+            <p>Returns a <a>PerformanceEntryList</a> object returned by
+            <a href="#filter-buffer-by-name-and-type"></a> algorithm with
+            <var>buffer</var> set to <a>observer buffer</a>,
+            <var>name</var> set to `null`, and <var>type</var> set
+            to `type`.</p>
+          </section>
+          <section>
+            <h2><dfn>getEntriesByName()</dfn> method</h2>
+            <p>Returns a <a>PerformanceEntryList</a> object returned by
+            <a href="#filter-buffer-by-name-and-type"></a> algorithm with
+            <var>buffer</var> set to <a>observer buffer</a>,
+            <var>name</var> set to `name`, and <var>type</var> set
+            to `null` if optional `entryType` is omitted, and <var>type</var> set
+            to `type` otherwise.</p>
+          </section>
+        </section>
+      </section>
+      <section>
+        <h2><dfn>takeRecords()</dfn> method</h2>
+        <p>The <a>takeRecords()</a> method must return a copy of the
+          <a data-cite="!WHATWG-DOM#context-object">context object</a>'s <a>observer buffer</a>, and also empty
+          <a data-cite="!WHATWG-DOM#context-object">context object</a>'s <a>observer buffer</a>.</p>
+      </section>
       <section>
         <h2><dfn>disconnect()</dfn> method</h2>
-        <p>The <a>disconnect()</a> method must remove the <a>context object</a>
+        <p>The <a>disconnect()</a> method must remove the <a data-cite="!WHATWG-DOM#context-object">context object</a>
         from the <a>list of registered performance observer objects</a> of
-        <a>relevant global object</a>, and also empty <a>context object</a>'s
+        <a data-cite="!WHATWG-HTML#concept-relevant-global">relevant global object</a>, and also empty
+        <a data-cite="!WHATWG-DOM#context-object">context object</a>'s
         <a>observer buffer</a>.</p>
-      </section>
-      <section data-dfn-for="PerformanceObserverInit" data-link-for=
-      "PerformanceObserverInit">
-        <h2><dfn>PerformanceObserverInit</dfn> dictionary</h2>
-        <pre class="idl">
-        dictionary PerformanceObserverInit {
-          required sequence&lt;DOMString&gt; entryTypes;
-          boolean buffered = false;
-        };
-        </pre>
-        <dl>
-          <dt><dfn>entryTypes</dfn></dt>
-          <dd>A list of entry types to be observed. The list MUST NOT be empty
-          and types not recognized by the user agent MUST be ignored.</dd>
-        </dl>
-        <dl>
-          <dt><dfn>buffered</dfn></dt>
-          <dd>A flag to indicate whether buffered entries should be queued into
-          observer's buffer.</dd>
-        </dl>
-      </section>
-      <section data-dfn-for="PerformanceObserverEntryList" data-link-for=
-      "PerformanceObserverEntryList">
-        <h2><dfn>PerformanceObserverEntryList</dfn> interface</h2>
-        <pre class="idl">
-        [Exposed=(Window,Worker)]
-        interface PerformanceObserverEntryList {
-          PerformanceEntryList getEntries();
-          PerformanceEntryList getEntriesByType (DOMString type);
-          PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type);
-        };
-        </pre>
-        <section>
-          <h2><dfn>getEntries()</dfn> method</h2>
-          <p>Returns a <a>PerformanceEntryList</a> object returned by
-          <a href="#filter-buffer-by-name-and-type"></a> algorithm with
-          <var>buffer</var> set to <a>observer buffer</a>, and
-          <var>name</var> and <var>type</var> set to `null`.</p>
-        </section>
-        <section>
-          <h2><dfn>getEntriesByType()</dfn> method</h2>
-          <p>Returns a <a>PerformanceEntryList</a> object returned by
-          <a href="#filter-buffer-by-name-and-type"></a> algorithm with
-          <var>buffer</var> set to <a>observer buffer</a>,
-          <var>name</var> set to `null`, and <var>type</var> set
-          to `type`.</p>
-        </section>
-        <section>
-          <h2><dfn>getEntriesByName()</dfn> method</h2>
-          <p>Returns a <a>PerformanceEntryList</a> object returned by
-          <a href="#filter-buffer-by-name-and-type"></a> algorithm with
-          <var>buffer</var> set to <a>observer buffer</a>,
-          <var>name</var> set to `name`, and <var>type</var> set
-          to `null` if optional `entryType` is omitted, and <var>type</var> set
-          to `type` otherwise.</p>
-        </section>
       </section>
     </section>
   </section>
@@ -458,12 +471,12 @@
       </li>
       <li>
         <a>Queue a task</a> that consists of running the following substeps.
-        The <a>task source</a> for the queued task is the <i>performance
+        The <a data-cite="!WHATWG-HTML#task-source">task source</a> for the queued task is the <i>performance
         timeline</i> task source.
         <ol>
           <li>Unset <a>performance observer task queued flag</a> for the
-            <a>relevant global object</a>.</li>
-          <li>Let <i>notify list</i> be a copy of <a>relevant global object</a>'s <a>list of registered performance observer objects</a>.
+            <a data-cite="!WHATWG-HTML#concept-relevant-global">relevant global object</a>.</li>
+          <li>Let <i>notify list</i> be a copy of <a data-cite="!WHATWG-HTML#concept-relevant-global">relevant global object</a>'s <a>list of registered performance observer objects</a>.
           </li>
           <li>For each <a>PerformanceObserver</a> object <i>po</i> in <i>notify
           list</i>, run these steps:
@@ -475,15 +488,16 @@
               </li>
               <li>If <i>entries</i> is non-empty, call <i>po</i>’s callback
               with <i>entries</i> as first argument and <i>po</i> as the second
-              argument and <a>callback this value</a>. If this throws an
-              exception, <a>report the exception</a>.
+              argument and <a data-cite="!WebIDL#dfn-callback-this-value">callback this value</a>. If this <a data-cite="!WebIDL#dfn-throw">throw</a>s an
+              exception, <a data-cite="!WHATWG-HTML#report-the-exception">report the exception</a>.
               </li>
             </ol>
           </li>
         </ol>
       </li>
     </ol>
-    <p>The <i>performance timeline</i> <a>task queue</a> is a low priority
+    <p>The <i>performance timeline</i> <a
+    data-cite="!WHATWG-HTML#task-queue">task queue</a> is a low priority
     queue that, if possible, should be processed by the user agent during idle
     periods to minimize impact of performance monitoring code.</p>
     </section>
@@ -505,11 +519,11 @@
           <ol>
             <li>If <var>name</var> is not `null` and <a>entryObject</a>'s
             `name` attribute does not match <var>name</var> in a
-            <a>case-sensitive</a> manner, go to next <a>entryObject</a>.
+            <a data-cite="!WHATWG-HTML#case-sensitive">case-sensitive</a> manner, go to next <a>entryObject</a>.
             </li>
             <li>If <var>type</var> is not `null` and <a>entryObject</a>'s
             `type` attribute does not match <var>type</var> in a
-            <a>case-sensitive</a> manner, go to next <a>entryObject</a>.
+            <a data-cite="!WHATWG-HTML#case-sensitive">case-sensitive</a> manner, go to next <a>entryObject</a>.
             </li>
             <li>Add <a>entryObject</a> to the <a>list of entry objects</a>.
             </li>
@@ -520,42 +534,9 @@
       </ol>
     </section>
   </section>
-  <section>
-    <h2>Dependencies</h2>
-    <p>This specification depends on the following interfaces, attributes,
-    concepts, and terms which are defined in their linked specifications.</p>
-    <ul>
-      <li><code><dfn data-cite=
-      "!hr-time-2#idl-def-Performance">Performance</dfn></code> interface</li>
-      <li><code><dfn data-cite=
-      "!resource-timing#idl-def-PerformanceResourceTiming">PerformanceResourceTiming</dfn></code>
-      interface</li>
-      <li><dfn data-cite=
-      "!resource-timing#widl-PerformanceResourceTiming-initiatorType">initiatorType</dfn></li>
-      <li><dfn data-cite="!WebIDL#dfn-callback-this-value">callback this
-      value</dfn></li>
-      <li><dfn data-cite="!WebIDL#dfn-conforming-idl-fragment">conforming IDL
-      fragments</dfn></li>
-      <li><dfn data-cite="!WebIDL#dfn-dictionary-member">dictionary
-      member</dfn></li>
-      <li><dfn data-cite="!WebIDL#dfn-throw">throw</dfn></li>
-      <li><dfn data-cite="!WebIDL#es-environment">ECMAScript global
-      environment</dfn></li>
-      <li><dfn data-cite="!WHATWG-DOM#context-object">context object</dfn></li>
-      <li><dfn data-cite=
-      "!WHATWG-HTML#case-sensitive">case-sensitive</dfn></li>
-      <li><dfn data-cite="!WHATWG-HTML#queue-a-task">queue a task</dfn></li>
-      <li><dfn data-cite="!WHATWG-HTML#report-the-exception">report the
-      exception</dfn></li>
-      <li><dfn data-cite="!WHATWG-HTML#task-queue">task queue</dfn></li>
-      <li><dfn data-cite="!WHATWG-HTML#task-source">task source</dfn></li>
-      <li><dfn data-cite="!WHATWG-HTML#concept-relevant-global">relevant global object</dfn></li>
-      <li><dfn data-cite="!WHATWG-INFRA#struct">struct</dfn></li>
-    </ul>
-  </section>
   <section id="privacy-security">
     <h3>Privacy and Security</h3>
-    <p>This specification extends the <a>Performance</a> interface defined by
+    <p>This specification extends the <a data-cite="!hr-time-2#idl-def-Performance">Performance</a> interface defined by
     [[HR-TIME-2]] and provides methods to queue and retrieve entries from the
     <a>performance timeline</a>. Please refer to [[HR-TIME-2]] for privacy and
     security considerations of exposing high-resoluting timing information.</p>
