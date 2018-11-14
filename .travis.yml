@@ -1,4 +1,7 @@
+dist: trusty
 language: node_js
+node_js:
+  - lts/*
 sudo: false
 branches:
   only:
@@ -8,8 +11,11 @@ env:
   - URL="https://w3c.github.io/performance-timeline/W3CTRMANIFEST"
   - DECISION="http://www.w3.org/2015/06/24-webperf-minutes.html#item01"
   - secure: "Fos6nV1CNKK/Pj4woiotxjRLvZGc+XS9qoTINwESLTb6CK5CWrcwcfh8IkMD2BMQg0yo+eyCmCqFfSpZc3zP1/jxPOGNBAd7wfNH/02jiMtc1cej+2mAHpVpL0PY0UK8uu/DqQ340NqeBj01Z1rFYydqfL6T5GS2++5rg6klVKA="
+install:
+  - npm install respec-validator
 script:
-- echo "ok"
+  - npx respec-validator
+
 after_success:
 - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && curl "https://labs.w3.org/echidna/api/request" --data "url=$URL" --data "decision=$DECISION"
   --data "token=$TOKEN"'
