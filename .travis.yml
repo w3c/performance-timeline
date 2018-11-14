@@ -1,8 +1,6 @@
 dist: trusty
-language: node_js
 node_js:
   - lts/*
-sudo: false
 branches:
   only:
   - gh-pages
@@ -14,8 +12,10 @@ env:
 install:
   - npm install respec-validator
 script:
-  - npx respec-validator
-
+  - npx respec-validator --gh-token=$GH_TOKEN
+cache:
+  directories:
+    - node_modules # NPM packages
 after_success:
 - '[ "${TRAVIS_PULL_REQUEST}" = "false" ] && curl "https://labs.w3.org/echidna/api/request" --data "url=$URL" --data "decision=$DECISION"
   --data "token=$TOKEN"'
