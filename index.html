@@ -162,7 +162,7 @@
         })
         // Display them to the console.
         .forEach(console.log);
-      // Maybe disconnect after processing the events.
+      // Disconnect after processing the events.
       observer.disconnect();
     });
     // Retrieve buffered events and subscribe to new events
@@ -445,12 +445,17 @@
       </section>
       <section>
         <h2><dfn>supportedEntryTypes</dfn> attribute</h2>
-        <p>The <a>supportedEntryTypes</a>'s attribute getter must return a list
-        of entry types which the user agent supports for the
-        <a>PerformanceObserver</a> interface. This attribute allows web
-        developers to easily know which entry types are supported by the user
-        agent and to discover the entry types that exist and are supported by
-        the user agent.</p>
+        <p>The user agent must maintain <dfn>supported entry types</dfn>, a list
+        of strings representing the entry types which the user agent supports
+        for the <a>PerformanceObserver</a> interface. This list is populated by
+        specs that define new entry types via the hook to
+        <a href="#register-performance-entry-type"></a>.</p>
+        <p>The <a>supportedEntryTypes</a>'s attribute getter must return a copy
+        of the user agent's <a>supported entry types</a>, sorted in alphabetical
+        order.</p>
+        <p class="note">This attribute allows web developers to easily know
+        which entry types are supported by the user agent and to discover the
+        entry types that exist and are supported by the user agent.</p>
       </section>
     </section>
   </section>
@@ -551,6 +556,11 @@
         <li>Return the <a>list of entry objects</a>.
         </li>
       </ol>
+    </section>
+    <section data-link-for="PerformanceObserver">
+      <h2>Register performance entry type</h2>
+      <p>Given a string <var>type</var>, to register <var>type</var> the user
+        agent must append <var>type</var> to <a>supported entry types</a>.</p>
     </section>
   </section>
   <section id="privacy-security">
