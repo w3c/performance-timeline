@@ -353,7 +353,7 @@
           </li>
          <li>Otherwise, append a new <a>registered performance observer</a>
           object to the <a>list of registered performance observer objects</a> of
-          <a data-cite="!WHATWG-HTML#concept-relevant-global">relevant global object</a>, with the 
+          <a data-cite="!WHATWG-HTML#concept-relevant-global">relevant global object</a>, with the
           <a data-cite="!WHATWG-DOM#context-object">context object</a> as `observer` and <var>options</var> as the `options`.
           </li>
           <li>If <var>options</var>' <a>buffered</a> flag is set, for each
@@ -445,14 +445,17 @@
       </section>
       <section>
         <h2><dfn>supportedEntryTypes</dfn> attribute</h2>
-        <p>The user agent must maintain <dfn>supported entry types</dfn>, a list
+        <p>The user agent MUST maintain <dfn>supported entry types</dfn>, a list
         of strings representing the entry types which the user agent supports
         for the <a>PerformanceObserver</a> interface. This list is populated by
-        specs that define new entry types via the algorithm to
-        <a href="#register-performance-entry-type"></a>.</p>
-        <p>The <a>supportedEntryTypes</a>'s attribute getter must return a copy
-        of the user agent's <a>supported entry types</a>, sorted in alphabetical
-        order.</p>
+        specifications that define new entry types via the
+        <a href="#register-performance-entry-type"></a> algorithm.</p>
+        <p>When <a>supportedEntryTypes</a>'s attribute getter is called, run the following steps:</p>
+        <ol>
+          <li>Let <var>result</var> be a copy of the user agent's <a>supported entry types</a>.</li>
+          <li>Sort <var>result</var> in alphabetical order.</li>
+          <li>Return <var>result</var>.</li>
+        </ol>
         <p class="note">This attribute allows web developers to easily know
         which entry types are supported by the user agent.</p>
       </section>
