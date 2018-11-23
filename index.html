@@ -118,7 +118,7 @@
     function detectSupport(entryTypes) {
       for (const entryType of entryTypes) {
         if (!PerformanceObserver.supportedEntryTypes.includes(entryType)) {
-          console.log(entryType + " is not supported by PerformanceObserver!");
+          // Indicate to client-side analytics that |entryType| is not supported.
         }
       }
     }
@@ -571,8 +571,11 @@
     </section>
     <section data-link-for="PerformanceObserver">
       <h2>Register performance entry type</h2>
-      <p>Given a string <var>type</var>, to register <var>type</var> the user
-        agent MUST append <var>type</var> to <a>supported entry types</a>.</p>
+      <p>To register a performance entry type, run the following steps:</p>
+      <ol>
+        <li>Let <var>type</var> be the input string.</li>
+        <li>Append <var>type</var> to <a>supported entry types</a>.</li>
+      </ol>
     </section>
   </section>
   <section id="privacy-security">
