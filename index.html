@@ -439,13 +439,13 @@
         buffer</a>.</p>
       </section>
       <section>
-        <h2><dfn>supportedEntryTypes</dfn> attribute</h2>
+        <h2><a>supportedEntryTypes</a> attribute</h2>
         <p>The user agent MUST maintain <dfn>supported entry types</dfn>, a list
         of strings representing the entry types which the user agent supports
         for the <a>PerformanceObserver</a> interface. This list is populated by
         specifications that define new entry types via the
-        <a href="#register-performance-entry-type"></a> algorithm.</p>
-        <p>When <a>supportedEntryTypes</a>'s attribute getter is called, run the following steps:</p>
+        <a>register a performance entry type</a> algorithm.</p>
+        <p>When <dfn>supportedEntryTypes</dfn>'s attribute getter is called, run the following steps:</p>
         <ol>
           <li>Let <var>result</var> be a copy of the user agent's <a>supported entry types</a>.</li>
           <li>Sort <var>result</var> in alphabetical order.</li>
@@ -571,7 +571,7 @@
     </section>
     <section data-link-for="PerformanceObserver">
       <h2>Register performance entry type</h2>
-      <p>To register a performance entry type, run the following steps:</p>
+      <p>To <dfn>register a performance entry type</dfn>, run the following steps:</p>
       <ol>
         <li>Let <var>type</var> be the input string.</li>
         <li>Append <var>type</var> to <a>supported entry types</a>.</li>
