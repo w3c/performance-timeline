@@ -114,6 +114,15 @@
     &lt;body&gt;
     &lt;img id="image0" src="https://www.w3.org/Icons/w3c_main.png" /&gt;
     &lt;script&gt;
+    // Know when the entry types we would like to use are not supported.
+    function detectSupport(entryTypes) {
+      for (const entryType of entryTypes) {
+        if (!PerformanceObserver.supportedEntryTypes.includes(entryType)) {
+          // Indicate to client-side analytics that |entryType| is not supported.
+        }
+      }
+    }
+    detectSupport(["resource", "mark", "measure"]);
     const observer = new PerformanceObserver(list =&gt; {
       list
         .getEntries()
@@ -127,12 +136,12 @@
           };
           return JSON.stringify(obj, null, 2);
         })
-        // Display them to the console
+        // Display them to the console.
         .forEach(console.log);
-      // maybe disconnect after processing the events.
+      // Disconnect after processing the events.
       observer.disconnect();
     });
-    // retrieve buffered events and subscribe to new events
+    // Retrieve buffered events and subscribe to new events
     // for Resource-Timing and User-Timing
     observer.observe({
       entryTypes: ["resource", "mark", "measure"],
@@ -298,6 +307,7 @@
         void observe (PerformanceObserverInit options);
         void disconnect ();
         PerformanceEntryList takeRecords();
+        static readonly attribute FrozenArray&lt;DOMString&gt; supportedEntryTypes;
       };
       </pre>
       <p class="note">To keep the performance overhead to minimum the
@@ -428,6 +438,22 @@
         "WHATWG-DOM#context-object">context object</a>'s <a>observer
         buffer</a>.</p>
       </section>
+      <section>
+        <h2><a>supportedEntryTypes</a> attribute</h2>
+        <p>The user agent MUST maintain <dfn>supported entry types</dfn>, a list
+        of strings representing the entry types which the user agent supports
+        for the <a>PerformanceObserver</a> interface. This list is populated by
+        specifications that define new entry types via the
+        <a>register a performance entry type</a> algorithm.</p>
+        <p>When <dfn>supportedEntryTypes</dfn>'s attribute getter is called, run the following steps:</p>
+        <ol>
+          <li>Let <var>result</var> be a copy of the user agent's <a>supported entry types</a>.</li>
+          <li>Sort <var>result</var> in alphabetical order.</li>
+          <li>Return <var>result</var>.</li>
+        </ol>
+        <p class="note">This attribute allows web developers to easily know
+        which entry types are supported by the user agent.</p>
+      </section>
     </section>
   </section>
   <section>
@@ -541,6 +567,14 @@
         </li>
         <li>Return the <a>list of entry objects</a>.
         </li>
+      </ol>
+    </section>
+    <section data-link-for="PerformanceObserver">
+      <h2>Register performance entry type</h2>
+      <p>To <dfn>register a performance entry type</dfn>, run the following steps:</p>
+      <ol>
+        <li>Let <var>type</var> be the input string.</li>
+        <li>Append <var>type</var> to <a>supported entry types</a>.</li>
       </ol>
     </section>
   </section>
