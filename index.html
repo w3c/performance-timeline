@@ -377,7 +377,7 @@
             </ol>
           </li>
           <li>If <var>observer</var>'s <a>observer type</a> is
-          <code>"multiple"</code>, run the following steps:</li>
+          <code>"multiple"</code>, run the following steps:
           <ol>
             <li>Let <var>entry types</var> be <var>options</var>'s
             <a>entryTypes</a> sequence.
@@ -407,8 +407,9 @@
             <a>options list</a> set to a list containing <var>options</var> as
             its only item.</li>
           </ol>
+          </li>
           <li>Otherwise (<var>observer</var>'s <a>observer type</a> is
-          <code>"single"</code>), run the following steps:</li>
+          <code>"single"</code>), run the following steps:
           <ol>
             <li>If <var>options</var>'s <a>type</a> is not contained in
             <a>supported entry types</a>, abort these steps. The user agent
@@ -451,6 +452,7 @@
               </ol>
             </li>
           </ol>
+          </li>
         </ol>
         <p class="note">A <a>PerformanceObserver</a> object should always call
         <a>observe()</a> with <var>options</var>'s
