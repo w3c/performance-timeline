@@ -330,7 +330,7 @@
       };
       </pre>
       <p class="note">To keep the performance overhead to minimum the
-      application should only subscribe to event types that it is interested
+      application ought to only subscribe to event types that it is interested
       in, and disconnect the observer once it no longer needs to observe the
       performance data. Filtering by name is not supported, as it would
       implicitly require a subscription for all event types — this is possible,
@@ -454,7 +454,7 @@
           </ol>
           </li>
         </ol>
-        <p class="note">A <a>PerformanceObserver</a> object should always call
+        <p class="note">A <a>PerformanceObserver</a> object needs to always call
         <a>observe()</a> with <var>options</var>'s
         <a data-link-for=PerformanceObserverInit>entryTypes</a> set OR always
         call <a>observe()</a> with <var>options</var>'s
