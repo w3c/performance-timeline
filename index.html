@@ -162,7 +162,7 @@
       // Disconnect after processing the events.
       resourceObserver.disconnect();
     });
-    // Retrieve buffered events and subscribe to never events for Resource Timing.
+    // Retrieve buffered events and subscribe to newer events for Resource Timing.
     resourceObserver.observe({type: "resource", buffered: true});
     &lt;/script&gt;
     &lt;/body&gt;
@@ -338,15 +338,17 @@
       <section>
         <h2><dfn>observe()</dfn> method</h2>
         <p>The <a>observe()</a> method instructs the user agent to
-        <dfn>register the <var>observer</var></dfn> and must run these steps:</p>
+        <dfn>register the observer</dfn> and must run these steps:</p>
         <ol data-link-for="PerformanceObserverInit">
+          <li>Let <var>observer</var> be the <a data-cite=
+            "WHATWG-DOM#context-object">context object</a>.</li>
           <li>If <var>options</var>'s <a>entryTypes</a> and <a>type</a> members
-          are both omitted, then <a data-cite="!WEBIDL#dfn-throw">throw</a> a
-          <a data-cite="!WEBIDL#syntaxerror"><code>SyntaxError</code></a>.</li>
+          are both omitted, then <a data-cite="WEBIDL#dfn-throw">throw</a> a
+          <a data-cite="WEBIDL#syntaxerror"><code>SyntaxError</code></a>.</li>
           <li>If <var>options</var>'s <a>entryTypes</a> is present and any other
           member is also present, then
-          <a data-cite="!WEBIDL#dfn-throw">throw</a> a
-          <a data-cite="!WEBIDL#syntaxerror"><code>SyntaxError</code></a>.</li>
+          <a data-cite="WEBIDL#dfn-throw">throw</a> a
+          <a data-cite="WEBIDL#syntaxerror"><code>SyntaxError</code></a>.</li>
           <li>Update or check <var>observer</var>'s <a>observer type</a> by
           running these steps:
             <ol>
@@ -364,14 +366,14 @@
               <li>If <var>observer</var>'s <a>observer type</a> is
               <code>"single"</code> and <var>options</var>'s
               <a>entryTypes</a> member is present, then
-              <a data-cite="!WEBIDL#dfn-throw">throw</a> an
-              <a data-cite="!WEBIDL#invalidmodificationerror">
+              <a data-cite="WEBIDL#dfn-throw">throw</a> an
+              <a data-cite="WEBIDL#invalidmodificationerror">
               <code>InvalidModificationError</code></a>.
               </li>
               <li>If <var>observer</var>'s <a>observer type</a> is
               <code>"multiple"</code> and <var>options</var>'s <a>type</a>
-              member is present, then <a data-cite="!WEBIDL#dfn-throw">throw</a>
-              an <a data-cite="!WEBIDL#invalidmodificationerror">
+              member is present, then <a data-cite="WEBIDL#dfn-throw">throw</a>
+              an <a data-cite="WEBIDL#invalidmodificationerror">
               <code>InvalidModificationError</code></a>.
               </li>
             </ol>
@@ -398,9 +400,9 @@
             "WHATWG-DOM#context-object">context object</a>, replace its
             <a>options list</a> with a list containing <var>options</var> as its
             only item.</li>
-            <li>Otherwise, append a new <a>registered performance observer</a>
-            object to the <a>list of registered performance observer objects</a>
-            of <a data-cite=
+            <li>Otherwise, create and append a <a>registered performance
+            observer</a> object to the <a>list of registered performance
+            observer objects</a> of <a data-cite=
             "HTML/webappapis.html#concept-relevant-global">relevant global
             object</a>, with <a>observer</a> set to the
             <a data-cite="WHATWG-DOM#context-object">context object</a> and
@@ -408,9 +410,10 @@
             its only item.</li>
           </ol>
           </li>
-          <li>Otherwise (<var>observer</var>'s <a>observer type</a> is
-          <code>"single"</code>), run the following steps:
+          <li>Otherwise, run the following steps:
           <ol>
+            <li>Assert that <var>observer</var>'s <a>observer type</a> is
+            <code>"single"</code>.</li>
             <li>If <var>options</var>'s <a>type</a> is not contained in
             <a>supported entry types</a>, abort these steps. The user agent
             SHOULD notify developers when this happens, for instance via a
@@ -426,16 +429,18 @@
                 whose <a>type</a> is equal to <var>options</var>'s <a>type</a>,
                 replace <var>currentOptions</var> with <var>options</var> in
                 <var>obs</var>'s <a>options list</a>.</li>
-                <li>Otherwise, append a new
-                <a>registered performance observer</a> object to the <a>list of
-                registered performance observer objects</a> of
-                <a data-cite="HTML/webappapis.html#concept-relevant-global">
-                relevant global object</a>, with <a>observer</a> set to the
-                <a data-cite="WHATWG-DOM#context-object">context object</a> and
-                <a>options list</a> set to a list containing <var>options</var>
-                as its only item.</li>
+                <li>Otherwise, append <var>options</var> to <var>obs</var>'s
+                <a>options list</a>.</li>
               </ol>
             </li>
+            <li>Otherwise, create and append a
+            <a>registered performance observer</a> object to the <a>list of
+            registered performance observer objects</a> of
+            <a data-cite="HTML/webappapis.html#concept-relevant-global">
+            relevant global object</a>, with <a>observer</a> set to the
+            <a data-cite="WHATWG-DOM#context-object">context object</a> and
+            <a>options list</a> set to a list containing <var>options</var>
+            as its only item.</li>
             <li>If <var>options</var>'s <a>buffered</a> flag is set:
               <ol>
                 <li>Let <var>entries</var> be the <a>PerformanceEntryList</a>
@@ -458,15 +463,20 @@
         <a>observe()</a> with <var>options</var>'s
         <a data-link-for=PerformanceObserverInit>entryTypes</a> set OR always
         call <a>observe()</a> with <var>options</var>'s
-        <a data-link-for=PerformanceObserverInit>type</a> set. This is meant to
-        avoid confusion with how calls would stack. When using
-        <a data-link-for=PerformanceObserverInit>entryTypes</a>, no other
-        parameters in <a>PerformanceObserverInit</a> can be used. In addition,
-        multiple <a>observe()</a> calls will override for backwards
+        <a data-link-for=PerformanceObserverInit>type</a> set. If one
+        <a>PerformanceObserver</a> calls <a>observe()</a> with <a data-link-for=
+        PerformanceObserverInit>entryTypes</a> and also calls observe with
+        <a data-link-for=PerformanceObserverInit>type</a>, then an exception is
+        thrown. This is meant to avoid confusion with how calls would stack.
+        When using <a data-link-for=PerformanceObserverInit>entryTypes</a>, no
+        other parameters in <a>PerformanceObserverInit</a> can be used. In
+        addition, multiple <a>observe()</a> calls will override for backwards
         compatibility and because a single call should suffice in this case. On
         the other hand, when using
         <a data-link-for=PerformanceObserverInit>type</a>, calls will stack
-        because a single call can only specify one type.</p>
+        because a single call can only specify one type. Calling
+        <a>observe()</a> with a repeated <a data-link-for=
+        PerformanceObserverInit>type</a> will also override.</p>
         <section data-dfn-for="PerformanceObserverInit" data-link-for=
         "PerformanceObserverInit">
           <h2><dfn>PerformanceObserverInit</dfn> dictionary</h2>
@@ -485,8 +495,9 @@
           </dl>
           <dl>
             <dt><dfn>type</dfn></dt>
-            <dd>A single entry type to be observed. If present, the type MUST be
-            recognized by the user agent. Other members may be present.</dd>
+            <dd>A single entry type to be observed. A type that is not
+            recognized by the user agent MUST be ignored. Other members may be
+            present.</dd>
           </dl>
           <dl>
             <dt><dfn>buffered</dfn></dt>
@@ -585,7 +596,7 @@
             <a>PerformanceObserverInit</a> item whose
             <a data-link-for="PerformanceObserverInit">entryTypes</a> member
             includes <var>entryType</var> or whose
-            <a data-link-for="PerformanceObserverInit">type</a> member is
+            <a data-link-for="PerformanceObserverInit">type</a> member equals to
             <var>entryType</var>, append <var>regObs</var>'s <a>observer</a>
             to <var>interested observers</var>.
             </li>
