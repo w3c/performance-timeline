@@ -123,7 +123,7 @@
       }
     }
     detectSupport(["resource", "mark", "measure"]);
-    const observer = new PerformanceObserver(list =&gt; {
+    const userTimingObserver = new PerformanceObserver(list =&gt; {
       list
         .getEntries()
         // Get the values we are interested in
@@ -139,14 +139,31 @@
         // Display them to the console.
         .forEach(console.log);
       // Disconnect after processing the events.
-      observer.disconnect();
+      userTimingObserver.disconnect();
     });
-    // Retrieve buffered events and subscribe to new events
-    // for Resource-Timing and User-Timing
-    observer.observe({
-      entryTypes: ["resource", "mark", "measure"],
-      buffered: true
+    // Subscribe to new events for User-Timing.
+    userTimingObserver.observe({entryTypes: ["mark", "measure"]});
+    const resourceObserver = new PerformanceObserver(list =&gt; {
+      list
+        .getEntries()
+        // Get the values we are interested in
+        .map(({ name, startTime, fetchStart, responseStart, responseEnd }) =&gt; {
+          const obj = {
+            "Name": name,
+            "Start Time": startTime,
+            "Fetch Start": fetchStart,
+            "Response Start": responseStart,
+            "Response End": responseEnd,
+          };
+          return JSON.stringify(obj, null, 2);
+        })
+        // Display them to the console.
+        .forEach(console.log);
+      // Disconnect after processing the events.
+      resourceObserver.disconnect();
     });
+    // Retrieve buffered events and subscribe to newer events for Resource Timing.
+    resourceObserver.observe({type: "resource", buffered: true});
     &lt;/script&gt;
     &lt;/body&gt;
     &lt;/html&gt;
@@ -289,16 +306,18 @@
       <ul>
         <li>A <dfn>PerformanceObserverCallback</dfn> set on creation.</li>
         <li>A <a>PerformanceEntryList</a> object called the <dfn>observer
-        buffer</dfn> that is initially empty.
-        </li>
+        buffer</dfn> that is initially empty.</li>
+        <li>A <code>DOMString</code> <dfn>observer type</dfn> which is initially
+        <code>"undefined"</code>.</li>
       </ul>
       <p>The `PerformanceObserver(callback)` constructor must create a new
       <a>PerformanceObserver</a> object with <a>PerformanceObserverCallback</a>
       set to <var>callback</var> and then return it.</p>
       <p>A <dfn>registered performance observer</dfn> is a <a data-cite=
-      "WHATWG-INFRA#struct">struct</a> consisting of an <var>observer</var> (a
-      <a>PerformanceObserver</a> object) and <var>options</var> (a
-      <a>PerformanceObserverInit</a> dictionary).</p>
+      "WHATWG-INFRA#struct">struct</a> consisting of an
+      <dfn>observer</dfn> member (a <a>PerformanceObserver</a> object) and an
+      <dfn>options list</dfn> member (a list of <a>PerformanceObserverInit</a>
+      dictionaries).</p>
       <pre class="idl">
       callback PerformanceObserverCallback = void (PerformanceObserverEntryList entries,
                                                    PerformanceObserver observer);
@@ -311,7 +330,7 @@
       };
       </pre>
       <p class="note">To keep the performance overhead to minimum the
-      application should only subscribe to event types that it is interested
+      application ought to only subscribe to event types that it is interested
       in, and disconnect the observer once it no longer needs to observe the
       performance data. Filtering by name is not supported, as it would
       implicitly require a subscription for all event types — this is possible,
@@ -321,62 +340,164 @@
         <p>The <a>observe()</a> method instructs the user agent to
         <dfn>register the observer</dfn> and must run these steps:</p>
         <ol data-link-for="PerformanceObserverInit">
-          <li>Let <var>entry types</var> be <var>options</var>
-          <a>entryTypes</a> sequence.
-          </li>
-          <li>Remove all unsupported types from <var>entry types</var>. The
-          user agent SHOULD notify developers if <var>entry types</var> is
-          modified. For example, a console warning listing removed types might
-          be appropriate.</li>
-          <li>If the resulting <var>entry types</var> sequence is an empty
-          sequence, abort these steps. The user agent SHOULD notify developers
-          when the steps are aborted to notify that registration has been
-          aborted. For example, a console warning might be appropriate.</li>
-          <li>If the <a>list of registered performance observer objects</a> of
-          <a data-cite="HTML/webappapis.html#concept-relevant-global">relevant
-          global object</a> contains a <a>registered performance observer</a>
-          whose `observer` is the <a data-cite=
-          "WHATWG-DOM#context-object">context object</a>, replace its
-          `options`, with <var>options</var>.
-          </li>
-          <li>Otherwise, append a new <a>registered performance observer</a>
-          object to the <a>list of registered performance observer objects</a>
-          of <a data-cite=
-          "HTML/webappapis.html#concept-relevant-global">relevant global
-          object</a>, with the <a data-cite="WHATWG-DOM#context-object">context
-          object</a> as `observer` and <var>options</var> as the `options`.
-          </li>
-          <li>If <var>options</var>' <a>buffered</a> flag is set, for each
-          <var>entry type</var> in <var>entry types</var> sequence:
+          <li>Let <var>observer</var> be the <a data-cite=
+            "WHATWG-DOM#context-object">context object</a>.</li>
+          <li>If <var>options</var>'s <a>entryTypes</a> and <a>type</a> members
+          are both omitted, then <a data-cite="WEBIDL#dfn-throw">throw</a> a
+          <a data-cite="WEBIDL#syntaxerror"><code>SyntaxError</code></a>.</li>
+          <li>If <var>options</var>'s <a>entryTypes</a> is present and any other
+          member is also present, then
+          <a data-cite="WEBIDL#dfn-throw">throw</a> a
+          <a data-cite="WEBIDL#syntaxerror"><code>SyntaxError</code></a>.</li>
+          <li>Update or check <var>observer</var>'s <a>observer type</a> by
+          running these steps:
             <ol>
-              <li>Let <var>entries</var> be the <a>PerformanceEntryList</a>
-              object returned by the <a href="#filter-buffer-by-name-and-type">
-                </a> algorithm with <var>buffer</var> set to <a>relevant
-                performance entry buffer</a>, <var>name</var> set to
-                <code>null</code> and <var>type</var> set to <var>entry
-                type</var>.
+              <li>If <var>observer</var>'s <a>observer type</a> is
+              <code>"undefined"</code>:
+                <ol>
+                  <li>If <var>options</var>'s <a>entryTypes</a> member is
+                  present, then set <var>observer</var>'s <a>observer type</a>
+                  to <code>"multiple"</code>.</li>
+                  <li>If <var>options</var>'s <a>type</a> member is present,
+                  then set <var>observer</var>'s <a>observer type</a> to
+                  <code>"single"</code>.</li>
+                </ol>
               </li>
-              <li>Append <var>entries</var> to the <a data-cite=
-              "WHATWG-DOM#context-object">context object</a>'s <a>observer
-              buffer</a>.
+              <li>If <var>observer</var>'s <a>observer type</a> is
+              <code>"single"</code> and <var>options</var>'s
+              <a>entryTypes</a> member is present, then
+              <a data-cite="WEBIDL#dfn-throw">throw</a> an
+              <a data-cite="WEBIDL#invalidmodificationerror">
+              <code>InvalidModificationError</code></a>.
+              </li>
+              <li>If <var>observer</var>'s <a>observer type</a> is
+              <code>"multiple"</code> and <var>options</var>'s <a>type</a>
+              member is present, then <a data-cite="WEBIDL#dfn-throw">throw</a>
+              an <a data-cite="WEBIDL#invalidmodificationerror">
+              <code>InvalidModificationError</code></a>.
               </li>
             </ol>
           </li>
+          <li>If <var>observer</var>'s <a>observer type</a> is
+          <code>"multiple"</code>, run the following steps:
+          <ol>
+            <li>Let <var>entry types</var> be <var>options</var>'s
+            <a>entryTypes</a> sequence.
+            </li>
+            <li>Remove all types from <var>entry types</var> that are not
+            contained in <a>supported entry types</a>. The user agent SHOULD
+            notify developers if <var>entry types</var> is modified. For
+            example, a console warning listing removed types might be
+            appropriate.</li>
+            <li>If the resulting <var>entry types</var> sequence is an empty
+            sequence, abort these steps. The user agent SHOULD notify developers
+            when the steps are aborted to notify that registration has been
+            aborted. For example, a console warning might be appropriate.</li>
+            <li>If the <a>list of registered performance observer objects</a> of
+            <a data-cite="HTML/webappapis.html#concept-relevant-global">relevant
+            global object</a> contains a <a>registered performance observer</a>
+            whose <a>observer</a> is the <a data-cite=
+            "WHATWG-DOM#context-object">context object</a>, replace its
+            <a>options list</a> with a list containing <var>options</var> as its
+            only item.</li>
+            <li>Otherwise, create and append a <a>registered performance
+            observer</a> object to the <a>list of registered performance
+            observer objects</a> of <a data-cite=
+            "HTML/webappapis.html#concept-relevant-global">relevant global
+            object</a>, with <a>observer</a> set to the
+            <a data-cite="WHATWG-DOM#context-object">context object</a> and
+            <a>options list</a> set to a list containing <var>options</var> as
+            its only item.</li>
+          </ol>
+          </li>
+          <li>Otherwise, run the following steps:
+          <ol>
+            <li>Assert that <var>observer</var>'s <a>observer type</a> is
+            <code>"single"</code>.</li>
+            <li>If <var>options</var>'s <a>type</a> is not contained in
+            <a>supported entry types</a>, abort these steps. The user agent
+            SHOULD notify developers when this happens, for instance via a
+            console warning.</li>
+            <li>If the <a>list of registered performance observer objects</a> of
+            <a data-cite="HTML/webappapis.html#concept-relevant-global">relevant
+            global object</a> contains a <a>registered performance observer</a>
+            <var>obs</var> whose <a>observer</a> is the <a data-cite=
+            "WHATWG-DOM#context-object">context object</a>:
+              <ol>
+                <li>If <var>obs</var>'s <a>options list</a> contains a
+                <a>PerformanceObserverInit</a> item <var>currentOptions</var>
+                whose <a>type</a> is equal to <var>options</var>'s <a>type</a>,
+                replace <var>currentOptions</var> with <var>options</var> in
+                <var>obs</var>'s <a>options list</a>.</li>
+                <li>Otherwise, append <var>options</var> to <var>obs</var>'s
+                <a>options list</a>.</li>
+              </ol>
+            </li>
+            <li>Otherwise, create and append a
+            <a>registered performance observer</a> object to the <a>list of
+            registered performance observer objects</a> of
+            <a data-cite="HTML/webappapis.html#concept-relevant-global">
+            relevant global object</a>, with <a>observer</a> set to the
+            <a data-cite="WHATWG-DOM#context-object">context object</a> and
+            <a>options list</a> set to a list containing <var>options</var>
+            as its only item.</li>
+            <li>If <var>options</var>'s <a>buffered</a> flag is set:
+              <ol>
+                <li>Let <var>entries</var> be the <a>PerformanceEntryList</a>
+                object returned by the <a href="#filter-buffer-by-name-and-type">
+                </a> algorithm with <var>buffer</var> set to <a>relevant
+                performance entry buffer</a>, <var>name</var> set to
+                <code>null</code> and <var>type</var> set to
+                <var>options</var>'s <a>type</a>.
+                </li>
+                <li>Append <var>entries</var> to the <a data-cite=
+                "WHATWG-DOM#context-object">context object</a>'s <a>observer
+                buffer</a>.
+                </li>
+              </ol>
+            </li>
+          </ol>
+          </li>
         </ol>
+        <p class="note">A <a>PerformanceObserver</a> object needs to always call
+        <a>observe()</a> with <var>options</var>'s
+        <a data-link-for=PerformanceObserverInit>entryTypes</a> set OR always
+        call <a>observe()</a> with <var>options</var>'s
+        <a data-link-for=PerformanceObserverInit>type</a> set. If one
+        <a>PerformanceObserver</a> calls <a>observe()</a> with <a data-link-for=
+        PerformanceObserverInit>entryTypes</a> and also calls observe with
+        <a data-link-for=PerformanceObserverInit>type</a>, then an exception is
+        thrown. This is meant to avoid confusion with how calls would stack.
+        When using <a data-link-for=PerformanceObserverInit>entryTypes</a>, no
+        other parameters in <a>PerformanceObserverInit</a> can be used. In
+        addition, multiple <a>observe()</a> calls will override for backwards
+        compatibility and because a single call should suffice in this case. On
+        the other hand, when using
+        <a data-link-for=PerformanceObserverInit>type</a>, calls will stack
+        because a single call can only specify one type. Calling
+        <a>observe()</a> with a repeated <a data-link-for=
+        PerformanceObserverInit>type</a> will also override.</p>
         <section data-dfn-for="PerformanceObserverInit" data-link-for=
         "PerformanceObserverInit">
           <h2><dfn>PerformanceObserverInit</dfn> dictionary</h2>
           <pre class="idl">
           dictionary PerformanceObserverInit {
-            required sequence&lt;DOMString&gt; entryTypes;
-            boolean buffered = false;
+            sequence&lt;DOMString&gt; entryTypes;
+            DOMString type;
+            boolean buffered;
           };
           </pre>
           <dl>
             <dt><dfn>entryTypes</dfn></dt>
-            <dd>A list of entry types to be observed. The list MUST NOT be
-            empty and types not recognized by the user agent MUST be
-            ignored.</dd>
+            <dd>A list of entry types to be observed. If present, the list MUST
+            NOT be empty and all other members MUST NOT be present. Types not
+            recognized by the user agent MUST be ignored.</dd>
+          </dl>
+          <dl>
+            <dt><dfn>type</dfn></dt>
+            <dd>A single entry type to be observed. A type that is not
+            recognized by the user agent MUST be ignored. Other members may be
+            present.</dd>
           </dl>
           <dl>
             <dt><dfn>buffered</dfn></dt>
@@ -464,27 +585,32 @@
       optional <var>add to performance entry buffer</var> flag, which is unset
       by default, run these steps:</p>
       <ol>
-        <li>Let <i>interested observers</i> be an initially empty set of
+        <li>Let <var>interested observers</var> be an initially empty set of
         <a>PerformanceObserver</a> objects.
         </li>
-        <li>For each <a>registered performance observer</a> (<i>observer</i>):
+        <li>Let <var>entryType</var> be <var>new entry</var>’s <a data-lt=
+        "PerformanceEntry.entryType">entryType</a> value.</li>
+        <li>For each <a>registered performance observer</a> (<var>regObs</var>):
           <ol>
-            <li>If <i>observer</i>'s <a>PerformanceObserverInit</a>
-              <a data-lt="PerformanceObserverInit.entryTypes">entryTypes</a>
-              includes <i>new entry</i>’s <a data-lt=
-              "PerformanceEntry.entryType">entryType</a> value, append
-              <i>observer</i> to <i>interested observers</i>.
+            <li>If <var>regObs</var>'s <a>options list</a> contains a
+            <a>PerformanceObserverInit</a> item whose
+            <a data-link-for="PerformanceObserverInit">entryTypes</a> member
+            includes <var>entryType</var> or whose
+            <a data-link-for="PerformanceObserverInit">type</a> member equals to
+            <var>entryType</var>, append <var>regObs</var>'s <a>observer</a>
+            to <var>interested observers</var>.
             </li>
           </ol>
         </li>
-        <li>For each <i>observer</i> in <i>interested observers</i>:
+        <li>For each <var>observer</var> in <var>interested observers</var>:
           <ol>
-            <li>Append <i>new entry</i> to <a>observer buffer</a>.
+            <li>Append <var>new entry</var> to <var>observer</var>'s
+            <a>observer buffer</a>.
             </li>
           </ol>
         </li>
         <li>If the <var>add to performance entry buffer</var> flag is set, add
-        <i>new entry</i> to the <a>performance entry buffer</a>.
+        <var>new entry</var> to the <a>performance entry buffer</a>.
         </li>
         <li>If the <a>performance observer task queued flag</a> is set,
         terminate these steps.
@@ -502,21 +628,21 @@
             "HTML/webappapis.html#concept-relevant-global">relevant global
             object</a>.
             </li>
-            <li>Let <i>notify list</i> be a copy of <a data-cite=
+            <li>Let <var>notify list</var> be a copy of <a data-cite=
             "HTML/webappapis.html#concept-relevant-global">relevant global
             object</a>'s <a>list of registered performance observer
             objects</a>.
             </li>
-            <li>For each <a>PerformanceObserver</a> object <i>po</i> in
-            <i>notify list</i>, run these steps:
+            <li>For each <a>PerformanceObserver</a> object <var>po</var> in
+            <var>notify list</var>, run these steps:
               <ol>
-                <li>Let <i>entries</i> be a copy of <i>po</i>’s <a>observer
+                <li>Let <var>entries</var> be a copy of <var>po</var>’s <a>observer
                 buffer</a>.
                 </li>
-                <li>Empty <i>po</i>’s <a>observer buffer</a>.
+                <li>Empty <var>po</var>’s <a>observer buffer</a>.
                 </li>
-                <li>If <i>entries</i> is non-empty, call <i>po</i>’s callback
-                with <i>entries</i> as first argument and <i>po</i> as the
+                <li>If <var>entries</var> is non-empty, call <var>po</var>’s callback
+                with <var>entries</var> as first argument and <var>po</var> as the
                 second argument and <a data-cite=
                 "WebIDL#dfn-callback-this-value">callback this value</a>. If
                 this <a data-cite="WebIDL#dfn-throw">throw</a>s an exception,
@@ -542,30 +668,30 @@
       respect to <a>startTime</a>; objects with the same <a>startTime</a> have
       unspecified ordering.</p>
       <ol>
-        <li>Let the <dfn>list of entry objects</dfn> be the empty
+        <li>Let the <var>list of entry objects</var> be the empty
         <a>PerformanceEntryList</a>.
         </li>
-        <li>For each <a>PerformanceEntry</a> object (<dfn>entryObject</dfn>) in
+        <li>For each <a>PerformanceEntry</a> object (<var>entryObject</var>) in
         the <var>buffer</var>, in chronological order with respect to
         <a>startTime</a>:
           <ol>
             <li>If <var>name</var> is not <code>null</code> and
-            <a>entryObject</a>'s `name` attribute does not match
+            <var>entryObject</var>'s `name` attribute does not match
             <var>name</var> in a <a data-cite=
             "HTML/infrastructure.html#case-sensitive">case-sensitive</a>
-            manner, go to next <a>entryObject</a>.
+            manner, go to next <var>entryObject</var>.
             </li>
             <li>If <var>type</var> is not <code>null</code> and
-            <a>entryObject</a>'s `type` attribute does not match
+            <var>entryObject</var>'s `type` attribute does not match
             <var>type</var> in a <a data-cite=
             "HTML/infrastructure.html#case-sensitive">case-sensitive</a>
-            manner, go to next <a>entryObject</a>.
+            manner, go to next <var>entryObject</var>.
             </li>
-            <li>Add <a>entryObject</a> to the <a>list of entry objects</a>.
+            <li>Add <var>entryObject</var> to the <var>list of entry objects</var>.
             </li>
           </ol>
         </li>
-        <li>Return the <a>list of entry objects</a>.
+        <li>Return the <var>list of entry objects</var>.
         </li>
       </ol>
     </section>
