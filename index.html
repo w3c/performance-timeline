@@ -104,9 +104,8 @@
       &lt;/html&gt;
     </pre>
     <p>Alternatively, the developer can observe the <a>Performance Timeline</a>
-    and be notified of new performance metrics and, optionally, previously
-    buffered performance metrics of specified type, via the
-    <a>PerformanceObserver</a> interface:</p>
+    and be notified of new performance metrics, via the <a>PerformanceObserver</a>
+    interface:</p>
     <pre class="example">
     &lt;!doctype html&gt;
     &lt;html&gt;
@@ -162,8 +161,8 @@
       // Disconnect after processing the events.
       resourceObserver.disconnect();
     });
-    // Retrieve buffered events and subscribe to newer events for Resource Timing.
-    resourceObserver.observe({type: "resource", buffered: true});
+    // Subscribe to new events for Resource Timing.
+    resourceObserver.observe({type: "resource"});
     &lt;/script&gt;
     &lt;/body&gt;
     &lt;/html&gt;
@@ -301,7 +300,7 @@
       <h2>The <dfn>PerformanceObserver</dfn> interface</h2>
       <p>The <a>PerformanceObserver</a> interface can be used to observe the
       <a>Performance Timeline</a> to be notified of new performance metrics as
-      they are recorded, and optionally buffered performance metrics.</p>
+      they are recorded.</p>
       <p>Each <a>PerformanceObserver</a> has these associated concepts:</p>
       <ul>
         <li>A <dfn>PerformanceObserverCallback</dfn> set on creation.</li>
@@ -441,21 +440,6 @@
             <a data-cite="WHATWG-DOM#context-object">context object</a> and
             <a>options list</a> set to a list containing <var>options</var>
             as its only item.</li>
-            <li>If <var>options</var>'s <a>buffered</a> flag is set:
-              <ol>
-                <li>Let <var>entries</var> be the <a>PerformanceEntryList</a>
-                object returned by the <a href="#filter-buffer-by-name-and-type">
-                </a> algorithm with <var>buffer</var> set to <a>relevant
-                performance entry buffer</a>, <var>name</var> set to
-                <code>null</code> and <var>type</var> set to
-                <var>options</var>'s <a>type</a>.
-                </li>
-                <li>Append <var>entries</var> to the <a data-cite=
-                "WHATWG-DOM#context-object">context object</a>'s <a>observer
-                buffer</a>.
-                </li>
-              </ol>
-            </li>
           </ol>
           </li>
         </ol>
@@ -484,7 +468,6 @@
           dictionary PerformanceObserverInit {
             sequence&lt;DOMString&gt; entryTypes;
             DOMString type;
-            boolean buffered;
           };
           </pre>
           <dl>
@@ -498,11 +481,6 @@
             <dd>A single entry type to be observed. A type that is not
             recognized by the user agent MUST be ignored. Other members may be
             present.</dd>
-          </dl>
-          <dl>
-            <dt><dfn>buffered</dfn></dt>
-            <dd>A flag to indicate whether buffered entries should be queued
-            into observer's buffer.</dd>
           </dl>
         </section>
         <section data-dfn-for="PerformanceObserverEntryList" data-link-for=
