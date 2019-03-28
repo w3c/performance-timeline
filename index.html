@@ -199,23 +199,22 @@
       <li>A <dfn>performance entry buffer</dfn> to store
       <a>PerformanceEntry</a> objects that is initially empty.
       </li>
-      <li>A list of <dfn>supported entry types</dfn>, which contains the strings
-        representing the entry types which the user agent supports for the
-        <a>PerformanceObserver</a> interface within that environment. This list
-        is populated by specifications that define new entry types via the
-        <a>register a performance entry type</a> algorithm.
-      </li>
       <li>
         A <dfn>frozen supported entry types</dfn> representing the cached
         <a data-cite="WebIDL#idl-frozen-array">FrozenArray</a> for that
-        <a data-cite="WebIDL#es-environment">ECMAScript global environment</a>,
-        which is initially <code>null</code>.
+        <a data-cite="WebIDL#es-environment">ECMAScript global environment</a>.
+        The contents of this array are determined by specifications which define
+        new entry types.
       </li>
     </ul>
     <p>The <dfn>relevant performance entry buffer</dfn> is the <a>performance
     entry buffer</a> associated with the <a data-cite=
     "HTML/webappapis.html#concept-relevant-global">relevant global
     object</a>.</p>
+    <p>The <dfn>relevant supported entry types</dfn> is the <a>frozen supported
+    entry types</a> associated with the <a data-cite=
+    "HTML/webappapis.html#concept-relevant-global">relevant global object</a>.
+    </p>
     <section data-dfn-for="Performance" data-link-for="Performance">
       <h2>Extensions to the <dfn data-cite=
       "hr-time-2#sec-performance">Performance</dfn> interface</h2>
@@ -397,10 +396,10 @@
             <a>entryTypes</a> sequence.
             </li>
             <li>Remove all types from <var>entry types</var> that are not
-            contained in <a>supported entry types</a>. The user agent SHOULD
-            notify developers if <var>entry types</var> is modified. For
-            example, a console warning listing removed types might be
-            appropriate.</li>
+            contained in the <a>relevant supported entry types</a>. The user
+            agent SHOULD notify developers if <var>entry types</var> is
+            modified. For example, a console warning listing removed types might
+            be appropriate.</li>
             <li>If the resulting <var>entry types</var> sequence is an empty
             sequence, abort these steps. The user agent SHOULD notify developers
             when the steps are aborted to notify that registration has been
@@ -426,9 +425,9 @@
           <ol>
             <li>Assert that <var>observer</var>'s <a>observer type</a> is
             <code>"single"</code>.</li>
-            <li>If <var>options</var>'s <a>type</a> is not contained in
-            <a>supported entry types</a>, abort these steps. The user agent
-            SHOULD notify developers when this happens, for instance via a
+            <li>If <var>options</var>'s <a>type</a> is not contained in the
+            <a>relevant supported entry types</a>, abort these steps. The user
+            agent SHOULD notify developers when this happens, for instance via a
             console warning.</li>
             <li>If the <a>list of registered performance observer objects</a> of
             <a data-cite="HTML/webappapis.html#concept-relevant-global">relevant
@@ -573,24 +572,8 @@
       </section>
       <section data-link-for="PerformanceObserver">
         <h2><a>supportedEntryTypes</a> attribute</h2>
-        <p>When <dfn>supportedEntryTypes</dfn>'s attribute getter is called, run the following steps:</p>
-        <ol>
-          <li>
-            If the <a data-cite="HTML/webappapis.html#concept-relevant-global">
-            relevant global object</a>'s <a>frozen supported entry types</a> is
-            not <code>null</code>, return it.
-          </li>
-          <li>
-            Otherwise, initialize the
-            <a data-cite="HTML/webappapis.html#concept-relevant-global">
-            relevant global object</a>'s <a>frozen supported entry types</a> to
-            the value returned by the
-            <a data-cite="WEBIDL#dfn-create-frozen-array">
-            create a frozen array</a> algorithm, passing in the
-            <a data-cite="HTML/webappapis.html#concept-relevant-global">
-            relevant global object</a>'s <a>supported entry types</a>.
-          </li>
-        </ol>
+        <p>When <dfn>supportedEntryTypes</dfn>'s attribute getter is called, it
+          MUST return the <a>relevant supported entry types</a>.</p>
         <p class="note">This attribute allows web developers to easily know
         which entry types are supported by the user agent.</p>
       </section>
@@ -712,15 +695,6 @@
         </li>
         <li>Return the <var>list of entry objects</var>.
         </li>
-      </ol>
-    </section>
-    <section data-link-for="PerformanceObserver">
-      <h2>Register performance entry type</h2>
-      <p>To <dfn>register a performance entry type</dfn> in a <a data-cite="WebIDL#es-environment">ECMAScript global
-    environment</a> <var>environment</var>, run the following steps:</p>
-      <ol>
-        <li>Let <var>type</var> be the input string.</li>
-        <li>Append <var>type</var> to <var>environment</var>'s <a>supported entry types</a>.</li>
       </ol>
     </section>
   </section>
