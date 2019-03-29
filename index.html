@@ -385,7 +385,7 @@
             <a>entryTypes</a> sequence.
             </li>
             <li>Remove all types from <var>entry types</var> that are not
-            contained in <a>supported entry types</a>. The user agent SHOULD
+            contained in <a>supported entry types</a> for the relevant <a>global object</a>. The user agent SHOULD
             notify developers if <var>entry types</var> is modified. For
             example, a console warning listing removed types might be
             appropriate.</li>
@@ -414,7 +414,7 @@
           <ol>
             <li>Assert that <var>observer</var>'s <a>observer type</a> is
             <code>"single"</code>.</li>
-            <li>If <var>options</var>'s <a>type</a> is not contained in
+            <li>If <var>options</var>'s <a>type</a> is not contained in the relevant <a>global object</a>'s
             <a>supported entry types</a>, abort these steps. The user agent
             SHOULD notify developers when this happens, for instance via a
             console warning.</li>
@@ -561,14 +561,14 @@
       </section>
       <section>
         <h2><a>supportedEntryTypes</a> attribute</h2>
-        <p>The user agent MUST maintain <dfn>supported entry types</dfn>, a list
+        <p>The user agent MUST maintain <dfn>supported entry types</dfn> for each <a>global object</a>, a list
         of strings representing the entry types which the user agent supports
         for the <a>PerformanceObserver</a> interface. This list is populated by
         specifications that define new entry types via the
         <a>register a performance entry type</a> algorithm.</p>
         <p>When <dfn>supportedEntryTypes</dfn>'s attribute getter is called, run the following steps:</p>
         <ol>
-          <li>Let <var>result</var> be a copy of the user agent's <a>supported entry types</a>.</li>
+          <li>Let <var>result</var> be a copy of the user agent's <a>supported entry types</a> for the relevant <a>global object</a>.</li>
           <li>Sort <var>result</var> in alphabetical order.</li>
           <li>Return <var>result</var>.</li>
         </ol>
@@ -700,7 +700,8 @@
       <p>To <dfn>register a performance entry type</dfn>, run the following steps:</p>
       <ol>
         <li>Let <var>type</var> be the input string.</li>
-        <li>Append <var>type</var> to <a>supported entry types</a>.</li>
+        <li>Let <var>context</var> be the input context object.</li>
+        <li>Append <var>type</var> to the <var>context</var>'s <a>supported entry types</a>.</li>
       </ol>
     </section>
   </section>
