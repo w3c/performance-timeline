@@ -196,14 +196,16 @@
       <li>a <dfn>performance observer task queued flag</dfn></li>
       <li>a <dfn>list of <a>registered performance observer</a> objects</dfn>
       that is initially empty</li>
-      <li>a <dfn>performance entry buffer</dfn> to store
-      <a>PerformanceEntry</a> objects that is initially empty
+      <li>a <dfn>performance entry buffer</dfn> per observed
+      <dfn>entryType</dfn> to store <a>PerformanceEntry</a> objects that
+      are initially empty.  Each entryType's buffer has a
+      <dfn>maxBufferSize</dfn> that with rare exception, cannot be changed.
       </li>
     </ul>
     <p>The <dfn>relevant performance entry buffer</dfn> is the <a>performance
     entry buffer</a> associated with the <a data-cite=
     "HTML/webappapis.html#concept-relevant-global">relevant global
-    object</a>.</p>
+    object</a> for a specific <dfn>entryType</dfn>.</p>
     <section data-dfn-for="Performance" data-link-for="Performance">
       <h2>Extensions to the <dfn data-cite=
       "hr-time-2#sec-performance">Performance</dfn> interface</h2>
@@ -225,23 +227,25 @@
       <section>
         <h2><dfn>getEntries()</dfn> method</h2>
         <p>Returns a <a>PerformanceEntryList</a> object returned by <a href=
-        "#filter-buffer-by-name-and-type"></a> algorithm with <var>buffer</var>
-        set to <a>relevant performance entry buffer</a>, and <var>name</var>
-        and <var>type</var> set to <code>null</code>.</p>
+        "#filter-buffers-by-name-and-type"></a> algorithm with <var>buffers</var>
+        set to <a>relevant performance entry buffer</a> for every type,
+        and <var>name</var> and <var>type</var> set to <code>null</code>.</p>
       </section>
       <section>
         <h2><dfn>getEntriesByType()</dfn> method</h2>
         <p>Returns a <a>PerformanceEntryList</a> object returned by <a href=
-        "#filter-buffer-by-name-and-type"></a> algorithm with <var>buffer</var>
-        set to <a>relevant performance entry buffer</a>, <var>name</var> set to
-        <code>null</code>, and <var>type</var> set to `type`.</p>
+        "#filter-buffers-by-name-and-type"></a> algorithm with <var>buffer</var>
+        set to <a>relevant performance entry buffer</a> for `type`,
+        <var>name</var> set to <code>null</code>, and <var>type</var>
+        set to `type`.</p>
       </section>
       <section>
         <h2><dfn>getEntriesByName()</dfn> method</h2>
         <p>Returns a <a>PerformanceEntryList</a> object returned by <a href=
-        "#filter-buffer-by-name-and-type"></a> algorithm with <var>buffer</var>
-        set to <a>relevant performance entry buffer</a>, <var>name</var> set to
-        `name`, and <var>type</var> set to <code>null</code> if optional
+        "#filter-buffers-by-name-and-type"></a> algorithm with <var>buffer</var>
+        set to <a>relevant performance entry buffer</a> for every type,
+        <var>name</var> set to `name`, and <var>type</var> set to
+        <code>null</code> if optional
         `entryType` is omitted, and <var>type</var> set to `type`
         otherwise.</p>
       </section>
@@ -275,7 +279,9 @@
           <code>"measure"</code> [[USER-TIMING-2]], <code>"navigation"</code>
           [[NAVIGATION-TIMING-2]], <code>"resource"</code>
           [[RESOURCE-TIMING-2]], <!-- TODO: add long task spec reference -->
-           and <code>"longtask"</code>.</p>
+           and <code>"longtask"</code>.  These specifications need to indicate
+          whether the specifiy entryType is available from the
+          <a>Performance</a> interface.</p>
         </dd>
         <dt><dfn>startTime</dfn></dt>
         <dd>This attribute MUST return the time value of the first recorded
@@ -444,7 +450,7 @@
             <li>If <var>options</var>'s <a>buffered</a> flag is set:
               <ol>
                 <li>Let <var>entries</var> be the <a>PerformanceEntryList</a>
-                object returned by <a href="#filter-buffer-by-name-and-type"></a>
+                object returned by <a href="#filter-buffers-by-name-and-type"></a>
                 algorithm with <var>buffer</var> set to <a>relevant
                 performance entry buffer</a>, <var>name</var> set to
                 <code>null</code> and <var>type</var> set to
@@ -502,7 +508,7 @@
           <dl>
             <dt><dfn>buffered</dfn></dt>
             <dd>A flag to indicate whether buffered entries should be queued
-            into observer's buffer.</dd>
+            into observer's buffer for each entry.</dd>
           </dl>
         </section>
         <section data-dfn-for="PerformanceObserverEntryList" data-link-for=
@@ -519,21 +525,21 @@
           <section>
             <h2><dfn>getEntries()</dfn> method</h2>
             <p>Returns a <a>PerformanceEntryList</a> object returned by
-            <a href="#filter-buffer-by-name-and-type"></a> algorithm with
+            <a href="#filter-buffers-by-name-and-type"></a> algorithm with
             <var>buffer</var> set to <a>observer buffer</a>, and
             <var>name</var> and <var>type</var> set to <code>null</code>.</p>
           </section>
           <section>
             <h2><dfn>getEntriesByType()</dfn> method</h2>
             <p>Returns a <a>PerformanceEntryList</a> object returned by
-            <a href="#filter-buffer-by-name-and-type"></a> algorithm with
+            <a href="#filter-buffers-by-name-and-type"></a> algorithm with
             <var>buffer</var> set to <a>observer buffer</a>, <var>name</var>
             set to <code>null</code>, and <var>type</var> set to `type`.</p>
           </section>
           <section>
             <h2><dfn>getEntriesByName()</dfn> method</h2>
             <p>Returns a <a>PerformanceEntryList</a> object returned by
-            <a href="#filter-buffer-by-name-and-type"></a> algorithm with
+            <a href="#filter-buffers-by-name-and-type"></a> algorithm with
             <var>buffer</var> set to <a>observer buffer</a>, <var>name</var>
             set to `name`, and <var>type</var> set to <code>null</code> if
             optional `entryType` is omitted, and <var>type</var> set to `type`
@@ -581,9 +587,8 @@
     <h2>Processing</h2>
     <section data-link-for="PerformanceObserver">
       <h2>Queue a <code>PerformanceEntry</code></h2>
-      <p>To <dfn>queue a PerformanceEntry</dfn> (<var>new entry</var>) with an
-      optional <var>add to performance entry buffer</var> flag, which is unset
-      by default, run these steps:</p>
+      <p>To <dfn>queue a PerformanceEntry</dfn> (<var>new entry</var>), 
+      run these steps:</p>
       <ol>
         <li>Let <var>interested observers</var> be an initially empty set of
         <a>PerformanceObserver</a> objects.
@@ -605,12 +610,14 @@
         <li>For each <var>observer</var> in <var>interested observers</var>:
           <ol>
             <li>Append <var>new entry</var> to <var>observer</var>'s
-            <a>observer buffer</a>.
+            <a>observer buffer</a> for that <a data-lt=
+              "PerformanceEntry.entryType">entryType</a>.
             </li>
           </ol>
         </li>
-        <li>If the <var>add to performance entry buffer</var> flag is set, add
-        <var>new entry</var> to the <a>performance entry buffer</a>.
+        <li>If the <a>maxBufferSize</a> for this <var>entryType</var> has not
+        been reached, add <var>new entry</var> to the
+        <a>performance entry buffer</a> for that <var>entryType</var>.
         </li>
         <li>If the <a>performance observer task queued flag</a> is set,
         terminate these steps.
@@ -660,8 +667,8 @@
       periods to minimize impact of performance monitoring code.</p>
     </section>
     <section data-link-for="PerformanceEntry">
-      <h2>Filter <var>buffer</var> by <var>name</var> and <var>type</var></h2>
-      <p>Given a <var>buffer</var> and optional <var>name</var> and
+      <h2>Filter <var>buffers</var> by <var>name</var> and <var>type</var></h2>
+      <p>Given a list of <var>buffers</var> and optional <var>name</var> and
       <var>type</var> string values this algorithm returns a
       <a>PerformanceEntryList</a> object that contains a list of
       <a>PerformanceEntry</a> objects sorted in chronological order with
@@ -672,7 +679,7 @@
         <a>PerformanceEntryList</a>.
         </li>
         <li>For each <a>PerformanceEntry</a> object (<var>entryObject</var>) in
-        the <var>buffer</var>, in chronological order with respect to
+        the <var>buffers</var>, in chronological order with respect to
         <a>startTime</a>:
           <ol>
             <li>If <var>name</var> is not <code>null</code> and
