@@ -196,16 +196,25 @@
       <li>a <dfn>performance observer task queued flag</dfn></li>
       <li>a <dfn>list of <a>registered performance observer</a> objects</dfn>
       that is initially empty</li>
-      <li>a <dfn>performance entry buffer map</dfn>, one per
-      <dfn>entryType</dfn>, to store <a>PerformanceEntry</a> objects, that
-      are initially empty.  Each entryType's buffer has a
-      <dfn>maxBufferSize</dfn> that with rare exception, cannot be changed.
+      <li>a <dfn>performance entry buffer map</dfn> that is a mapping of a
+        <code>DOMString</code>, representing an entryType supported by the
+        UserAgent, to the following tuple:
+        <ul>
+          <li> A <dfn>performance entry buffer</dfn> to store
+            <a>PerformanceEntry</a> objects, that is initially empty</li>
+          <li> A <code>long</code> indicating the <dfn>maxBufferSize</dfn> for
+            this entryType.  With rare exception, this value cannot be changed
+            once set</li>
+          <li> A <code>boolean</code> <dfn>availableFromTimeline<dfn>
+            representing whether this entryType is available from the
+            <a>Performance</a> interface.</li>
+        </ul>
       </li>
     </ul>
-    <p>The <dfn>relevant performance entry buffer</dfn> is the object in the
-    <a>performance entry buffer map</a> associated with the <a data-cite=
-    "HTML/webappapis.html#concept-relevant-global">relevant global
-    object</a> for a specific <dfn>entryType</dfn>.</p>
+    <p>The <dfn>relevant performance entry buffer</dfn> is the <a>performance
+      entry buffer</a> in the <a>performance entry buffer map</a> associated
+      with the <a data-cite="HTML/webappapis.html#concept-relevant-global">
+        relevant global object</a> for a specific entryType.</p>
     <section data-dfn-for="Performance" data-link-for="Performance">
       <h2>Extensions to the <dfn data-cite=
       "hr-time-2#sec-performance">Performance</dfn> interface</h2>
@@ -228,14 +237,18 @@
         <h2><dfn>getEntries()</dfn> method</h2>
         <p>Returns a <a>PerformanceEntryList</a> object returned by <a href=
         "#filter-buffers-by-name-and-type"></a> algorithm with <var>buffers</var>
-        set to <a>relevant performance entry buffer</a> for every type,
-        and <var>name</var> and <var>type</var> set to <code>null</code>.</p>
+        set to a list containing a <a>relevant performance entry buffer</a> for
+        each entry type supported by the user agent and whose
+        <a>availableFromeTimeline</a> boolean is set to true and <var>name</var>
+        and <var>type</var> set to <code>null</code>.</p>
       </section>
       <section>
         <h2><dfn>getEntriesByType()</dfn> method</h2>
         <p>Returns a <a>PerformanceEntryList</a> object returned by <a href=
-        "#filter-buffers-by-name-and-type"></a> algorithm with <var>buffer</var>
-        set to <a>relevant performance entry buffer</a> for `type`,
+        "#filter-buffers-by-name-and-type"></a> algorithm with
+        <var>buffers</var> set to a list containing a <a>
+        relevant performance entry buffer</a> for `type` if the associated
+        <a>availableFromeTimeline</a> boolean is set to true,
         <var>name</var> set to <code>null</code>, and <var>type</var>
         set to `type`.</p>
       </section>
@@ -243,7 +256,9 @@
         <h2><dfn>getEntriesByName()</dfn> method</h2>
         <p>Returns a <a>PerformanceEntryList</a> object returned by <a href=
         "#filter-buffers-by-name-and-type"></a> algorithm with <var>buffers</var>
-        set to <a>relevant performance entry buffer</a> for every type,
+        set to a list containing a <a>relevant performance entry buffer</a> for
+        each entry type supported by the user agent and whose
+        <a>availableFromeTimeline</a> boolean is set to true and
         <var>name</var> set to `name`, and <var>type</var> set to
         <code>null</code> if optional
         `entryType` is omitted, and <var>type</var> set to `type`
@@ -279,9 +294,7 @@
           <code>"measure"</code> [[USER-TIMING-2]], <code>"navigation"</code>
           [[NAVIGATION-TIMING-2]], <code>"resource"</code>
           [[RESOURCE-TIMING-2]], <!-- TODO: add long task spec reference -->
-           and <code>"longtask"</code>.  These specifications need to indicate
-          whether the specifiy entryType is available from the
-          <a>Performance</a> interface.</p>
+           and <code>"longtask"</code>.</p>
         </dd>
         <dt><dfn>startTime</dfn></dt>
         <dd>This attribute MUST return the time value of the first recorded
@@ -451,8 +464,8 @@
               <ol>
                 <li>Let <var>entries</var> be the <a>PerformanceEntryList</a>
                 object returned by <a href="#filter-buffers-by-name-and-type"></a>
-                algorithm with <var>buffer</var> set to <a>relevant
-                performance entry buffer</a>, <var>name</var> set to
+                algorithm with <var>buffers</var> set to a list containing the
+                <a>relevant performance entry buffer</a>, <var>name</var> set to
                 <code>null</code> and <var>type</var> set to
                 <var>options</var>'s <a>type</a>.
                 </li>
@@ -526,24 +539,26 @@
             <h2><dfn>getEntries()</dfn> method</h2>
             <p>Returns a <a>PerformanceEntryList</a> object returned by
             <a href="#filter-buffers-by-name-and-type"></a> algorithm with
-            <var>buffer</var> set to <a>observer buffer</a>, and
-            <var>name</var> and <var>type</var> set to <code>null</code>.</p>
+            <var>buffers</var> set to a list containing the <a>
+            observer buffer</a>, and <var>name</var> and <var>type</var>
+            set to <code>null</code>.</p>
           </section>
           <section>
             <h2><dfn>getEntriesByType()</dfn> method</h2>
             <p>Returns a <a>PerformanceEntryList</a> object returned by
             <a href="#filter-buffers-by-name-and-type"></a> algorithm with
-            <var>buffer</var> set to <a>observer buffer</a>, <var>name</var>
-            set to <code>null</code>, and <var>type</var> set to `type`.</p>
+            <var>buffers</var> set to a list containing the <a>
+            observer buffer</a>, <var>name</var> set to <code>null</code>, and
+            <var>type</var> set to `type`.</p>
           </section>
           <section>
             <h2><dfn>getEntriesByName()</dfn> method</h2>
             <p>Returns a <a>PerformanceEntryList</a> object returned by
             <a href="#filter-buffers-by-name-and-type"></a> algorithm with
-            <var>buffer</var> set to <a>observer buffer</a>, <var>name</var>
-            set to `name`, and <var>type</var> set to <code>null</code> if
-            optional `entryType` is omitted, and <var>type</var> set to `type`
-            otherwise.</p>
+            <var>buffers</var> set to a list containing the <a>observer buffer
+            </a>, <var>name</var> set to `name`, and <var>type</var> set to
+            <code>null</code> if optional `entryType` is omitted, and
+            <var>type</var> set to `type` otherwise.</p>
           </section>
         </section>
       </section>
@@ -677,9 +692,10 @@
         <li>Let the <var>list of entry objects</var> be the empty
         <a>PerformanceEntryList</a>.
         </li>
-        <li>For each <a>PerformanceEntry</a> object (<var>entryObject</var>) in
-        the <var>buffers</var>, in chronological order with respect to
-        <a>startTime</a>:
+        <li>For each <a>Performance Entry Buffer</a> object (<var>entryBuffer
+          </var>) in buffers, for each <a>PerformanceEntry</a> object
+          (<var>entryObject</var>) in the <var>entryBuffer</var>, in
+          chronological order with respect to <a>startTime</a>:
           <ol>
             <li>If <var>name</var> is not <code>null</code> and
             <var>entryObject</var>'s `name` attribute does not match
