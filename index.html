@@ -196,14 +196,14 @@
       <li>a <dfn>performance observer task queued flag</dfn></li>
       <li>a <dfn>list of <a>registered performance observer</a> objects</dfn>
       that is initially empty</li>
-      <li>a <dfn>performance entry buffer</dfn> per observed
-      <dfn>entryType</dfn> to store <a>PerformanceEntry</a> objects that
+      <li>a <dfn>performance entry buffer map</dfn>, one per
+      <dfn>entryType</dfn>, to store <a>PerformanceEntry</a> objects, that
       are initially empty.  Each entryType's buffer has a
       <dfn>maxBufferSize</dfn> that with rare exception, cannot be changed.
       </li>
     </ul>
-    <p>The <dfn>relevant performance entry buffer</dfn> is the <a>performance
-    entry buffer</a> associated with the <a data-cite=
+    <p>The <dfn>relevant performance entry buffer</dfn> is the object in the
+    <a>performance entry buffer map</a> associated with the <a data-cite=
     "HTML/webappapis.html#concept-relevant-global">relevant global
     object</a> for a specific <dfn>entryType</dfn>.</p>
     <section data-dfn-for="Performance" data-link-for="Performance">
@@ -242,7 +242,7 @@
       <section>
         <h2><dfn>getEntriesByName()</dfn> method</h2>
         <p>Returns a <a>PerformanceEntryList</a> object returned by <a href=
-        "#filter-buffers-by-name-and-type"></a> algorithm with <var>buffer</var>
+        "#filter-buffers-by-name-and-type"></a> algorithm with <var>buffers</var>
         set to <a>relevant performance entry buffer</a> for every type,
         <var>name</var> set to `name`, and <var>type</var> set to
         <code>null</code> if optional
@@ -508,7 +508,7 @@
           <dl>
             <dt><dfn>buffered</dfn></dt>
             <dd>A flag to indicate whether buffered entries should be queued
-            into observer's buffer for each entry.</dd>
+            into observer's buffer.</dd>
           </dl>
         </section>
         <section data-dfn-for="PerformanceObserverEntryList" data-link-for=
@@ -610,8 +610,7 @@
         <li>For each <var>observer</var> in <var>interested observers</var>:
           <ol>
             <li>Append <var>new entry</var> to <var>observer</var>'s
-            <a>observer buffer</a> for that <a data-lt=
-              "PerformanceEntry.entryType">entryType</a>.
+            <a>observer buffer</a>.
             </li>
           </ol>
         </li>
