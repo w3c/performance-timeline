@@ -205,7 +205,7 @@
           <li> A <code>long</code> indicating the <dfn>maxBufferSize</dfn> for
             this entryType.  With rare exception, this value cannot be changed
             once set</li>
-          <li> A <code>boolean</code> <dfn>availableFromTimeline<dfn>
+          <li> A <code>boolean</code> <dfn>availableFromTimeline</dfn>
             representing whether this entryType is available from the
             <a>Performance</a> interface.</li>
         </ul>
@@ -241,14 +241,14 @@
         "#filter-buffers-by-name-and-type"></a> algorithm with
           <ol>
             <li>
-              <var>buffers</var>set to a list containing
+              <var>buffers</var> set to a list containing
               <a>relevant performance entry buffer</a>s where
               <var>entryType</var> is set to each entry type supported by the
               user agent and whose <a>availableFromTimeline</a> boolean is set
               to true
             </li>
-              <var>name</var> set to <code>null</code>.
             <li>
+              <var>name</var> set to <code>null</code>.
             </li>
             <li>
               <var>type</var> set to <code>null</code>.
@@ -262,13 +262,13 @@
         "#filter-buffers-by-name-and-type"></a> algorithm with:
           <ol>
             <li>
-              <var>buffers</var>set to a list containing
+              <var>buffers</var> set to a list containing
               <a>relevant performance entry buffer</a>s where
               <var>entryType</var> is set to `type` if the associated
-              <a>availableFromeTimeline</a> boolean is set to true
+              <a>availableFromTimeline</a> boolean is set to true
             </li>
-              <var>name</var> set to <code>null</code>.
             <li>
+              <var>name</var> set to <code>null</code>.
             </li>
             <li>
               <var>type</var> set to `type`.
@@ -282,14 +282,14 @@
         "#filter-buffers-by-name-and-type"></a> algorithm with:
           <ol>
             <li>
-              <var>buffers</var>set to a list containing
+              <var>buffers</var> set to a list containing
               <a>relevant performance entry buffer</a>s where
               <var>entryType</var> is set to each entry type supported by the
               user agent and whose <a>availableFromTimeline</a> boolean is set
               to true
             </li>
-              <var>name</var> set to <code>`name`</code>.
             <li>
+              <var>name</var> set to <code>`name`</code>.
             </li>
             <li>
               <var>type</var> set to <code>null</code> if optional `entryType`
