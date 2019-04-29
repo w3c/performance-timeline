@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -466,15 +465,11 @@
             as its only item.</li>
             <li>If <var>options</var>'s <a>buffered</a> flag is set:
               <ol>
-                <li>Let <var>map</var> be the <a>performance entry buffer map</a>
-                  associated with the <a
-                  data-cite="HTML/webappapis.html#concept-relevant-global"> relevant
-                  global object</a> of <a
-                  data-cite="DOM#context-object">context object</a>.</li>
-                <li>Let <var>tuple</var> be the result of <a
-                  data-cite="WHATWG-INFRA#map-get">getting the value of entry</a> on
-                  <var>map</var> given <var>options</var>'s <a>type</a> as <a
-                  data-cite="WHATWG-INFRA#map-key">key</a>.</li>
+                <li>
+                  Let <var>tuple</var> be the <a>relevant performance entry
+                  tuple</a> given <var>options</var>'s <a>type</a> as
+                  <var>entryType</var>.
+                </li>
                 <li>For each <a>PerformanceEntry</a> <var>entry</var> in
                   <var>tuple</var>'s <a>performance entry buffer</a>
                   <a data-cite="WHATWG-INFRA#list-append">append</a> it to
@@ -640,23 +635,10 @@
           </ol>
         </li>
         <li>
-          Determine if you should add <var>new entry</var> to a 
-          <a>performance entry buffer</a>:
-          <ol>
-            <li>Let <var>map</var> be the <a>performance entry buffer map</a>
-              associated with the <a
-              data-cite="HTML/webappapis.html#concept-relevant-global"> relevant
-              global object</a> of <a
-              data-cite="DOM#context-object">context object</a>.</li>
-            <li>Let <var>tuple</var> be the result of <a
-              data-cite="WHATWG-INFRA#map-get">getting the value of entry</a> on
-              <var>map</var> given <var>entryType</var> as <a
-              data-cite="WHATWG-INFRA#map-key">key</a>.</li>
-            <li>If <var>tuple</var>'s <a>maxBufferSize</a> has not been reached,
-              <a data-cite="WHATWG-INFRA#list-append">append</a> <var>new entry</var>
-              to <var>tuple</var>'s <a>performance entry buffer</a>.
-            </li>
-          </ol>
+          Let <var>tuple</var> be the <a>relevant performance entry tuple</a>,
+          <a data-cite="WHATWG-INFRA#list-append">append</a> <var>new entry
+          </var> to <var>tuple</var>'s <a>performance entry buffer</a> if
+          <var>tuple</var>'s <a>maxBufferSize</a> has not been reached.
         </li>
         <li>If the <a>performance observer task queued flag</a> is set,
         terminate these steps.
