@@ -4,7 +4,7 @@ node_js:
   - lts/*
 branches:
   only:
-  - gh-pages
+  - level2
 env:
   global:
   - URL="https://w3c.github.io/performance-timeline/W3CTRMANIFEST"
