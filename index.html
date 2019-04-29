@@ -635,10 +635,17 @@
           </ol>
         </li>
         <li>
-          Let <var>tuple</var> be the <a>relevant performance entry tuple</a>,
-          <a data-cite="WHATWG-INFRA#list-append">append</a> <var>new entry
-          </var> to <var>tuple</var>'s <a>performance entry buffer</a> if
-          <var>tuple</var>'s <a>maxBufferSize</a> has not been reached.
+          Determine if you should add <var>new entry</var> to a
+          <a>performance entry buffer</a>:
+          <ol>
+            <li> Let <var>tuple</var> be the <a>relevant performance entry
+              tuple</a></li>
+            <li>If the number of entries in <var>tuples</var>'s <a>performance
+              entry buffer</a> is smaller than <var>tuples</var>'s
+              <a>maxBufferSize</a>, <a data-cite="WHATWG-INFRA#list-append">
+              append</a> <var>new entry</var> to <var>tuple</var>'s
+              <a>performance entry buffer</a>.</li>
+          </ol>
         </li>
         <li>If the <a>performance observer task queued flag</a> is set,
         terminate these steps.
@@ -697,7 +704,7 @@
         data-cite="WHATWG-INFRA#list">list</a>.</li>
         <li>Let <var>map</var> be the <a>performance entry buffer map</a>
         associated with the <a
-        data-cite="HTML/webappapis.html#concept-relevant-global"> relevant
+        data-cite="HTML/webappapis.html#concept-relevant-global">relevant
         global object</a> of <a
         data-cite="DOM#context-object">context object</a>.</li>
         <li>Let <var>tuple list</var> be an empty <a
@@ -725,6 +732,8 @@
             <var>result</var>.</li>
           </ol>
         </li>
+        <li>Sort <var>results</var>'s entries in chronological order with
+        respect to <a>startTime</a></li>
         <li>Return <var>result</var>.</li>
       </ol>
       <p>When asked to run the <dfn>filter buffer by name and type</dfn>
