@@ -335,7 +335,7 @@
                                                    PerformanceObserver observer);
       [Constructor(PerformanceObserverCallback callback), Exposed=(Window,Worker)]
       interface PerformanceObserver {
-        void observe (PerformanceObserverInit options);
+        void observe (optional PerformanceObserverInit options);
         void disconnect ();
         PerformanceEntryList takeRecords();
         [ SameObject ] static readonly attribute FrozenArray&lt;DOMString&gt; supportedEntryTypes;
