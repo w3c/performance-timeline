@@ -199,23 +199,22 @@
       <li>A <dfn>performance entry buffer</dfn> to store
       <a>PerformanceEntry</a> objects that is initially empty.
       </li>
-      <li>
-        A <dfn>frozen supported entry types</dfn> representing the cached
-        <a data-cite="WebIDL#idl-frozen-array">FrozenArray</a> for that
-        <a data-cite="WebIDL#es-environment">ECMAScript global environment</a>.
-        The contents of this array are determined by specifications which define
-        new entry types. The contents of this array MUST be in alphabetical
-        order.
+      <li>A <dfn>list of supported entry types</dfn> that is initially empty.
+      The contents of this list are determined by specifications which define
+      new entry types. The contents of this list MUST be in alphabetical order.
+      </li>
+      <li>A <dfn>frozen supported entry types</dfn> representing the
+      <a data-cite="WebIDL#idl-frozen-array">FrozenArray</a> that corresponds
+      with the <a>list of supported entry types</a>.
       </li>
     </ul>
     <p>The <dfn>relevant performance entry buffer</dfn> is the <a>performance
     entry buffer</a> associated with the <a data-cite=
     "HTML/webappapis.html#concept-relevant-global">relevant global
-    object</a>.</p>
-    <p>The <dfn>relevant supported entry types</dfn> is the <a>frozen supported
+    object</a> of the <a data-cite="DOM#context-object">context object</a>.</p>
+    <p>The <dfn>relevant supported entry types</dfn> is the <a>list of supported
     entry types</a> associated with the <a data-cite=
-    "HTML/webappapis.html#concept-relevant-global">relevant global object</a>.
-    </p>
+    "HTML/webappapis.html#current-global-object">current global object</a>.</p>
     <section data-dfn-for="Performance" data-link-for="Performance">
       <h2>Extensions to the <dfn data-cite=
       "hr-time-2#sec-performance">Performance</dfn> interface</h2>
@@ -574,7 +573,19 @@
       <section data-link-for="PerformanceObserver">
         <h2><a>supportedEntryTypes</a> attribute</h2>
         <p>When <dfn>supportedEntryTypes</dfn>'s attribute getter is called, it
-          MUST return the <a>relevant supported entry types</a>.</p>
+        MUST run the following steps:
+        <ol>
+          <li>If the <a>frozen supported entry types</a> of the <a data-cite=
+          "HTML/webappapis.html#current-global-object">current global object</a>
+          has been initialized, then return it.</li>
+          <li>Otherwise, initialize the <a>frozen supported entry types</a> of
+          the <a data-cite="HTML/webappapis.html#current-global-object">current
+          global object</a> to the output of the <a data-cite=
+          "WEBIDL#dfn-create-frozen-array">create a frozen array</a> algorithm
+          with the <a>relevant supported entry types</a> as input, and return
+          it.</li>
+        </ol>
+        </p>
         <p class="note">This attribute allows web developers to easily know
         which entry types are supported by the user agent.</p>
       </section>
@@ -698,6 +709,18 @@
         </li>
       </ol>
     </section>
+  </section>
+  <section data-link-for="PerformanceObserver"> 
+    <h2>Register performance entry type</h2>  
+    <p>To <dfn>register a performance entry type</dfn>, run the following steps:</p>  
+    <ol>
+      <li>Let <var>global object</var> be the input <a data-cite=
+      "HTML/webappapis.html#concept-realm-global">global object</a>.</li>
+      <li>Let <var>type</var> be the input string.</li> 
+      <li>Add <var>type</var> to the <a>list of supported entry types</a> of
+      <var>global object</var> in a location such that its contents remain in
+      alphabetical order.</li>
+    </ol> 
   </section>
   <section id="privacy-security">
     <h3>Privacy and Security</h3>
