@@ -468,14 +468,11 @@
                 <li>
                   Let <var>tuple</var> be the <a>relevant performance entry
                   tuple</a> given <var>options</var>'s <a>type</a> as
-                  <var>entryType</var>.
-                </li>
+                  <var>entryType</var>.</li>
                 <li>For each <a>PerformanceEntry</a> <var>entry</var> in
                   <var>tuple</var>'s <a>performance entry buffer</a>
                   <a data-cite="WHATWG-INFRA#list-append">append</a> it to
-                  the <a data-cite=
-                  "WHATWG-DOM#context-object">context object</a>'s <a>observer
-                  buffer</a>.</li>
+                  the <a>observer buffer</a>.</li>
                </ol>
             </li>
           </ol>
@@ -635,18 +632,11 @@
           </ol>
         </li>
         <li>
-          Determine if you should add <var>new entry</var> to a
-          <a>performance entry buffer</a>:
-          <ol>
-            <li> Let <var>tuple</var> be the <a>relevant performance entry
-              tuple</a></li>
-            <li>If the number of entries in <var>tuples</var>'s <a>performance
-              entry buffer</a> is smaller than <var>tuples</var>'s
-              <a>maxBufferSize</a>, <a data-cite="WHATWG-INFRA#list-append">
-              append</a> <var>new entry</var> to <var>tuple</var>'s
-              <a>performance entry buffer</a>.</li>
-          </ol>
-        </li>
+          Call the <a>determine eligibility for adding a performance entry</a>
+          algorithm with <var>tuple</var> set to the <a>relevant performance
+          entry tuple</a> given <var>entryType</var>.  If it returns true,
+          <a data-cite="WHATWG-INFRA#list-append">append</a> <var>new entry
+          </var> to <var>tuple</var>'s <a>performance entry buffer</a>.</li>
         <li>If the <a>performance observer task queued flag</a> is set,
         terminate these steps.
         </li>
@@ -742,8 +732,6 @@
       <ol>
         <li>Let <var>result</var> be an initially empty <a
         data-cite="WHATWG-INFRA#list">list</a>.</li>
-        <li>Sort <var>buffer</var>'s entries in chronological order with
-        respect to <a>startTime</a></li>
         <li>For each <a>PerformanceEntry</a> <var>entry</var> in
         <var>buffer</var>, run the following steps:
           <ol>
@@ -759,6 +747,8 @@
             <var>entry</var> to <var>result</var>.</li>
           </ol>
         </li>
+        <li>Sort <var>results</var>'s entries in chronological order with
+        respect to <a>startTime</a></li>
         <li>Return <var>result</var>.</li>
       </ol>
     </section>
@@ -768,6 +758,19 @@
       <ol>
         <li>Let <var>type</var> be the input string.</li>
         <li>Append <var>type</var> to <a>supported entry types</a>.</li>
+      </ol>
+    </section>
+    <section data-link-for="PerformanceObserver">
+      <h2>Eligibility for adding a PerformanceEntry to a buffer</h2>
+      <p>To <dfn>determine eligibility for adding a performance entry</dfn>,
+      with required performance entry <var>tuple</var>,
+      run the following steps:</p>
+      <ol>
+        <li>Let <var>num current entries</var> be the size of <var>tuple</var>'s
+          <a>performance entry buffer</a>.</li>
+        <li>If <var>num current entries</var> is less than <var>tuples</var>'s
+          <a>maxBufferSize</a>, return true.</li>
+        <li>Return false.</li>
       </ol>
     </section>
   </section>
