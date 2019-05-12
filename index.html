@@ -196,14 +196,35 @@
       <li>a <dfn>performance observer task queued flag</dfn></li>
       <li>a <dfn>list of <a>registered performance observer</a> objects</dfn>
       that is initially empty</li>
-      <li>a <dfn>performance entry buffer</dfn> to store
-      <a>PerformanceEntry</a> objects that is initially empty
+      <li>an initially empty <dfn>performance entry buffer map</dfn> <a
+      data-cite="WHATWG-INFRA#ordered-map">map</a>, <a
+      data-cite="WHATWG-INFRA#map-key">keyed</a> on a <code>DOMString</code>,
+      representing the entry type to which the buffer belongs. The <a
+      data-cite="WHATWG-INFRA#ordered-map">map</a>'s <a
+      data-cite="WHATWG-INFRA#map-value">value</a> is the following tuple:
+        <ul>
+          <li>A <dfn>performance entry buffer</dfn> to store
+            <a>PerformanceEntry</a> objects, that is initially empty.</li>
+          <li>A <dfn>maxBufferSize</dfn> indicating the max
+            buffer size for this entry type.</li>
+          <li>A <code>boolean</code> <dfn>availableFromTimeline</dfn>
+            indicating whether this entry type is available from the
+            <a>Performance</a> interface.</li>
+        </ul>
       </li>
     </ul>
-    <p>The <dfn>relevant performance entry buffer</dfn> is the <a>performance
-    entry buffer</a> associated with the <a data-cite=
-    "HTML/webappapis.html#concept-relevant-global">relevant global
-    object</a>.</p>
+    <p>In order to get the <dfn>relevant performance entry tuple</dfn>, given
+    <var>entryType</var> as input, run the following steps:</p>
+    <ol>
+      <li>Let <var>map</var> be the <a>performance entry buffer map</a> associated
+      with the <a data-cite="HTML/webappapis.html#concept-relevant-global">
+      relevant global object</a> of the <a data-cite="DOM#context-object">
+      context object</a>.</li>
+      <li>Return the value returned when <a
+      data-cite="WHATWG-INFRA#map-get">getting the value of an entry</a>, given
+      <var>entryType</var> as <a data-cite="WHATWG-INFRA#map-key">key</a>.</li>
+    </ol>
+
     <section data-dfn-for="Performance" data-link-for="Performance">
       <h2>Extensions to the <dfn data-cite=
       "hr-time-2#sec-performance">Performance</dfn> interface</h2>
@@ -222,28 +243,29 @@
       <p>The <dfn>PerformanceEntryList</dfn> represents a sequence of
       <a>PerformanceEntry</a>, providing developers with all the convenience
       methods found on JavaScript arrays.</p>
-      <section>
-        <h2><dfn>getEntries()</dfn> method</h2>
-        <p>Returns a <a>PerformanceEntryList</a> object returned by <a href=
-        "#filter-buffer-by-name-and-type"></a> algorithm with <var>buffer</var>
-        set to <a>relevant performance entry buffer</a>, and <var>name</var>
-        and <var>type</var> set to <code>null</code>.</p>
-      </section>
-      <section>
-        <h2><dfn>getEntriesByType()</dfn> method</h2>
-        <p>Returns a <a>PerformanceEntryList</a> object returned by <a href=
-        "#filter-buffer-by-name-and-type"></a> algorithm with <var>buffer</var>
-        set to <a>relevant performance entry buffer</a>, <var>name</var> set to
-        <code>null</code>, and <var>type</var> set to `type`.</p>
-      </section>
-      <section>
-        <h2><dfn>getEntriesByName()</dfn> method</h2>
-        <p>Returns a <a>PerformanceEntryList</a> object returned by <a href=
-        "#filter-buffer-by-name-and-type"></a> algorithm with <var>buffer</var>
-        set to <a>relevant performance entry buffer</a>, <var>name</var> set to
-        `name`, and <var>type</var> set to <code>null</code> if optional
-        `entryType` is omitted, and <var>type</var> set to `type`
-        otherwise.</p>
+        <section>
+          <h2><dfn>getEntries()</dfn> method</h2>
+          <p>Returns a <a>PerformanceEntryList</a> object returned by the
+          <a>filter buffer map by name and type</a> algorithm with
+          <var>name</var> and <var>type</var> set to <code>null</code>.</p>
+        </section>
+        <section>
+          <h2><dfn>getEntriesByType()</dfn> method</h2>
+          <p>Returns a <a>PerformanceEntryList</a> object returned by
+          <a>filter buffer map by name and type</a> algorithm with
+          <var>name</var> set to <code>null</code>, and
+          <var>type</var> set to the method's input <code>type</code>
+          parameter.</p>
+        </section>
+        <section>
+          <h2><dfn>getEntriesByName()</dfn> method</h2>
+          <p>Returns a <a>PerformanceEntryList</a> object returned by
+          <a>filter buffer map by name and type</a> algorithm with
+          <var>name</var> set to the method input <code>name</code>
+          parameter, and <var>type</var> set to <code>null</code> if optional
+          `entryType` is omitted, or set to the method's input
+          <code>type</code> parameter otherwise.</p>
+        </section>
       </section>
     </section>
     <section data-dfn-for="PerformanceEntry" data-link-for="PerformanceEntry">
@@ -443,18 +465,15 @@
             as its only item.</li>
             <li>If <var>options</var>'s <a>buffered</a> flag is set:
               <ol>
-                <li>Let <var>entries</var> be the <a>PerformanceEntryList</a>
-                object returned by <a href="#filter-buffer-by-name-and-type"></a>
-                algorithm with <var>buffer</var> set to <a>relevant
-                performance entry buffer</a>, <var>name</var> set to
-                <code>null</code> and <var>type</var> set to
-                <var>options</var>'s <a>type</a>.
-                </li>
-                <li>Append <var>entries</var> to the <a data-cite=
-                "WHATWG-DOM#context-object">context object</a>'s <a>observer
-                buffer</a>.
-                </li>
-              </ol>
+                <li>
+                  Let <var>tuple</var> be the <a>relevant performance entry
+                  tuple</a> given <var>options</var>'s <a>type</a> as
+                  <var>entryType</var>.</li>
+                <li>For each <var>entry</var> in <var>tuple</var>'s
+                  <a>performance entry buffer</a>
+                  <a data-cite="WHATWG-INFRA#list-append">append</a>
+                  <var>entry</var> to the <a>observer buffer</a>.</li>
+               </ol>
             </li>
           </ol>
           </li>
@@ -519,25 +538,29 @@
           <section>
             <h2><dfn>getEntries()</dfn> method</h2>
             <p>Returns a <a>PerformanceEntryList</a> object returned by
-            <a href="#filter-buffer-by-name-and-type"></a> algorithm with
-            <var>buffer</var> set to <a>observer buffer</a>, and
-            <var>name</var> and <var>type</var> set to <code>null</code>.</p>
+            <a>filter buffer by name and type</a> algorithm with the <a 
+            data-cite="WHATWG-DOM#context-object">context object</a>'s
+            <a>observer buffer</a>, <var>name</var> and <var>type</var> set to
+            <code>null</code>.</p>
           </section>
           <section>
             <h2><dfn>getEntriesByType()</dfn> method</h2>
             <p>Returns a <a>PerformanceEntryList</a> object returned by
-            <a href="#filter-buffer-by-name-and-type"></a> algorithm with
-            <var>buffer</var> set to <a>observer buffer</a>, <var>name</var>
-            set to <code>null</code>, and <var>type</var> set to `type`.</p>
+            <a>filter buffer by name and type</a> algorithm with the <a 
+            data-cite="WHATWG-DOM#context-object">context object</a>'s
+            <a>observer buffer</a>, <var>name</var> set to <code>null</code>,
+            and <var>type</var> set to the method's input <code>type</code>
+            parameter.</p>
           </section>
           <section>
             <h2><dfn>getEntriesByName()</dfn> method</h2>
             <p>Returns a <a>PerformanceEntryList</a> object returned by
-            <a href="#filter-buffer-by-name-and-type"></a> algorithm with
-            <var>buffer</var> set to <a>observer buffer</a>, <var>name</var>
-            set to `name`, and <var>type</var> set to <code>null</code> if
-            optional `entryType` is omitted, and <var>type</var> set to `type`
-            otherwise.</p>
+            <a>filter buffer by name and type</a> algorithm with the <a 
+            data-cite="WHATWG-DOM#context-object">context object</a>'s
+            <a>observer buffer</a>, <var>name</var> set to the method input
+            <code>name</code> parameter, and <var>type</var> set to
+            <code>null</code> if optional `entryType` is omitted, or set to the
+            method's input <code>type</code> parameter otherwise.</p>
           </section>
         </section>
       </section>
@@ -581,9 +604,8 @@
     <h2>Processing</h2>
     <section data-link-for="PerformanceObserver">
       <h2>Queue a <code>PerformanceEntry</code></h2>
-      <p>To <dfn>queue a PerformanceEntry</dfn> (<var>new entry</var>) with an
-      optional <var>add to performance entry buffer</var> flag, which is unset
-      by default, run these steps:</p>
+      <p>To <dfn>queue a PerformanceEntry</dfn> (<var>new entry</var>), 
+      run these steps:</p>
       <ol>
         <li>Let <var>interested observers</var> be an initially empty set of
         <a>PerformanceObserver</a> objects.
@@ -609,9 +631,12 @@
             </li>
           </ol>
         </li>
-        <li>If the <var>add to performance entry buffer</var> flag is set, add
-        <var>new entry</var> to the <a>performance entry buffer</a>.
-        </li>
+        <li>
+          Call the <a>determine eligibility for adding a performance entry</a>
+          algorithm with <var>tuple</var> set to the <a>relevant performance
+          entry tuple</a> given <var>entryType</var>.  If it returns true,
+          <a data-cite="WHATWG-INFRA#list-append">append</a> <var>new entry
+          </var> to <var>tuple</var>'s <a>performance entry buffer</a>.</li>
         <li>If the <a>performance observer task queued flag</a> is set,
         terminate these steps.
         </li>
@@ -660,39 +685,73 @@
       periods to minimize impact of performance monitoring code.</p>
     </section>
     <section data-link-for="PerformanceEntry">
-      <h2>Filter <var>buffer</var> by <var>name</var> and <var>type</var></h2>
-      <p>Given a <var>buffer</var> and optional <var>name</var> and
-      <var>type</var> string values this algorithm returns a
-      <a>PerformanceEntryList</a> object that contains a list of
-      <a>PerformanceEntry</a> objects sorted in chronological order with
-      respect to <a>startTime</a>; objects with the same <a>startTime</a> have
-      unspecified ordering.</p>
+      <h2>Filter buffer map by name and type</h2>
+      <p>When asked to run the <dfn>filter buffer map by name and type</dfn>
+      algorithm with optional <var>name</var> and <var>type</var>, run the
+      following steps:</p>
       <ol>
-        <li>Let the <var>list of entry objects</var> be the empty
-        <a>PerformanceEntryList</a>.
-        </li>
-        <li>For each <a>PerformanceEntry</a> object (<var>entryObject</var>) in
-        the <var>buffer</var>, in chronological order with respect to
-        <a>startTime</a>:
+        <li>Let <var>result</var> be an initially empty <a
+        data-cite="WHATWG-INFRA#list">list</a>.</li>
+        <li>Let <var>map</var> be the <a>performance entry buffer map</a>
+        associated with the <a
+        data-cite="HTML/webappapis.html#concept-relevant-global">relevant
+        global object</a> of <a
+        data-cite="DOM#context-object">context object</a>.</li>
+        <li>Let <var>tuple list</var> be an empty <a
+        data-cite="WHATWG-INFRA#list">list</a>.</li>
+        <li>If <var>type</var> is not null, append the result of <a
+        data-cite="WHATWG-INFRA#map-get">getting the value of entry</a> on
+        <var>map</var> given <var>type</var> as <a
+        data-cite="WHATWG-INFRA#map-key">key</a> to <var>tuple list</var>.
+        Otherwise, assign the result of <a
+        data-cite="WHATWG-INFRA#map-getting-the-values">get the values</a> on <var>map</var> to
+        <var>tuple list</var></li>
+        <li>For each <var>tuple</var> in <var>tuple list</var>, run the
+        following steps:
           <ol>
-            <li>If <var>name</var> is not <code>null</code> and
-            <var>entryObject</var>'s `name` attribute does not match
-            <var>name</var> in a <a data-cite=
-            "HTML/infrastructure.html#case-sensitive">case-sensitive</a>
-            manner, go to next <var>entryObject</var>.
-            </li>
-            <li>If <var>type</var> is not <code>null</code> and
-            <var>entryObject</var>'s `type` attribute does not match
-            <var>type</var> in a <a data-cite=
-            "HTML/infrastructure.html#case-sensitive">case-sensitive</a>
-            manner, go to next <var>entryObject</var>.
-            </li>
-            <li>Add <var>entryObject</var> to the <var>list of entry objects</var>.
-            </li>
+            <li>Let <var>buffer</var> be <var>tuple</var>'s <a>performance
+            entry buffer</a>.</li>
+            <li>If <var>tuple</var>'s <a>availableFromTimeline</a> is false,
+            continue to the next <var>tuple</var>.</li>
+            <li>Let <var>entries</var> be the result of running <a>filter
+            buffer by name and type</a> with <var>buffer</var>, <var>name</var>
+            and <var>type</var> as inputs.</li>
+            <li>For each <var>entry</var> in <var>entries</var>, <a
+            data-cite="WHATWG-INFRA#list-append">append</a> <var>entry</var> to
+            <var>result</var>.</li>
           </ol>
         </li>
-        <li>Return the <var>list of entry objects</var>.
+        <li>Sort <var>results</var>'s entries in chronological order with
+        respect to <a>startTime</a></li>
+        <li>Return <var>result</var>.</li>
+      </ol>
+    </section>
+    <section data-link-for="PerformanceEntry">
+      <h2>Filter buffer by name and type</h2>
+      <p>When asked to run the <dfn>filter buffer by name and type</dfn>
+      algorithm, with <var>buffer</var>, <var>name</var>, and <var>type</var>
+      as inputs, run the following steps:</p>
+      <ol>
+        <li>Let <var>result</var> be an initially empty <a
+        data-cite="WHATWG-INFRA#list">list</a>.</li>
+        <li>For each <a>PerformanceEntry</a> <var>entry</var> in
+        <var>buffer</var>, run the following steps:
+          <ol>
+            <li>If <var>type</var> is not null and if <var>type</var> does
+            not match <var>entry</var>'s <code>entryType</code> attribute in a
+            <a data-cite="HTML/infrastructure.html#case-sensitive">case-sensitive</a>
+            manner, continue to next <var>entry</var>.</li>
+            <li>If <var>name</var> is not null and if <var>name</var> does
+            not match <var>entry</var>'s <code>name</code> attribute in a
+            <a data-cite="HTML/infrastructure.html#case-sensitive">case-sensitive</a>
+            manner, continue to next <var>entry</var>.</li>
+            <li><a data-cite="WHATWG-INFRA#list-append">Append</a>
+            <var>entry</var> to <var>result</var>.</li>
+          </ol>
         </li>
+        <li>Sort <var>results</var>'s entries in chronological order with
+        respect to <a>startTime</a></li>
+        <li>Return <var>result</var>.</li>
       </ol>
     </section>
     <section data-link-for="PerformanceObserver">
@@ -701,6 +760,19 @@
       <ol>
         <li>Let <var>type</var> be the input string.</li>
         <li>Append <var>type</var> to <a>supported entry types</a>.</li>
+      </ol>
+    </section>
+    <section data-link-for="PerformanceObserver">
+      <h2>Eligibility for adding a PerformanceEntry to a buffer</h2>
+      <p>To <dfn>determine eligibility for adding a performance entry</dfn>,
+      with required performance entry <var>tuple</var>,
+      run the following steps:</p>
+      <ol>
+        <li>Let <var>num current entries</var> be the size of <var>tuple</var>'s
+          <a>performance entry buffer</a>.</li>
+        <li>If <var>num current entries</var> is less than <var>tuples</var>'s
+          <a>maxBufferSize</a>, return true.</li>
+        <li>Return false.</li>
       </ol>
     </section>
   </section>
