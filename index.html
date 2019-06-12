@@ -364,6 +364,9 @@
         <ol data-link-for="PerformanceObserverInit">
           <li>Let <var>observer</var> be the <a data-cite=
             "WHATWG-DOM#context-object">context object</a>.</li>
+          <li>Let <var>relevantGlobal</var> be <var>observer</var>'s <a data-cite=
+          "HTML/webappapis.html#concept-relevant-global">relevant global
+          object</a>.</li>
           <li>If <var>options</var>'s <a>entryTypes</a> and <a>type</a> members
           are both omitted, then <a data-cite="WEBIDL#dfn-throw">throw</a> a
           <a data-cite="WEBIDL#syntaxerror"><code>SyntaxError</code></a>.</li>
@@ -404,34 +407,28 @@
           <code>"multiple"</code>, run the following steps:
           <ol>
             <li>Let <var>entry types</var> be <var>options</var>'s
-            <a>entryTypes</a> sequence.
-            </li>
+            <a>entryTypes</a> sequence.</li>
             <li>Remove all types from <var>entry types</var> that are not
-            contained in the <a data-cite=
-            "HTML/webappapis.html#concept-relevant-global">relevant global
-            object</a>'s <a>frozen array of supported entry types</a>. The user agent
-            SHOULD notify developers if <var>entry types</var> is modified. For
-            example, a console warning listing removed types might be
-            appropriate.</li>
+            contained in <var>relevantGlobal</var>'s <a>frozen array of supported
+            entry types</a>. The user agent SHOULD notify developers if
+            <var>entry types</var> is modified. For example, a console warning
+            listing removed types might be appropriate.</li>
             <li>If the resulting <var>entry types</var> sequence is an empty
             sequence, abort these steps. The user agent SHOULD notify developers
             when the steps are aborted to notify that registration has been
             aborted. For example, a console warning might be appropriate.</li>
             <li>If the <a>list of registered performance observer objects</a> of
-            <a data-cite="HTML/webappapis.html#concept-relevant-global">relevant
-            global object</a> contains a <a>registered performance observer</a>
+            <var>relevantGlobal</var> contains a <a>registered performance observer</a>
             whose <a>observer</a> is the <a data-cite=
             "WHATWG-DOM#context-object">context object</a>, replace its
             <a>options list</a> with a list containing <var>options</var> as its
             only item.</li>
             <li>Otherwise, create and append a <a>registered performance
             observer</a> object to the <a>list of registered performance
-            observer objects</a> of <a data-cite=
-            "HTML/webappapis.html#concept-relevant-global">relevant global
-            object</a>, with <a>observer</a> set to the
-            <a data-cite="WHATWG-DOM#context-object">context object</a> and
-            <a>options list</a> set to a list containing <var>options</var> as
-            its only item.</li>
+            observer objects</a> of <var>relevantGlobal</var>, with
+            <a>observer</a> set to the <a data-cite="WHATWG-DOM#context-object">
+            context object</a> and <a>options list</a> set to a list containing
+            <var>options</var> as its only item.</li>
           </ol>
           </li>
           <li>Otherwise, run the following steps:
@@ -439,13 +436,11 @@
             <li>Assert that <var>observer</var>'s <a>observer type</a> is
             <code>"single"</code>.</li>
             <li>If <var>options</var>'s <a>type</a> is not contained in the
-            <a data-cite="HTML/webappapis.html#concept-relevant-global">relevant
-            global object</a>'s <a>frozen array of supported entry types</a>,
+            <var>relevantGlobal</var>'s <a>frozen array of supported entry types</a>,
             abort these steps. The user agent SHOULD notify developers when this
             happens, for instance via a console warning.</li>
             <li>If the <a>list of registered performance observer objects</a> of
-            <a data-cite="HTML/webappapis.html#concept-relevant-global">relevant
-            global object</a> contains a <a>registered performance observer</a>
+            <var>relevantGlobal</var> contains a <a>registered performance observer</a>
             <var>obs</var> whose <a>observer</a> is the <a data-cite=
             "WHATWG-DOM#context-object">context object</a>:
               <ol>
@@ -461,8 +456,7 @@
             <li>Otherwise, create and append a
             <a>registered performance observer</a> object to the <a>list of
             registered performance observer objects</a> of
-            <a data-cite="HTML/webappapis.html#concept-relevant-global">
-            relevant global object</a>, with <a>observer</a> set to the
+            <var>relevantGlobal</var>, with <a>observer</a> set to the
             <a data-cite="WHATWG-DOM#context-object">context object</a> and
             <a>options list</a> set to a list containing <var>options</var>
             as its only item.</li>
@@ -597,9 +591,9 @@
         </p>
         <p>When <dfn>supportedEntryTypes</dfn>'s attribute getter is called, run the following steps:</p>
         <ol>
-          <li>Let <var>globalObject</var> be the <a href=
-            "https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global">
-            environment settings object's global object</a>.</li>
+          <li>Let <var>globalObject</var> be the <a data-cite=
+            "HTML/webappapis.html#concept-settings-object-global">environment settings
+            object's global object</a>.</li>
           <li>Return <var>globalObject</var>'s
             <a>frozen array of supported entry types</a>.</li>
         </ol>
