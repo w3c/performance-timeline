@@ -407,8 +407,10 @@
             <a>entryTypes</a> sequence.
             </li>
             <li>Remove all types from <var>entry types</var> that are not
-            contained in <a>supported entry types</a>. The user agent SHOULD
-            notify developers if <var>entry types</var> is modified. For
+            contained in the <a data-cite=
+            "HTML/webappapis.html#concept-relevant-global">relevant global
+            object</a>'s <a>frozen array of supported entry types</a>. The user agent
+            SHOULD notify developers if <var>entry types</var> is modified. For
             example, a console warning listing removed types might be
             appropriate.</li>
             <li>If the resulting <var>entry types</var> sequence is an empty
@@ -436,10 +438,11 @@
           <ol>
             <li>Assert that <var>observer</var>'s <a>observer type</a> is
             <code>"single"</code>.</li>
-            <li>If <var>options</var>'s <a>type</a> is not contained in
-            <a>supported entry types</a>, abort these steps. The user agent
-            SHOULD notify developers when this happens, for instance via a
-            console warning.</li>
+            <li>If <var>options</var>'s <a>type</a> is not contained in the
+            <a data-cite="HTML/webappapis.html#concept-relevant-global">relevant
+            global object</a>'s <a>frozen array of supported entry types</a>,
+            abort these steps. The user agent SHOULD notify developers when this
+            happens, for instance via a console warning.</li>
             <li>If the <a>list of registered performance observer objects</a> of
             <a data-cite="HTML/webappapis.html#concept-relevant-global">relevant
             global object</a> contains a <a>registered performance observer</a>
@@ -584,27 +587,21 @@
       </section>
       <section>
         <h2><a>supportedEntryTypes</a> attribute</h2>
-        <p>Each <a data-cite="HTML/webappapis.html#global-object">global object</a> has
-          associated <dfn>supported entry types</dfn>, which is initially null but is later
-          initialized to be a <a data-cite=WEBIDL/#idl-frozen-array>FrozenArray</a> with
-          the set of strings representing the entry types which the user agent supports
-          for that global object, which must be a subset of those described in the
-          <a href="https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>.
+        <p>Each <a data-cite="HTML/webappapis.html#global-object">global object</a>
+          has an associated <dfn>frozen array of supported entry types</dfn>, which
+          is initialized to the <a data-cite="WEBIDL/#es-frozen-array">FrozenArray</a>
+          <a href="WEBIDL/#create-frozen-array-from-iterable">created</a> from the
+          list of strings among the <a href=
+          "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>
+          that are supported for the global object, in alphabetical order.
         </p>
         <p>When <dfn>supportedEntryTypes</dfn>'s attribute getter is called, run the following steps:</p>
         <ol>
           <li>Let <var>globalObject</var> be the <a href=
             "https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global">
             environment settings object's global object</a>.</li>
-          <li>Let <var>frozenList</var> be <var>globalObject</var>'s
-            <a>supported entry types</a>.</li>
-          <li>If <var>frozenList</var> is not null, return <var>frozenList</var>.</li>
-          <li>Otherwise, initialize <var>frozenList</var> to the output of the algorithm
-            to <a href="WEBIDL/#create-frozen-array-from-iterable">create a FrozenArray</a>
-            from the list of strings among the <a href=
-            "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a> that
-            are supported for <var>globalObject</var>, in alphabetical order.</li>
-          <li>Return <var>frozenList</var>.</li>
+          <li>Return <var>globalObject</var>'s
+            <a>frozen array of supported entry types</a>.</li>
         </ol>
         <p class="note">This attribute allows web developers to easily know
         which entry types are supported by the user agent.</p>
