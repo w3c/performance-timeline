@@ -348,7 +348,7 @@
         void observe (optional PerformanceObserverInit options);
         void disconnect ();
         PerformanceEntryList takeRecords();
-        static readonly attribute FrozenArray&lt;DOMString&gt; supportedEntryTypes;
+        [SameObject] static readonly attribute FrozenArray&lt;DOMString&gt; supportedEntryTypes;
       };
       </pre>
       <p class="note">To keep the performance overhead to minimum the
@@ -584,16 +584,27 @@
       </section>
       <section>
         <h2><a>supportedEntryTypes</a> attribute</h2>
-        <p>The user agent MUST maintain <dfn>supported entry types</dfn>, a list
-        of strings representing the entry types which the user agent supports
-        for the <a>PerformanceObserver</a> interface. This list is populated by
-        specifications that define new entry types via the
-        <a>register a performance entry type</a> algorithm.</p>
+        <p>Each <a data-cite="HTML/webappapis.html#global-object">global object</a> has
+          associated <dfn>supported entry types</dfn>, which is initially null but is later
+          initialized to be a <a data-cite=WEBIDL/#idl-frozen-array>FrozenArray</a> with
+          the set of strings representing the entry types which the user agent supports
+          for that global object, which must be a subset of those described in the
+          <a href="https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>.
+        </p>
         <p>When <dfn>supportedEntryTypes</dfn>'s attribute getter is called, run the following steps:</p>
         <ol>
-          <li>Let <var>result</var> be a copy of the user agent's <a>supported entry types</a>.</li>
-          <li>Sort <var>result</var> in alphabetical order.</li>
-          <li>Return <var>result</var>.</li>
+          <li>Let <var>globalObject</var> be the <a href=
+            "https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global">
+            environment settings object's global object</a>.</li>
+          <li>Let <var>frozenList</var> be <var>globalObject</var>'s
+            <a>supported entry types</a>.</li>
+          <li>If <var>frozenList</var> is not null, return <var>frozenList</var>.</li>
+          <li>Otherwise, initialize <var>frozenList</var> to the output of the algorithm
+            to <a href="WEBIDL/#create-frozen-array-from-iterable">create a FrozenArray</a>
+            from the list of strings among the <a href=
+            "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a> that
+            are supported for <var>globalObject</var>, in alphabetical order.</li>
+          <li>Return <var>frozenList</var>.</li>
         </ol>
         <p class="note">This attribute allows web developers to easily know
         which entry types are supported by the user agent.</p>
@@ -752,14 +763,6 @@
         <li>Sort <var>results</var>'s entries in chronological order with
         respect to <a>startTime</a></li>
         <li>Return <var>result</var>.</li>
-      </ol>
-    </section>
-    <section data-link-for="PerformanceObserver">
-      <h2>Register performance entry type</h2>
-      <p>To <dfn>register a performance entry type</dfn>, run the following steps:</p>
-      <ol>
-        <li>Let <var>type</var> be the input string.</li>
-        <li>Append <var>type</var> to <a>supported entry types</a>.</li>
       </ol>
     </section>
     <section data-link-for="PerformanceObserver">
