@@ -196,8 +196,7 @@
   </section>
   <section>
     <h2><dfn>Performance Timeline</dfn></h2>
-    <p>Each <a>ECMAScript global
-    environment</a> has:</p>
+    <p>Each <a>ECMAScript global environment</a> has:</p>
     <ul>
       <li>a <dfn>performance observer task queued flag</dfn></li>
       <li>a <dfn>list of <a>registered performance observer</a> objects</dfn>
@@ -223,10 +222,8 @@
     <var>entryType</var> as input, run the following steps:</p>
     <ol>
       <li>Let <var>map</var> be the <a>performance entry buffer map</a> associated
-      with the  <a>
-      relevant global object</a> of the <a>context object</a>.</li>
-      <li>Return the value returned when
-      <a>getting the value of an entry</a>, given
+      with the <a>relevant global object</a> of the <a>context object</a>.</li>
+      <li>Return the value returned when <a>getting the value of an entry</a>, given
       <var>entryType</var> as <a>key</a>.</li>
     </ol>
 
@@ -467,8 +464,7 @@
                   tuple</a> given <var>options</var>'s <a>type</a> as
                   <var>entryType</var>.</li>
                 <li>For each <var>entry</var> in <var>tuple</var>'s
-                  <a>performance entry buffer</a>
-                  <a  data-xref-for="list">append</a>
+                  <a>performance entry buffer</a> <a data-xref-for="list">append</a>
                   <var>entry</var> to the <a>observer buffer</a>.</li>
                </ol>
             </li>
@@ -535,16 +531,14 @@
           <section>
             <h2><dfn>getEntries()</dfn> method</h2>
             <p>Returns a <a>PerformanceEntryList</a> object returned by
-            <a>filter buffer by name and type</a> algorithm with the <a
-           >context object</a>'s
+            <a>filter buffer by name and type</a> algorithm with the <a>context object</a>'s
             <a>observer buffer</a>, <var>name</var> and <var>type</var> set to
             <code>null</code>.</p>
           </section>
           <section>
             <h2><dfn>getEntriesByType()</dfn> method</h2>
             <p>Returns a <a>PerformanceEntryList</a> object returned by
-            <a>filter buffer by name and type</a> algorithm with the <a
-           >context object</a>'s
+            <a>filter buffer by name and type</a> algorithm with the <a>context object</a>'s
             <a>observer buffer</a>, <var>name</var> set to <code>null</code>,
             and <var>type</var> set to the method's input <code>type</code>
             parameter.</p>
@@ -564,9 +558,8 @@
       <section>
         <h2><dfn>takeRecords()</dfn> method</h2>
         <p>The <a>takeRecords()</a> method must return a copy of the
-        <a>context object</a>'s
-        <a>observer buffer</a>, and also empty <a>context object</a>'s <a>observer
-        buffer</a>.</p>
+        <a>context object</a>'s <a>observer buffer</a>, and also empty
+        <a>context object</a>'s <a>observer buffer</a>.</p>
       </section>
       <section>
         <h2><dfn>disconnect()</dfn> method</h2>
@@ -628,7 +621,7 @@
           Call the <a>determine eligibility for adding a performance entry</a>
           algorithm with <var>tuple</var> set to the <a>relevant performance
           entry tuple</a> given <var>entryType</var>.  If it returns true,
-          <a  data-xref-for="list">append</a> <var>new entry
+          <a data-xref-for="list">append</a> <var>new entry
           </var> to <var>tuple</var>'s <a>performance entry buffer</a>.</li>
         <li>If the <a>performance observer task queued flag</a> is set,
         terminate these steps.
@@ -659,8 +652,7 @@
                 <li>If <var>entries</var> is non-empty, call <var>po</var>’s callback
                 with <var>entries</var> as first argument and <var>po</var> as the
                 second argument and <a>callback this value</a>. If
-                this <a>throw</a>s an exception,
-                 <a>report the exception</a>.
+                this <a>throw</a>s an exception, <a>report the exception</a>.
                 </li>
               </ol>
             </li>
@@ -703,7 +695,7 @@
             buffer by name and type</a> with <var>buffer</var>, <var>name</var>
             and <var>type</var> as inputs.</li>
             <li>For each <var>entry</var> in <var>entries</var>,
-            <a  data-xref-for="list">append</a> <var>entry</var> to
+            <a data-xref-for="list">append</a> <var>entry</var> to
             <var>result</var>.</li>
           </ol>
         </li>
@@ -729,7 +721,7 @@
             <li>If <var>name</var> is not null and if <var>name</var> does
             not match <var>entry</var>'s <code>name</code> attribute in a
              <a>case-sensitive</a> manner, continue to next <var>entry</var>.</li>
-            <li><a  data-xref-for="list">append</a>
+            <li><a data-xref-for="list">append</a>
             <var>entry</var> to <var>result</var>.</li>
           </ol>
         </li>
