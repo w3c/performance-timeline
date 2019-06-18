@@ -188,7 +188,7 @@
     particular, the algorithms defined in this specification are intended to be
     easy to follow, and not intended to be performant.)</p>
   </section>
-  <section>
+  <section data-dfn-for="PerformanceTimeline" data-link-for="PerformanceTimeline">
     <h2><dfn>Performance Timeline</dfn></h2>
     <p>Each <a data-cite="WebIDL#es-environment">ECMAScript global
     environment</a> has:</p>
@@ -206,10 +206,14 @@
           <li>A <dfn>performance entry buffer</dfn> to store
             <a>PerformanceEntry</a> objects, that is initially empty.</li>
           <li>A <dfn>maxBufferSize</dfn> indicating the max
-            buffer size for this entry type.</li>
+            buffer size for this entry type, initialized to the <a href=
+            "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>
+            value for this entry type.</li>
           <li>A <code>boolean</code> <dfn>availableFromTimeline</dfn>
             indicating whether this entry type is available from the
-            <a>Performance</a> interface.</li>
+            <a>Performance</a> interface, initialized to the <a href=
+            "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>
+             value for this entry type.</li>
         </ul>
       </li>
     </ul>
@@ -292,8 +296,9 @@
         <dd>
           This attribute MUST return the type of the interface represented by
           this <a>PerformanceEntry</a> object.
-          <p class="note">Example `entryType` values defined by other
-          specifications include: <code>"mark"</code> and
+          <p class="note">All `entryType` values are defined in the <a href=
+          "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>.
+          Examples include: <code>"mark"</code> and
           <code>"measure"</code> [[USER-TIMING-2]], <code>"navigation"</code>
           [[NAVIGATION-TIMING-2]], <code>"resource"</code>
           [[RESOURCE-TIMING-2]], <!-- TODO: add long task spec reference -->
