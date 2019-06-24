@@ -348,7 +348,7 @@
         void observe (optional PerformanceObserverInit options);
         void disconnect ();
         PerformanceEntryList takeRecords();
-        static readonly attribute FrozenArray&lt;DOMString&gt; supportedEntryTypes;
+        [SameObject] static readonly attribute FrozenArray&lt;DOMString&gt; supportedEntryTypes;
       };
       </pre>
       <p class="note">To keep the performance overhead to minimum the
@@ -362,7 +362,11 @@
         <p>The <a>observe()</a> method instructs the user agent to
         <dfn>register the observer</dfn> and must run these steps:</p>
         <ol data-link-for="PerformanceObserverInit">
-          <li>Let <var>observer</var> be the <a>context object</a>.</li>
+          <li>Let <var>observer</var> be the <a data-cite=
+            "WHATWG-DOM#context-object">context object</a>.</li>
+          <li>Let <var>relevantGlobal</var> be <var>observer</var>'s <a data-cite=
+          "HTML/webappapis.html#concept-relevant-global">relevant global
+          object</a>.</li>
           <li>If <var>options</var>'s <a>entryTypes</a> and <a>type</a> members
           are both omitted, then <a>throw</a> a
           <a>SyntaxError</a>.</li>
@@ -401,44 +405,42 @@
           <code>"multiple"</code>, run the following steps:
           <ol>
             <li>Let <var>entry types</var> be <var>options</var>'s
-            <a>entryTypes</a> sequence.
-            </li>
+            <a>entryTypes</a> sequence.</li>
             <li>Remove all types from <var>entry types</var> that are not
-            contained in <a>supported entry types</a>. The user agent SHOULD
-            notify developers if <var>entry types</var> is modified. For
-            example, a console warning listing removed types might be
-            appropriate.</li>
+            contained in <var>relevantGlobal</var>'s <a>frozen array of supported
+            entry types</a>. The user agent SHOULD notify developers if
+            <var>entry types</var> is modified. For example, a console warning
+            listing removed types might be appropriate.</li>
             <li>If the resulting <var>entry types</var> sequence is an empty
             sequence, abort these steps. The user agent SHOULD notify developers
             when the steps are aborted to notify that registration has been
             aborted. For example, a console warning might be appropriate.</li>
             <li>If the <a>list of registered performance observer objects</a> of
-             <a>relevant
-            global object</a> contains a <a>registered performance observer</a>
-            whose <a>observer</a> is the <a>context object</a>, replace its
+            <var>relevantGlobal</var> contains a <a>registered performance observer</a>
+            whose <a>observer</a> is the <a data-cite=
+            "WHATWG-DOM#context-object">context object</a>, replace its
             <a>options list</a> with a list containing <var>options</var> as its
             only item.</li>
             <li>Otherwise, create and append a <a>registered performance
             observer</a> object to the <a>list of registered performance
-            observer objects</a> of <a>relevant global
-            object</a>, with <a>observer</a> set to the
-            <a>context object</a> and
-            <a>options list</a> set to a list containing <var>options</var> as
-            its only item.</li>
+            observer objects</a> of <var>relevantGlobal</var>, with
+            <a>observer</a> set to the <a data-cite="WHATWG-DOM#context-object">
+            context object</a> and <a>options list</a> set to a list containing
+            <var>options</var> as its only item.</li>
           </ol>
           </li>
           <li>Otherwise, run the following steps:
           <ol>
             <li>Assert that <var>observer</var>'s <a>observer type</a> is
             <code>"single"</code>.</li>
-            <li>If <var>options</var>'s <a>type</a> is not contained in
-            <a>supported entry types</a>, abort these steps. The user agent
-            SHOULD notify developers when this happens, for instance via a
-            console warning.</li>
+            <li>If <var>options</var>'s <a>type</a> is not contained in the
+            <var>relevantGlobal</var>'s <a>frozen array of supported entry types</a>,
+            abort these steps. The user agent SHOULD notify developers when this
+            happens, for instance via a console warning.</li>
             <li>If the <a>list of registered performance observer objects</a> of
-             <a>relevant
-            global object</a> contains a <a>registered performance observer</a>
-            <var>obs</var> whose <a>observer</a> is the <a>context object</a>:
+            <var>relevantGlobal</var> contains a <a>registered performance observer</a>
+            <var>obs</var> whose <a>observer</a> is the <a data-cite=
+            "WHATWG-DOM#context-object">context object</a>:
               <ol>
                 <li>If <var>obs</var>'s <a>options list</a> contains a
                 <a>PerformanceObserverInit</a> item <var>currentOptions</var>
@@ -452,9 +454,8 @@
             <li>Otherwise, create and append a
             <a>registered performance observer</a> object to the <a>list of
             registered performance observer objects</a> of
-             <a>
-            relevant global object</a>, with <a>observer</a> set to the
-            <a>context object</a> and
+            <var>relevantGlobal</var>, with <a>observer</a> set to the
+            <a data-cite="WHATWG-DOM#context-object">context object</a> and
             <a>options list</a> set to a list containing <var>options</var>
             as its only item.</li>
             <li>If <var>options</var>'s <a>buffered</a> flag is set:
@@ -570,16 +571,21 @@
       </section>
       <section>
         <h2><a>supportedEntryTypes</a> attribute</h2>
-        <p>The user agent MUST maintain <dfn>supported entry types</dfn>, a list
-        of strings representing the entry types which the user agent supports
-        for the <a>PerformanceObserver</a> interface. This list is populated by
-        specifications that define new entry types via the
-        <a>register a performance entry type</a> algorithm.</p>
+        <p>Each <a data-cite="HTML/webappapis.html#global-object">global object</a>
+          has an associated <dfn>frozen array of supported entry types</dfn>, which
+          is initialized to the <a data-cite="WEBIDL/#es-frozen-array">FrozenArray</a>
+          <a data-cite="WEBIDL/#dfn-create-frozen-array">created</a> from the
+          sequence of strings among the <a href=
+          "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>
+          that are supported for the global object, in alphabetical order.
+        </p>
         <p>When <dfn>supportedEntryTypes</dfn>'s attribute getter is called, run the following steps:</p>
         <ol>
-          <li>Let <var>result</var> be a copy of the user agent's <a>supported entry types</a>.</li>
-          <li>Sort <var>result</var> in alphabetical order.</li>
-          <li>Return <var>result</var>.</li>
+          <li>Let <var>globalObject</var> be the <a data-cite=
+            "HTML/webappapis.html#concept-settings-object-global">environment settings
+            object's global object</a>.</li>
+          <li>Return <var>globalObject</var>'s
+            <a>frozen array of supported entry types</a>.</li>
         </ol>
         <p class="note">This attribute allows web developers to easily know
         which entry types are supported by the user agent.</p>
@@ -728,14 +734,6 @@
         <li>Sort <var>results</var>'s entries in chronological order with
         respect to <a>startTime</a></li>
         <li>Return <var>result</var>.</li>
-      </ol>
-    </section>
-    <section data-link-for="PerformanceObserver">
-      <h2>Register performance entry type</h2>
-      <p>To <dfn>register a performance entry type</dfn>, run the following steps:</p>
-      <ol>
-        <li>Let <var>type</var> be the input string.</li>
-        <li>Append <var>type</var> to <a>supported entry types</a>.</li>
       </ol>
     </section>
     <section data-link-for="PerformanceObserver">
