@@ -362,10 +362,8 @@
         <p>The <a>observe()</a> method instructs the user agent to
         <dfn>register the observer</dfn> and must run these steps:</p>
         <ol data-link-for="PerformanceObserverInit">
-          <li>Let <var>observer</var> be the <a data-cite=
-            "WHATWG-DOM#context-object">context object</a>.</li>
-          <li>Let <var>relevantGlobal</var> be <var>observer</var>'s <a data-cite=
-          "HTML/webappapis.html#concept-relevant-global">relevant global
+          <li>Let <var>observer</var> be the <a>context object</a>.</li>
+          <li>Let <var>relevantGlobal</var> be <var>observer</var>'s <a>relevant global
           object</a>.</li>
           <li>If <var>options</var>'s <a>entryTypes</a> and <a>type</a> members
           are both omitted, then <a>throw</a> a
@@ -417,16 +415,14 @@
             aborted. For example, a console warning might be appropriate.</li>
             <li>If the <a>list of registered performance observer objects</a> of
             <var>relevantGlobal</var> contains a <a>registered performance observer</a>
-            whose <a>observer</a> is the <a data-cite=
-            "WHATWG-DOM#context-object">context object</a>, replace its
+            whose <a>observer</a> is the <a>context object</a>, replace its
             <a>options list</a> with a list containing <var>options</var> as its
             only item.</li>
             <li>Otherwise, create and append a <a>registered performance
             observer</a> object to the <a>list of registered performance
             observer objects</a> of <var>relevantGlobal</var>, with
-            <a>observer</a> set to the <a data-cite="WHATWG-DOM#context-object">
-            context object</a> and <a>options list</a> set to a list containing
-            <var>options</var> as its only item.</li>
+            <a>observer</a> set to the <a>context object</a> and <a>options list</a>
+            set to a list containing <var>options</var> as its only item.</li>
           </ol>
           </li>
           <li>Otherwise, run the following steps:
@@ -439,8 +435,7 @@
             happens, for instance via a console warning.</li>
             <li>If the <a>list of registered performance observer objects</a> of
             <var>relevantGlobal</var> contains a <a>registered performance observer</a>
-            <var>obs</var> whose <a>observer</a> is the <a data-cite=
-            "WHATWG-DOM#context-object">context object</a>:
+            <var>obs</var> whose <a>observer</a> is the <a>context object</a>:
               <ol>
                 <li>If <var>obs</var>'s <a>options list</a> contains a
                 <a>PerformanceObserverInit</a> item <var>currentOptions</var>
@@ -455,9 +450,8 @@
             <a>registered performance observer</a> object to the <a>list of
             registered performance observer objects</a> of
             <var>relevantGlobal</var>, with <a>observer</a> set to the
-            <a data-cite="WHATWG-DOM#context-object">context object</a> and
-            <a>options list</a> set to a list containing <var>options</var>
-            as its only item.</li>
+            <a>context object</a> and <a>options list</a> set to a list
+            containing <var>options</var> as its only item.</li>
             <li>If <var>options</var>'s <a>buffered</a> flag is set:
               <ol>
                 <li>
