@@ -196,7 +196,7 @@
       <li>a <dfn>performance observer task queued flag</dfn></li>
       <li>a <dfn>list of <a>registered performance observer</a> objects</dfn>
       that is initially empty</li>
-      <li>an initially empty <dfn>performance entry buffer map</dfn> <a
+      <li>a <dfn>performance entry buffer map</dfn> <a
       data-cite="WHATWG-INFRA#ordered-map">map</a>, <a
       data-cite="WHATWG-INFRA#map-key">keyed</a> on a <code>DOMString</code>,
       representing the entry type to which the buffer belongs. The <a
@@ -205,15 +205,15 @@
         <ul>
           <li>A <dfn>performance entry buffer</dfn> to store
             <a>PerformanceEntry</a> objects, that is initially empty.</li>
-          <li>A <dfn>maxBufferSize</dfn> indicating the max
-            buffer size for this entry type, initialized to the <a href=
+          <li>A <a href="https://w3c.github.io/timing-entrytypes-registry/#registration">
+            <dfn>maxBufferSize</dfn></a>, initialized to the <a href=
             "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>
             value for this entry type.</li>
-          <li>A <code>boolean</code> <dfn>availableFromTimeline</dfn>
-            indicating whether this entry type is available from the
-            <a>Performance</a> interface, initialized to the <a href=
+          <li>A <code>boolean</code> <a href=
+            "https://w3c.github.io/timing-entrytypes-registry/#registration">
+            availableFromTimeline</a>, initialized to the <a href=
             "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>
-             value for this entry type.</li>
+            value for this entry type.</li>
         </ul>
       </li>
     </ul>
@@ -296,7 +296,7 @@
         <dd>
           This attribute MUST return the type of the interface represented by
           this <a>PerformanceEntry</a> object.
-          <p class="note">All `entryType` values are defined in the <a href=
+          <p class="note">All `entryType` values are defined in the relevant<a href=
           "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>.
           Examples include: <code>"mark"</code> and
           <code>"measure"</code> [[USER-TIMING-2]], <code>"navigation"</code>
