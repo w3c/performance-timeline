@@ -7,9 +7,9 @@ branches:
   - level2
 env:
   global:
-  - URL="https://raw.githubusercontent.com/w3c/performance-timeline/level2/W3CTRMANIFEST"
+  - URL="https://w3c.github.io/performance-timeline/W3CTRMANIFEST"
   - DECISION="http://www.w3.org/2015/06/24-webperf-minutes.html#item01"
-  - secure: "bvNxVliUyTTirfrKE2s0f2tZgfz9BptVT4Bn+gIuTGWS7naNzSY3FxuOBKl4ryi/6vOAZcFgDhCHxiHmi0QWvKgR8uKiJt+dEKEM2t+NY1YZ97/K2CDhDUE1/4iTWdip64BAh0uwYkDkD/JMvioEq/bClgLHQUl75jJ/ZfleCLjJdxw+QuqDN0r1voQgWDvtmjnK281S9eSm+xISfWMDJPjSk9EBCecI0aJu9LDUahvkZ+efLG9xC8k6iFAu6tBD4QoWoXVS4eAjMCllzHqb/pxKdCK5WGHXMYSumUG7ERK3KFT1KowpYL+GX3aaeHaJotp89Yl6ZTUrILZrpewov54ao/PCCTj9S7Lcyjov1zVsPn9pbdHAP5rQkCxAy0xry8pOWvts703gOdKC968naWHUWuDNZd33/DpeW+RdhBP4rkeh1cEXvgzinWFAcXg4I1EO0CReEYr2pXAsGeDd/wBXIBCy9kRoDRrc3BH4QwoRUbPl1/SD75o3mAtgjtHKZ5g6OnrgJnLZeDlUB3zLL+dBPjfvGHcYO6FdLNeWxmYwfnJ5XpkdvuINVgxvGSLTik3Od0mho4nRbBUOJ8h6ixvy/3TjnDBKwrTGaa9uImxfQl3oxFdwEa4BxyBHRR7qi6WKVdHp1IsMbRL57cLodp29jW5X1YeYg26QeLP0auc="
+  - secure: "Fos6nV1CNKK/Pj4woiotxjRLvZGc+XS9qoTINwESLTb6CK5CWrcwcfh8IkMD2BMQg0yo+eyCmCqFfSpZc3zP1/jxPOGNBAd7wfNH/02jiMtc1cej+2mAHpVpL0PY0UK8uu/DqQ340NqeBj01Z1rFYydqfL6T5GS2++5rg6klVKA="
 install:
   - npm install respec-validator
 script:
