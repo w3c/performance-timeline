@@ -220,12 +220,12 @@
       </li>
     </ul>
     <p>In order to get the <dfn>relevant performance entry tuple</dfn>, given
-    <var>entryType</var> as input, run the following steps:</p>
+    <var>entryType</var> and <var>globalObject</var> as input, run the following steps:</p>
     <ol>
       <li>Let <var>map</var> be the <a>performance entry buffer map</a> associated
-      with the <a>relevant global object</a> of the <a>context object</a>.</li>
-      <li>Return the value returned when <a>getting the value of an entry</a>, given
-      <var>entryType</var> as <a>key</a>.</li>
+      with <var>globalObject</var>.</li>
+      <li>Return the result of <a>getting the value of an entry</a> from <var>map</var>,
+      given <var>entryType</var> as the <a>key</a>.</li>
     </ol>
 
     <section data-dfn-for="Performance" data-link-for="Performance">
@@ -458,8 +458,8 @@
               <ol>
                 <li>
                   Let <var>tuple</var> be the <a>relevant performance entry
-                  tuple</a> given <var>options</var>'s <a>type</a> as
-                  <var>entryType</var>.</li>
+                  tuple</a> of <var>options</var>'s <a>type</a> and
+                  <var>relevantGlobal</var>.</li>
                 <li>For each <var>entry</var> in <var>tuple</var>'s
                   <a>performance entry buffer</a> <a data-xref-for="list">append</a>
                   <var>entry</var> to the <a>observer buffer</a>.</li>
@@ -592,13 +592,13 @@
     <h2>Processing</h2>
     <section data-link-for="PerformanceObserver">
       <h2>Queue a <code>PerformanceEntry</code></h2>
-      <p>To <dfn>queue a PerformanceEntry</dfn> (<var>new entry</var>),
+      <p>To <dfn>queue a PerformanceEntry</dfn> (<var>newEntry</var>),
       run these steps:</p>
       <ol>
         <li>Let <var>interested observers</var> be an initially empty set of
         <a>PerformanceObserver</a> objects.
         </li>
-        <li>Let <var>entryType</var> be <var>new entry</var>’s <a data-lt=
+        <li>Let <var>entryType</var> be <var>newEntry</var>’s <a data-lt=
         "PerformanceEntry.entryType">entryType</a> value.</li>
         <li>For each <a>registered performance observer</a> (<var>regObs</var>):
           <ol>
@@ -614,17 +614,24 @@
         </li>
         <li>For each <var>observer</var> in <var>interested observers</var>:
           <ol>
-            <li>Append <var>new entry</var> to <var>observer</var>'s
+            <li>Append <var>newEntry</var> to <var>observer</var>'s
             <a>observer buffer</a>.
             </li>
           </ol>
         </li>
+        <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s <a>
+          relevant global object</a>.
+        </li>
+        <li>
+          Let <var>tuple</var> be the <a>relevant performance
+          entry tuple</a> of <var>relevantGlobal</var> and <var>entryType</var>.
+        </li>
         <li>
           Call the <a>determine eligibility for adding a performance entry</a>
-          algorithm with <var>tuple</var> set to the <a>relevant performance
-          entry tuple</a> given <var>entryType</var>.  If it returns true,
-          <a data-xref-for="list">append</a> <var>new entry
-          </var> to <var>tuple</var>'s <a>performance entry buffer</a>.</li>
+          algorithm with <var>tuple</var> as input. If it returns true,
+          <a data-xref-for="list">append</a> <var>newEntry</var> to <var>tuple</var>'s
+          <a>performance entry buffer</a>.
+        </li>
         <li>If the <a>performance observer task queued flag</a> is set,
         terminate these steps.
         </li>
@@ -635,16 +642,14 @@
           that consists of running the following substeps. The <a>task source</a> for the queued
           task is the <i>performance timeline</i> task source.
           <ol>
-            <li>Unset <a>performance observer task queued flag</a> for the
-            <a>relevant global
-            object</a>.
+            <li>Unset <a>performance observer task queued flag</a> of
+              <var>relevantGlobal</var>.
             </li>
-            <li>Let <var>notify list</var> be a copy of <a>relevant global
-            object</a>'s <a>list of registered performance observer
-            objects</a>.
+            <li>Let <var>notifyList</var> be a copy of <var>relevantGlobal</var>'s
+            <a>list of registered performance observer objects</a>.
             </li>
             <li>For each <a>PerformanceObserver</a> object <var>po</var> in
-            <var>notify list</var>, run these steps:
+            <var>notifyList</var>, run these steps:
               <ol>
                 <li>Let <var>entries</var> be a copy of <var>po</var>’s <a>observer
                 buffer</a>.
