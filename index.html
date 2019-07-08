@@ -110,8 +110,9 @@
       &lt;/html&gt;
     </pre>
     <p>Alternatively, the developer can observe the <a>Performance Timeline</a>
-    and be notified of new performance metrics, via the <a>PerformanceObserver</a>
-    interface:</p>
+    and be notified of new performance metrics and, optionally, previously
+    buffered performance metrics of specified type, via the
+    <a>PerformanceObserver</a> interface:</p>
     <pre class="example">
     &lt;!doctype html&gt;
     &lt;html&gt;
@@ -167,8 +168,8 @@
       // Disconnect after processing the events.
       resourceObserver.disconnect();
     });
-    // Subscribe to new events for Resource Timing.
-    resourceObserver.observe({type: "resource"});
+    // Retrieve buffered events and subscribe to newer events for Resource Timing.
+    resourceObserver.observe({type: "resource", buffered: true});
     &lt;/script&gt;
     &lt;/body&gt;
     &lt;/html&gt;
@@ -328,7 +329,7 @@
       <h2>The <dfn>PerformanceObserver</dfn> interface</h2>
       <p>The <a>PerformanceObserver</a> interface can be used to observe the
       <a>Performance Timeline</a> to be notified of new performance metrics as
-      they are recorded.</p>
+      they are recorded, and optionally buffered performance metrics.</p>
       <p>Each <a>PerformanceObserver</a> has these associated concepts:</p>
       <ul>
         <li>A <dfn>PerformanceObserverCallback</dfn> set on creation.</li>
@@ -495,6 +496,7 @@
           dictionary PerformanceObserverInit {
             sequence&lt;DOMString&gt; entryTypes;
             DOMString type;
+            boolean buffered;
           };
           </pre>
           <dl>
@@ -509,6 +511,11 @@
             recognized by the user agent MUST be ignored. Other members may be
             present.</dd>
           </dl>
+          <dl>  
+            <dt><dfn>buffered</dfn></dt>  
+            <dd>A flag to indicate whether buffered entries should be queued  
+            into observer's buffer.</dd>  
+          </dl> 
         </section>
         <section data-dfn-for="PerformanceObserverEntryList" data-link-for=
         "PerformanceObserverEntryList">
