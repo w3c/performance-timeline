@@ -46,12 +46,13 @@ function getFirstContentfulPaint() {
 ### PerformanceObserver
 
 A PerformanceObserver object can notified of new PerformanceEntry objects, according to their `entryType` value.
-The construction of the object must receive a callback, which will be ran whenever the user agent is dispatching new entries whose `entryType` value match one of the ones being observed by the observer.
+The constructor of the object must receive a callback, which will be ran whenever the user agent is dispatching new entries whose `entryType` value match one of the ones being observed by the observer.
 This callback is not run once per PerformanceEntry nor immediately upon creation of a PerformanceEntry.
 Instead, entries are 'queued' at the PerformanceObserver, and the user agent can execute the callback later.
 When the callback is executed, all queued entries are passed onto the function, and the queue for the PerformanceObserver is reset.
 The PerformanceObserver initially does not observer anything: the `observe()` method must be called to specify what kind of PerformanceEntry objects are to be observed.
-There are two ways to call the `observe()` method, and those should not be mixed within the same PerformanceObserver (an exception will be thrown if this is attempted).
+The `observe()` method can be called with either an 'entryTypes' array or with a single 'type' string, as detailed below.
+Those modes cannot be mixed, or an exception will be thrown.
 
 #### `supportedEntryTypes`
 
