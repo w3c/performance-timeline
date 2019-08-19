@@ -125,8 +125,26 @@
     </ul>
     <p>The developer is encouraged to use <a>PerformanceObserver</a> where
     possible. Further, new performance API's and metrics may only be available
-    through the <a>PerformanceObserver</a> interface. The observer works by specifying a callback in the constructor and specifying the performance entries it's interested in via the <a data-link-for=PerformanceObserver>observe()</a> method. The user agent chooses when to execute the callback, which receives performance entries that have been queued.</p>
-    <p>To avoid losing entries that are created before the observer is registered for observation, the <a data-link-for=PerformanceObserverInit>buffered</a> flag can be used. When this flag is set, the user agent dispatches records that it has buffered prior to the <a>PerformanceObserver</a>'s creation, and thus they are received in the first callback after the <a data-link-for=PerformanceObserver>observe()</a> call occurs. This enables web developers to register PerformanceObservers when it is convenient to do so without missing out on entries dispatched early on during the page load.</p>
+    through the <a>PerformanceObserver</a> interface. The observer works by
+    specifying a callback in the constructor and specifying the performance
+    entries it's interested in via the <a data-link-for=
+    "PerformanceObserver">observe()</a> method. The user agent chooses when to
+    execute the callback, which receives performance entries that have been
+    queued.</p>
+    <p>There are special considerations regarding initial page load when using
+    the <a>PerformanceObserver</a> interface: a registration must be active to
+    receive events but the registration script may not be available or may not
+    be desired in the critical path. To address this, user agents buffer some
+    number of events while the page is being constructed, and these buffered
+    events can be accessed via the <a data-link-for=
+    "PerformanceObserverInit">buffered</a> flag when registering the observer.
+    When this flag is set, the user agent retrieves and dispatches events that
+    it has buffered, for the specified entry type, and delivers them in the
+    first callback after the <a data-link-for=
+    "PerformanceObserver">observe()</a> call occurs.</p>
+    <p class="note">The number of buffered events is determined by the
+    specification that defines the metric and buffering is intended to used for
+    first-N events only; buffering is not unbounded or continuous.</p>
     <pre class="example">
     &lt;!doctype html&gt;
     &lt;html&gt;
@@ -202,33 +220,36 @@
       <li>a <dfn>performance observer task queued flag</dfn></li>
       <li>a <dfn>list of <a>registered performance observer</a> objects</dfn>
       that is initially empty</li>
-      <li>a <dfn>performance entry buffer map</dfn>
-      <a>map</a>,
-      <a>keyed</a> on a <code>DOMString</code>,
-      representing the entry type to which the buffer belongs. The
-      <a>map</a>'s
-      <a>value</a> is the following tuple:
+      <li>a <dfn>performance entry buffer map</dfn> <a>map</a>, <a>keyed</a> on
+      a <code>DOMString</code>, representing the entry type to which the buffer
+      belongs. The <a>map</a>'s <a>value</a> is the following tuple:
         <ul>
           <li>A <dfn>performance entry buffer</dfn> to store
-            <a>PerformanceEntry</a> objects, that is initially empty.</li>
-          <li>An integer <dfn>maxBufferSize</dfn>, initialized to the <a href=
-            "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>
-            value for this entry type.</li>
-          <li>A <code>boolean</code> <dfn>availableFromTimeline</dfn>, initialized to the
+          <a>PerformanceEntry</a> objects, that is initially empty.
+          </li>
+          <li>An integer <dfn>maxBufferSize</dfn>, initialized to the
             <a href="https://w3c.github.io/timing-entrytypes-registry/#registry">
-            registry</a> value for this entry type.</li>
+            registry</a> value for this entry type.
+          </li>
+          <li>A <code>boolean</code> <dfn>availableFromTimeline</dfn>,
+          initialized to the <a href=
+          "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>
+          value for this entry type.
+          </li>
         </ul>
       </li>
     </ul>
     <p>In order to get the <dfn>relevant performance entry tuple</dfn>, given
-    <var>entryType</var> and <var>globalObject</var> as input, run the following steps:</p>
+    <var>entryType</var> and <var>globalObject</var> as input, run the
+    following steps:</p>
     <ol>
-      <li>Let <var>map</var> be the <a>performance entry buffer map</a> associated
-      with <var>globalObject</var>.</li>
-      <li>Return the result of <a>getting the value of an entry</a> from <var>map</var>,
-      given <var>entryType</var> as the <a>key</a>.</li>
+      <li>Let <var>map</var> be the <a>performance entry buffer map</a>
+      associated with <var>globalObject</var>.
+      </li>
+      <li>Return the result of <a>getting the value of an entry</a> from <var>
+        map</var>, given <var>entryType</var> as the <a>key</a>.
+      </li>
     </ol>
-
     <section data-dfn-for="Performance" data-link-for="Performance">
       <h2>Extensions to the <dfn data-cite=
       "hr-time-2#sec-performance">Performance</dfn> interface</h2>
@@ -247,36 +268,34 @@
       <p>The <dfn>PerformanceEntryList</dfn> represents a sequence of
       <a>PerformanceEntry</a>, providing developers with all the convenience
       methods found on JavaScript arrays.</p>
-        <section>
-          <h2><dfn>getEntries()</dfn> method</h2>
-          <p>Returns a <a>PerformanceEntryList</a> object returned by the
-          <a>filter buffer map by name and type</a> algorithm with
-          <var>name</var> and <var>type</var> set to <code>null</code>.</p>
-        </section>
-        <section>
-          <h2><dfn>getEntriesByType()</dfn> method</h2>
-          <p>Returns a <a>PerformanceEntryList</a> object returned by
-          <a>filter buffer map by name and type</a> algorithm with
-          <var>name</var> set to <code>null</code>, and
-          <var>type</var> set to the method's input <code>type</code>
-          parameter.</p>
-        </section>
-        <section>
-          <h2><dfn>getEntriesByName()</dfn> method</h2>
-          <p>Returns a <a>PerformanceEntryList</a> object returned by
-          <a>filter buffer map by name and type</a> algorithm with
-          <var>name</var> set to the method input <code>name</code>
-          parameter, and <var>type</var> set to <code>null</code> if optional
-          `entryType` is omitted, or set to the method's input
-          <code>type</code> parameter otherwise.</p>
-        </section>
+      <section>
+        <h2><dfn>getEntries()</dfn> method</h2>
+        <p>Returns a <a>PerformanceEntryList</a> object returned by the
+        <a>filter buffer map by name and type</a> algorithm with
+        <var>name</var> and <var>type</var> set to <code>null</code>.</p>
+      </section>
+      <section>
+        <h2><dfn>getEntriesByType()</dfn> method</h2>
+        <p>Returns a <a>PerformanceEntryList</a> object returned by <a>filter
+        buffer map by name and type</a> algorithm with <var>name</var> set to
+        <code>null</code>, and <var>type</var> set to the method's input
+        <code>type</code> parameter.</p>
+      </section>
+      <section>
+        <h2><dfn>getEntriesByName()</dfn> method</h2>
+        <p>Returns a <a>PerformanceEntryList</a> object returned by <a>filter
+        buffer map by name and type</a> algorithm with <var>name</var> set to
+        the method input <code>name</code> parameter, and <var>type</var> set
+        to <code>null</code> if optional `entryType` is omitted, or set to the
+        method's input <code>type</code> parameter otherwise.</p>
       </section>
     </section>
-    <section data-dfn-for="PerformanceEntry" data-link-for="PerformanceEntry">
-      <h2>The <dfn>PerformanceEntry</dfn> interface</h2>
-      <p>The <a>PerformanceEntry</a> interface hosts the performance data of
-      various metrics.</p>
-      <pre class='idl'>
+  </section>
+  <section data-dfn-for="PerformanceEntry" data-link-for="PerformanceEntry">
+    <h2>The <dfn>PerformanceEntry</dfn> interface</h2>
+    <p>The <a>PerformanceEntry</a> interface hosts the performance data of
+    various metrics.</p>
+    <pre class='idl'>
       [Exposed=(Window,Worker)]
       interface PerformanceEntry {
         readonly    attribute DOMString           name;
@@ -285,65 +304,67 @@
         readonly    attribute DOMHighResTimeStamp duration;
         [Default] object toJSON();
       };</pre>
-      <dl>
-        <dt><dfn>name</dfn></dt>
-        <dd>
-          This attribute MUST return an identifier for this
-          <a>PerformanceEntry</a> object. This identifier does not have to be
-          unique.
-        </dd>
-        <dt><dfn>entryType</dfn></dt>
-        <dd>
-          This attribute MUST return the type of the interface represented by
-          this <a>PerformanceEntry</a> object.
-          <p class="note">All `entryType` values are defined in the relevant<a href=
-          "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>.
-          Examples include: <code>"mark"</code> and
-          <code>"measure"</code> [[USER-TIMING-2]], <code>"navigation"</code>
-          [[NAVIGATION-TIMING-2]], <code>"resource"</code>
-          [[RESOURCE-TIMING-2]], <!-- TODO: add long task spec reference -->
-           and <code>"longtask"</code>.</p>
-        </dd>
-        <dt><dfn>startTime</dfn></dt>
-        <dd>This attribute MUST return the time value of the first recorded
-        timestamp of this performance metric. If the startTime concept doesn't
-        apply, a performance metric may choose to return a `startTime` of
-        <code>0</code>.</dd>
-        <dt><dfn>duration</dfn></dt>
-        <dd>
-          This attribute MUST return the time value of the duration of the
-          entire event being recorded by this <a>PerformanceEntry</a>.
-          Typically, this would be the time difference between the last
-          recorded timestamp and the first recorded timestamp of this
-          <a>PerformanceEntry</a>. If the duration concept doesn't apply, a
-          performance metric may choose to return a `duration` of
-          <code>0</code>.
-        </dd>
-      </dl>
-      <p>When <dfn>toJSON</dfn> is called, run [[WebIDL]]'s <a>default toJSON operation</a>.</p>
-    </section>
-    <section data-link-for="PerformanceObserver" data-dfn-for=
-    "PerformanceObserver">
-      <h2>The <dfn>PerformanceObserver</dfn> interface</h2>
-      <p>The <a>PerformanceObserver</a> interface can be used to observe the
-      <a>Performance Timeline</a> to be notified of new performance metrics as
-      they are recorded, and optionally buffered performance metrics.</p>
-      <p>Each <a>PerformanceObserver</a> has these associated concepts:</p>
-      <ul>
-        <li>A <dfn>PerformanceObserverCallback</dfn> set on creation.</li>
-        <li>A <a>PerformanceEntryList</a> object called the <dfn>observer
-        buffer</dfn> that is initially empty.</li>
-        <li>A <code>DOMString</code> <dfn>observer type</dfn> which is initially
-        <code>"undefined"</code>.</li>
-      </ul>
-      <p>The `PerformanceObserver(callback)` constructor must create a new
-      <a>PerformanceObserver</a> object with <a>PerformanceObserverCallback</a>
-      set to <var>callback</var> and then return it.</p>
-      <p>A <dfn>registered performance observer</dfn> is a <a>struct</a> consisting of an
-      <dfn>observer</dfn> member (a <a>PerformanceObserver</a> object) and an
-      <dfn>options list</dfn> member (a list of <a>PerformanceObserverInit</a>
-      dictionaries).</p>
-      <pre class="idl">
+    <dl>
+      <dt><dfn>name</dfn></dt>
+      <dd>
+        This attribute MUST return an identifier for this
+        <a>PerformanceEntry</a> object. This identifier does not have to be
+        unique.
+      </dd>
+      <dt><dfn>entryType</dfn></dt>
+      <dd>
+        This attribute MUST return the type of the interface represented by
+        this <a>PerformanceEntry</a> object.
+        <p class="note">All `entryType` values are defined in the
+        relevant<a href=
+        "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>.
+        Examples include: <code>"mark"</code> and <code>"measure"</code>
+        [[USER-TIMING-2]], <code>"navigation"</code> [[NAVIGATION-TIMING-2]],
+        <code>"resource"</code> [[RESOURCE-TIMING-2]], 
+        <!-- TODO: add long task spec reference -->
+         and <code>"longtask"</code>.</p>
+      </dd>
+      <dt><dfn>startTime</dfn></dt>
+      <dd>This attribute MUST return the time value of the first recorded
+      timestamp of this performance metric. If the startTime concept doesn't
+      apply, a performance metric may choose to return a `startTime` of
+      <code>0</code>.</dd>
+      <dt><dfn>duration</dfn></dt>
+      <dd>
+        This attribute MUST return the time value of the duration of the entire
+        event being recorded by this <a>PerformanceEntry</a>. Typically, this
+        would be the time difference between the last recorded timestamp and
+        the first recorded timestamp of this <a>PerformanceEntry</a>. If the
+        duration concept doesn't apply, a performance metric may choose to
+        return a `duration` of <code>0</code>.
+      </dd>
+    </dl>
+    <p>When <dfn>toJSON</dfn> is called, run [[WebIDL]]'s <a>default toJSON
+    operation</a>.</p>
+  </section>
+  <section data-link-for="PerformanceObserver" data-dfn-for=
+  "PerformanceObserver">
+    <h2>The <dfn>PerformanceObserver</dfn> interface</h2>
+    <p>The <a>PerformanceObserver</a> interface can be used to observe the
+    <a>Performance Timeline</a> to be notified of new performance metrics as
+    they are recorded, and optionally buffered performance metrics.</p>
+    <p>Each <a>PerformanceObserver</a> has these associated concepts:</p>
+    <ul>
+      <li>A <dfn>PerformanceObserverCallback</dfn> set on creation.</li>
+      <li>A <a>PerformanceEntryList</a> object called the <dfn>observer
+      buffer</dfn> that is initially empty.
+      </li>
+      <li>A <code>DOMString</code> <dfn>observer type</dfn> which is initially
+      <code>"undefined"</code>.</li>
+    </ul>
+    <p>The `PerformanceObserver(callback)` constructor must create a new
+    <a>PerformanceObserver</a> object with <a>PerformanceObserverCallback</a>
+    set to <var>callback</var> and then return it.</p>
+    <p>A <dfn>registered performance observer</dfn> is a <a>struct</a>
+    consisting of an <dfn>observer</dfn> member (a <a>PerformanceObserver</a>
+    object) and an <dfn>options list</dfn> member (a list of
+    <a>PerformanceObserverInit</a> dictionaries).</p>
+    <pre class="idl">
       callback PerformanceObserverCallback = void (PerformanceObserverEntryList entries,
                                                    PerformanceObserver observer);
       [Constructor(PerformanceObserverCallback callback), Exposed=(Window,Worker)]
@@ -354,171 +375,184 @@
         [SameObject] static readonly attribute FrozenArray&lt;DOMString&gt; supportedEntryTypes;
       };
       </pre>
-      <p class="note">To keep the performance overhead to minimum the
-      application ought to only subscribe to event types that it is interested
-      in, and disconnect the observer once it no longer needs to observe the
-      performance data. Filtering by name is not supported, as it would
-      implicitly require a subscription for all event types — this is possible,
-      but discouraged, as it will generate a significant volume of events.</p>
-      <section>
-        <h2><dfn>observe()</dfn> method</h2>
-        <p>The <a>observe()</a> method instructs the user agent to
-        <dfn>register the observer</dfn> and must run these steps:</p>
-        <ol data-link-for="PerformanceObserverInit">
-          <li>Let <var>observer</var> be the <a>context object</a>.</li>
-          <li>Let <var>relevantGlobal</var> be <var>observer</var>'s <a>relevant global
-          object</a>.</li>
-          <li>If <var>options</var>'s <a>entryTypes</a> and <a>type</a> members
-          are both omitted, then <a>throw</a> a
-          <a>SyntaxError</a>.</li>
-          <li>If <var>options</var>'s <a>entryTypes</a> is present and any other
-          member is also present, then
-          <a>throw</a> a
-          <a>SyntaxError</a>.</li>
-          <li>Update or check <var>observer</var>'s <a>observer type</a> by
-          running these steps:
-            <ol>
-              <li>If <var>observer</var>'s <a>observer type</a> is
-              <code>"undefined"</code>:
-                <ol>
-                  <li>If <var>options</var>'s <a>entryTypes</a> member is
-                  present, then set <var>observer</var>'s <a>observer type</a>
-                  to <code>"multiple"</code>.</li>
-                  <li>If <var>options</var>'s <a>type</a> member is present,
-                  then set <var>observer</var>'s <a>observer type</a> to
-                  <code>"single"</code>.</li>
-                </ol>
-              </li>
-              <li>If <var>observer</var>'s <a>observer type</a> is
-              <code>"single"</code> and <var>options</var>'s
-              <a>entryTypes</a> member is present, then
-              <a>throw</a> an
-              <a>InvalidModificationError</a>.
-              </li>
-              <li>If <var>observer</var>'s <a>observer type</a> is
-              <code>"multiple"</code> and <var>options</var>'s <a>type</a>
-              member is present, then <a>throw</a>
-              an <a>InvalidModificationError</a>.
-              </li>
-            </ol>
-          </li>
-          <li>If <var>observer</var>'s <a>observer type</a> is
-          <code>"multiple"</code>, run the following steps:
+    <p class="note">To keep the performance overhead to minimum the application
+    ought to only subscribe to event types that it is interested in, and
+    disconnect the observer once it no longer needs to observe the performance
+    data. Filtering by name is not supported, as it would implicitly require a
+    subscription for all event types — this is possible, but discouraged, as it
+    will generate a significant volume of events.</p>
+    <section>
+      <h2><dfn>observe()</dfn> method</h2>
+      <p>The <a>observe()</a> method instructs the user agent to <dfn>register
+      the observer</dfn> and must run these steps:</p>
+      <ol data-link-for="PerformanceObserverInit">
+        <li>Let <var>observer</var> be the <a>context object</a>.
+        </li>
+        <li>Let <var>relevantGlobal</var> be <var>observer</var>'s <a>relevant
+        global object</a>.
+        </li>
+        <li>If <var>options</var>'s <a>entryTypes</a> and <a>type</a> members
+        are both omitted, then <a>throw</a> a <a>SyntaxError</a>.
+        </li>
+        <li>If <var>options</var>'s <a>entryTypes</a> is present and any other
+        member is also present, then <a>throw</a> a <a>SyntaxError</a>.
+        </li>
+        <li>Update or check <var>observer</var>'s <a>observer type</a> by
+        running these steps:
+          <ol>
+            <li>If <var>observer</var>'s <a>observer type</a> is
+            <code>"undefined"</code>:
+              <ol>
+                <li>If <var>options</var>'s <a>entryTypes</a> member is
+                present, then set <var>observer</var>'s <a>observer type</a> to
+                <code>"multiple"</code>.
+                </li>
+                <li>If <var>options</var>'s <a>type</a> member is present, then
+                set <var>observer</var>'s <a>observer type</a> to
+                <code>"single"</code>.
+                </li>
+              </ol>
+            </li>
+            <li>If <var>observer</var>'s <a>observer type</a> is
+            <code>"single"</code> and <var>options</var>'s <a>entryTypes</a>
+            member is present, then <a>throw</a> an
+            <a>InvalidModificationError</a>.
+            </li>
+            <li>If <var>observer</var>'s <a>observer type</a> is
+            <code>"multiple"</code> and <var>options</var>'s <a>type</a> member
+            is present, then <a>throw</a> an <a>InvalidModificationError</a>.
+            </li>
+          </ol>
+        </li>
+        <li>If <var>observer</var>'s <a>observer type</a> is
+        <code>"multiple"</code>, run the following steps:
           <ol>
             <li>Let <var>entry types</var> be <var>options</var>'s
-            <a>entryTypes</a> sequence.</li>
+            <a>entryTypes</a> sequence.
+            </li>
             <li>Remove all types from <var>entry types</var> that are not
-            contained in <var>relevantGlobal</var>'s <a>frozen array of supported
-            entry types</a>. The user agent SHOULD notify developers if
-            <var>entry types</var> is modified. For example, a console warning
-            listing removed types might be appropriate.</li>
+            contained in <var>relevantGlobal</var>'s <a>frozen array of
+            supported entry types</a>. The user agent SHOULD notify developers
+            if <var>entry types</var> is modified. For example, a console
+            warning listing removed types might be appropriate.
+            </li>
             <li>If the resulting <var>entry types</var> sequence is an empty
-            sequence, abort these steps. The user agent SHOULD notify developers
-            when the steps are aborted to notify that registration has been
-            aborted. For example, a console warning might be appropriate.</li>
-            <li>If the <a>list of registered performance observer objects</a> of
-            <var>relevantGlobal</var> contains a <a>registered performance observer</a>
-            whose <a>observer</a> is the <a>context object</a>, replace its
-            <a>options list</a> with a list containing <var>options</var> as its
-            only item.</li>
+            sequence, abort these steps. The user agent SHOULD notify
+            developers when the steps are aborted to notify that registration
+            has been aborted. For example, a console warning might be
+            appropriate.</li>
+            <li>If the <a>list of registered performance observer objects</a>
+            of <var>relevantGlobal</var> contains a <a>registered performance
+            observer</a> whose <a>observer</a> is the <a>context object</a>,
+            replace its <a>options list</a> with a list containing
+            <var>options</var> as its only item.
+            </li>
             <li>Otherwise, create and append a <a>registered performance
             observer</a> object to the <a>list of registered performance
             observer objects</a> of <var>relevantGlobal</var>, with
-            <a>observer</a> set to the <a>context object</a> and <a>options list</a>
-            set to a list containing <var>options</var> as its only item.</li>
+            <a>observer</a> set to the <a>context object</a> and <a>options
+            list</a> set to a list containing <var>options</var> as its only
+            item.
+            </li>
           </ol>
-          </li>
-          <li>Otherwise, run the following steps:
+        </li>
+        <li>Otherwise, run the following steps:
           <ol>
             <li>Assert that <var>observer</var>'s <a>observer type</a> is
-            <code>"single"</code>.</li>
+            <code>"single"</code>.
+            </li>
             <li>If <var>options</var>'s <a>type</a> is not contained in the
-            <var>relevantGlobal</var>'s <a>frozen array of supported entry types</a>,
-            abort these steps. The user agent SHOULD notify developers when this
-            happens, for instance via a console warning.</li>
-            <li>If the <a>list of registered performance observer objects</a> of
-            <var>relevantGlobal</var> contains a <a>registered performance observer</a>
-            <var>obs</var> whose <a>observer</a> is the <a>context object</a>:
+            <var>relevantGlobal</var>'s <a>frozen array of supported entry
+            types</a>, abort these steps. The user agent SHOULD notify
+            developers when this happens, for instance via a console warning.
+            </li>
+            <li>If the <a>list of registered performance observer objects</a>
+            of <var>relevantGlobal</var> contains a <a>registered performance
+            observer</a> <var>obs</var> whose <a>observer</a> is the <a>context
+            object</a>:
               <ol>
                 <li>If <var>obs</var>'s <a>options list</a> contains a
                 <a>PerformanceObserverInit</a> item <var>currentOptions</var>
                 whose <a>type</a> is equal to <var>options</var>'s <a>type</a>,
                 replace <var>currentOptions</var> with <var>options</var> in
-                <var>obs</var>'s <a>options list</a>.</li>
+                <var>obs</var>'s <a>options list</a>.
+                </li>
                 <li>Otherwise, append <var>options</var> to <var>obs</var>'s
-                <a>options list</a>.</li>
+                <a>options list</a>.
+                </li>
               </ol>
             </li>
-            <li>Otherwise, create and append a
-            <a>registered performance observer</a> object to the <a>list of
-            registered performance observer objects</a> of
-            <var>relevantGlobal</var>, with <a>observer</a> set to the
-            <a>context object</a> and <a>options list</a> set to a list
-            containing <var>options</var> as its only item.</li>
+            <li>Otherwise, create and append a <a>registered performance
+            observer</a> object to the <a>list of registered performance
+            observer objects</a> of <var>relevantGlobal</var>, with
+            <a>observer</a> set to the <a>context object</a> and <a>options
+            list</a> set to a list containing <var>options</var> as its only
+            item.
+            </li>
             <li>If <var>options</var>'s <a>buffered</a> flag is set:
               <ol>
-                <li>
-                  Let <var>tuple</var> be the <a>relevant performance entry
-                  tuple</a> of <var>options</var>'s <a>type</a> and
-                  <var>relevantGlobal</var>.</li>
+                <li>Let <var>tuple</var> be the <a>relevant performance entry
+                tuple</a> of <var>options</var>'s <a>type</a> and
+                <var>relevantGlobal</var>.
+                </li>
                 <li>For each <var>entry</var> in <var>tuple</var>'s
-                  <a>performance entry buffer</a> <a data-xref-for="list">append</a>
-                  <var>entry</var> to the <a>observer buffer</a>.</li>
-               </ol>
+                <a>performance entry buffer</a> <a data-xref-for=
+                "list">append</a> <var>entry</var> to the <a>observer
+                buffer</a>.
+                </li>
+              </ol>
             </li>
           </ol>
-          </li>
-        </ol>
-        <p class="note">A <a>PerformanceObserver</a> object needs to always call
-        <a>observe()</a> with <var>options</var>'s
-        <a data-link-for=PerformanceObserverInit>entryTypes</a> set OR always
-        call <a>observe()</a> with <var>options</var>'s
-        <a data-link-for=PerformanceObserverInit>type</a> set. If one
-        <a>PerformanceObserver</a> calls <a>observe()</a> with <a data-link-for=
-        PerformanceObserverInit>entryTypes</a> and also calls observe with
-        <a data-link-for=PerformanceObserverInit>type</a>, then an exception is
-        thrown. This is meant to avoid confusion with how calls would stack.
-        When using <a data-link-for=PerformanceObserverInit>entryTypes</a>, no
-        other parameters in <a>PerformanceObserverInit</a> can be used. In
-        addition, multiple <a>observe()</a> calls will override for backwards
-        compatibility and because a single call should suffice in this case. On
-        the other hand, when using
-        <a data-link-for=PerformanceObserverInit>type</a>, calls will stack
-        because a single call can only specify one type. Calling
-        <a>observe()</a> with a repeated <a data-link-for=
-        PerformanceObserverInit>type</a> will also override.</p>
-        <section data-dfn-for="PerformanceObserverInit" data-link-for=
-        "PerformanceObserverInit">
-          <h2><dfn>PerformanceObserverInit</dfn> dictionary</h2>
-          <pre class="idl">
+        </li>
+      </ol>
+      <p class="note">A <a>PerformanceObserver</a> object needs to always call
+      <a>observe()</a> with <var>options</var>'s <a data-link-for=
+      "PerformanceObserverInit">entryTypes</a> set OR always call
+      <a>observe()</a> with <var>options</var>'s <a data-link-for=
+      "PerformanceObserverInit">type</a> set. If one <a>PerformanceObserver</a>
+      calls <a>observe()</a> with <a data-link-for=
+      "PerformanceObserverInit">entryTypes</a> and also calls observe with
+      <a data-link-for="PerformanceObserverInit">type</a>, then an exception is
+      thrown. This is meant to avoid confusion with how calls would stack. When
+      using <a data-link-for="PerformanceObserverInit">entryTypes</a>, no other
+      parameters in <a>PerformanceObserverInit</a> can be used. In addition,
+      multiple <a>observe()</a> calls will override for backwards compatibility
+      and because a single call should suffice in this case. On the other hand,
+      when using <a data-link-for="PerformanceObserverInit">type</a>, calls
+      will stack because a single call can only specify one type. Calling
+      <a>observe()</a> with a repeated <a data-link-for=
+      "PerformanceObserverInit">type</a> will also override.</p>
+      <section data-dfn-for="PerformanceObserverInit" data-link-for=
+      "PerformanceObserverInit">
+        <h2><dfn>PerformanceObserverInit</dfn> dictionary</h2>
+        <pre class="idl">
           dictionary PerformanceObserverInit {
             sequence&lt;DOMString&gt; entryTypes;
             DOMString type;
             boolean buffered;
           };
           </pre>
-          <dl>
-            <dt><dfn>entryTypes</dfn></dt>
-            <dd>A list of entry types to be observed. If present, the list MUST
-            NOT be empty and all other members MUST NOT be present. Types not
-            recognized by the user agent MUST be ignored.</dd>
-          </dl>
-          <dl>
-            <dt><dfn>type</dfn></dt>
-            <dd>A single entry type to be observed. A type that is not
-            recognized by the user agent MUST be ignored. Other members may be
-            present.</dd>
-          </dl>
-          <dl>  
-            <dt><dfn>buffered</dfn></dt>  
-            <dd>A flag to indicate whether buffered entries should be queued  
-            into observer's buffer.</dd>  
-          </dl> 
-        </section>
-        <section data-dfn-for="PerformanceObserverEntryList" data-link-for=
-        "PerformanceObserverEntryList">
-          <h2><dfn>PerformanceObserverEntryList</dfn> interface</h2>
-          <pre class="idl">
+        <dl>
+          <dt><dfn>entryTypes</dfn></dt>
+          <dd>A list of entry types to be observed. If present, the list MUST
+          NOT be empty and all other members MUST NOT be present. Types not
+          recognized by the user agent MUST be ignored.</dd>
+        </dl>
+        <dl>
+          <dt><dfn>type</dfn></dt>
+          <dd>A single entry type to be observed. A type that is not recognized
+          by the user agent MUST be ignored. Other members may be present.</dd>
+        </dl>
+        <dl>
+          <dt><dfn>buffered</dfn></dt>
+          <dd>A flag to indicate whether buffered entries should be queued into
+          observer's buffer.</dd>
+        </dl>
+      </section>
+      <section data-dfn-for="PerformanceObserverEntryList" data-link-for=
+      "PerformanceObserverEntryList">
+        <h2><dfn>PerformanceObserverEntryList</dfn> interface</h2>
+        <pre class="idl">
           [Exposed=(Window,Worker)]
           interface PerformanceObserverEntryList {
             PerformanceEntryList getEntries();
@@ -526,112 +560,113 @@
             PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type);
           };
           </pre>
-          <section>
-            <h2><dfn>getEntries()</dfn> method</h2>
-            <p>Returns a <a>PerformanceEntryList</a> object returned by
-            <a>filter buffer by name and type</a> algorithm with the <a>context object</a>'s
-            <a>observer buffer</a>, <var>name</var> and <var>type</var> set to
-            <code>null</code>.</p>
-          </section>
-          <section>
-            <h2><dfn>getEntriesByType()</dfn> method</h2>
-            <p>Returns a <a>PerformanceEntryList</a> object returned by
-            <a>filter buffer by name and type</a> algorithm with the <a>context object</a>'s
-            <a>observer buffer</a>, <var>name</var> set to <code>null</code>,
-            and <var>type</var> set to the method's input <code>type</code>
-            parameter.</p>
-          </section>
-          <section>
-            <h2><dfn>getEntriesByName()</dfn> method</h2>
-            <p>Returns a <a>PerformanceEntryList</a> object returned by
-            <a>filter buffer by name and type</a> algorithm with the <a
-           >context object</a>'s
-            <a>observer buffer</a>, <var>name</var> set to the method input
-            <code>name</code> parameter, and <var>type</var> set to
-            <code>null</code> if optional `entryType` is omitted, or set to the
-            method's input <code>type</code> parameter otherwise.</p>
-          </section>
+        <section>
+          <h2><dfn>getEntries()</dfn> method</h2>
+          <p>Returns a <a>PerformanceEntryList</a> object returned by <a>filter
+          buffer by name and type</a> algorithm with the <a>context
+          object</a>'s <a>observer buffer</a>, <var>name</var> and
+          <var>type</var> set to <code>null</code>.</p>
+        </section>
+        <section>
+          <h2><dfn>getEntriesByType()</dfn> method</h2>
+          <p>Returns a <a>PerformanceEntryList</a> object returned by <a>filter
+          buffer by name and type</a> algorithm with the <a>context
+          object</a>'s <a>observer buffer</a>, <var>name</var> set to
+          <code>null</code>, and <var>type</var> set to the method's input
+          <code>type</code> parameter.</p>
+        </section>
+        <section>
+          <h2><dfn>getEntriesByName()</dfn> method</h2>
+          <p>Returns a <a>PerformanceEntryList</a> object returned by <a>filter
+          buffer by name and type</a> algorithm with the <a>context
+          object</a>'s <a>observer buffer</a>, <var>name</var> set to the
+          method input <code>name</code> parameter, and <var>type</var> set to
+          <code>null</code> if optional `entryType` is omitted, or set to the
+          method's input <code>type</code> parameter otherwise.</p>
         </section>
       </section>
-      <section>
-        <h2><dfn>takeRecords()</dfn> method</h2>
-        <p>The <a>takeRecords()</a> method must return a copy of the
-        <a>context object</a>'s <a>observer buffer</a>, and also empty
-        <a>context object</a>'s <a>observer buffer</a>.</p>
-      </section>
-      <section>
-        <h2><dfn>disconnect()</dfn> method</h2>
-        <p>The <a>disconnect()</a> method must remove the <a>context object</a> from the <a>list of
-        registered performance observer objects</a> of <a>relevant global
-        object</a>, and also empty <a>context object</a>'s <a>observer
-        buffer</a>.</p>
-      </section>
-      <section>
-        <h2><a>supportedEntryTypes</a> attribute</h2>
-        <p>Each <a data-cite="HTML/webappapis.html#global-object">global object</a>
-          has an associated <dfn>frozen array of supported entry types</dfn>, which
-          is initialized to the <a data-cite="WEBIDL/#es-frozen-array">FrozenArray</a>
-          <a data-cite="WEBIDL/#dfn-create-frozen-array">created</a> from the
-          sequence of strings among the <a href=
-          "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>
-          that are supported for the global object, in alphabetical order.
-        </p>
-        <p>When <dfn>supportedEntryTypes</dfn>'s attribute getter is called, run the following steps:</p>
-        <ol>
-          <li>Let <var>globalObject</var> be the <a data-cite=
-            "HTML/webappapis.html#concept-settings-object-global">environment settings
-            object's global object</a>.</li>
-          <li>Return <var>globalObject</var>'s
-            <a>frozen array of supported entry types</a>.</li>
-        </ol>
-        <p class="note">This attribute allows web developers to easily know
-        which entry types are supported by the user agent.</p>
-      </section>
+    </section>
+    <section>
+      <h2><dfn>takeRecords()</dfn> method</h2>
+      <p>The <a>takeRecords()</a> method must return a copy of the <a>context
+      object</a>'s <a>observer buffer</a>, and also empty <a>context
+      object</a>'s <a>observer buffer</a>.</p>
+    </section>
+    <section>
+      <h2><dfn>disconnect()</dfn> method</h2>
+      <p>The <a>disconnect()</a> method must remove the <a>context object</a>
+      from the <a>list of registered performance observer objects</a> of
+      <a>relevant global object</a>, and also empty <a>context object</a>'s
+      <a>observer buffer</a>.</p>
+    </section>
+    <section>
+      <h2><a>supportedEntryTypes</a> attribute</h2>
+      <p>Each <a data-cite="HTML/webappapis.html#global-object">global
+      object</a> has an associated <dfn>frozen array of supported entry
+      types</dfn>, which is initialized to the <a data-cite=
+      "WEBIDL/#es-frozen-array">FrozenArray</a> <a data-cite=
+      "WEBIDL/#dfn-create-frozen-array">created</a> from the sequence of
+      strings among the <a href=
+      "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>
+      that are supported for the global object, in alphabetical order.</p>
+      <p>When <dfn>supportedEntryTypes</dfn>'s attribute getter is called, run
+      the following steps:</p>
+      <ol>
+        <li>Let <var>globalObject</var> be the <a data-cite=
+        "HTML/webappapis.html#concept-settings-object-global">environment
+        settings object's global object</a>.
+        </li>
+        <li>Return <var>globalObject</var>'s <a>frozen array of supported entry
+        types</a>.
+        </li>
+      </ol>
+      <p class="note">This attribute allows web developers to easily know which
+      entry types are supported by the user agent.</p>
     </section>
   </section>
   <section>
     <h2>Processing</h2>
     <section data-link-for="PerformanceObserver">
       <h2>Queue a <code>PerformanceEntry</code></h2>
-      <p>To <dfn>queue a PerformanceEntry</dfn> (<var>newEntry</var>),
-      run these steps:</p>
+      <p>To <dfn>queue a PerformanceEntry</dfn> (<var>newEntry</var>), run
+      these steps:</p>
       <ol>
         <li>Let <var>interested observers</var> be an initially empty set of
         <a>PerformanceObserver</a> objects.
         </li>
         <li>Let <var>entryType</var> be <var>newEntry</var>’s <a data-lt=
-        "PerformanceEntry.entryType">entryType</a> value.</li>
-        <li>For each <a>registered performance observer</a> (<var>regObs</var>):
+        "PerformanceEntry.entryType">entryType</a> value.
+        </li>
+        <li>For each <a>registered performance observer</a>
+        (<var>regObs</var>):
           <ol>
             <li>If <var>regObs</var>'s <a>options list</a> contains a
-            <a>PerformanceObserverInit</a> item whose
-            <a data-link-for="PerformanceObserverInit">entryTypes</a> member
-            includes <var>entryType</var> or whose
-            <a data-link-for="PerformanceObserverInit">type</a> member equals to
-            <var>entryType</var>, append <var>regObs</var>'s <a>observer</a>
-            to <var>interested observers</var>.
+            <a>PerformanceObserverInit</a> item whose <a data-link-for=
+            "PerformanceObserverInit">entryTypes</a> member includes
+            <var>entryType</var> or whose <a data-link-for=
+            "PerformanceObserverInit">type</a> member equals to
+            <var>entryType</var>, append <var>regObs</var>'s <a>observer</a> to
+            <var>interested observers</var>.
             </li>
           </ol>
         </li>
         <li>For each <var>observer</var> in <var>interested observers</var>:
           <ol>
-            <li>Append <var>newEntry</var> to <var>observer</var>'s
-            <a>observer buffer</a>.
+            <li>Append <var>newEntry</var> to <var>observer</var>'s <a>observer
+            buffer</a>.
             </li>
           </ol>
         </li>
-        <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s <a>
-          relevant global object</a>.
+        <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s <a>relevant
+        global object</a>.
         </li>
-        <li>
-          Let <var>tuple</var> be the <a>relevant performance
-          entry tuple</a> of <var>entryType</var> and <var>relevantGlobal</var>.
+        <li>Let <var>tuple</var> be the <a>relevant performance entry tuple</a>
+        of <var>entryType</var> and <var>relevantGlobal</var>.
         </li>
-        <li>
-          Call the <a>determine eligibility for adding a performance entry</a>
-          algorithm with <var>tuple</var> as input. If it returns true,
-          <a data-xref-for="list">append</a> <var>newEntry</var> to <var>tuple</var>'s
-          <a>performance entry buffer</a>.
+        <li>Call the <a>determine eligibility for adding a performance
+        entry</a> algorithm with <var>tuple</var> as input. If it returns true,
+        <a data-xref-for="list">append</a> <var>newEntry</var> to
+        <var>tuple</var>'s <a>performance entry buffer</a>.
         </li>
         <li>If the <a>performance observer task queued flag</a> is set,
         terminate these steps.
@@ -639,37 +674,39 @@
         <li>Set <a>performance observer task queued flag</a>.
         </li>
         <li>
-           <a>Queue a task</a>
-          that consists of running the following substeps. The <a>task source</a> for the queued
-          task is the <i>performance timeline</i> task source.
+          <a>Queue a task</a> that consists of running the following substeps.
+          The <a>task source</a> for the queued task is the <i>performance
+          timeline</i> task source.
           <ol>
             <li>Unset <a>performance observer task queued flag</a> of
-              <var>relevantGlobal</var>.
+            <var>relevantGlobal</var>.
             </li>
-            <li>Let <var>notifyList</var> be a copy of <var>relevantGlobal</var>'s
-            <a>list of registered performance observer objects</a>.
+            <li>Let <var>notifyList</var> be a copy of
+            <var>relevantGlobal</var>'s <a>list of registered performance
+            observer objects</a>.
             </li>
             <li>For each <a>PerformanceObserver</a> object <var>po</var> in
             <var>notifyList</var>, run these steps:
               <ol>
-                <li>Let <var>entries</var> be a copy of <var>po</var>’s <a>observer
-                buffer</a>.
+                <li>Let <var>entries</var> be a copy of <var>po</var>’s
+                <a>observer buffer</a>.
                 </li>
                 <li>Empty <var>po</var>’s <a>observer buffer</a>.
                 </li>
-                <li>If <var>entries</var> is non-empty, call <var>po</var>’s callback
-                with <var>entries</var> as first argument and <var>po</var> as the
-                second argument and <a>callback this value</a>. If
-                this <a>throw</a>s an exception, <a>report the exception</a>.
+                <li>If <var>entries</var> is non-empty, call <var>po</var>’s
+                callback with <var>entries</var> as first argument and
+                <var>po</var> as the second argument and <a>callback this
+                value</a>. If this <a>throw</a>s an exception, <a>report the
+                exception</a>.
                 </li>
               </ol>
             </li>
           </ol>
         </li>
       </ol>
-      <p>The <i>performance timeline</i> <a>task queue</a> is a low priority queue
-      that, if possible, should be processed by the user agent during idle
-      periods to minimize impact of performance monitoring code.</p>
+      <p>The <i>performance timeline</i> <a>task queue</a> is a low priority
+      queue that, if possible, should be processed by the user agent during
+      idle periods to minimize impact of performance monitoring code.</p>
     </section>
     <section data-link-for="PerformanceEntry">
       <h2>Filter buffer map by name and type</h2>
@@ -677,38 +714,41 @@
       algorithm with optional <var>name</var> and <var>type</var>, run the
       following steps:</p>
       <ol>
-        <li>Let <var>result</var> be an initially empty
-        <a>list</a>.</li>
+        <li>Let <var>result</var> be an initially empty <a>list</a>.
+        </li>
         <li>Let <var>map</var> be the <a>performance entry buffer map</a>
-        associated with the
-        <a>relevant
-        global object</a> of <a>context object</a>.</li>
-        <li>Let <var>tuple list</var> be an empty
-        <a>list</a>.</li>
-        <li>If <var>type</var> is not null, append the result of
-        <a>getting the value of entry</a> on
-        <var>map</var> given <var>type</var> as
-        <a>key</a> to <var>tuple list</var>.
-        Otherwise, assign the result of
-        <a>get the values</a> on <var>map</var> to
-        <var>tuple list</var></li>
+        associated with the <a>relevant global object</a> of <a>context
+        object</a>.
+        </li>
+        <li>Let <var>tuple list</var> be an empty <a>list</a>.
+        </li>
+        <li>If <var>type</var> is not null, append the result of <a>getting the
+        value of entry</a> on <var>map</var> given <var>type</var> as
+        <a>key</a> to <var>tuple list</var>. Otherwise, assign the result of
+        <a>get the values</a> on <var>map</var> to <var>tuple list</var>
+        </li>
         <li>For each <var>tuple</var> in <var>tuple list</var>, run the
         following steps:
           <ol>
             <li>Let <var>buffer</var> be <var>tuple</var>'s <a>performance
-            entry buffer</a>.</li>
+            entry buffer</a>.
+            </li>
             <li>If <var>tuple</var>'s <a>availableFromTimeline</a> is false,
-            continue to the next <var>tuple</var>.</li>
+            continue to the next <var>tuple</var>.
+            </li>
             <li>Let <var>entries</var> be the result of running <a>filter
             buffer by name and type</a> with <var>buffer</var>, <var>name</var>
-            and <var>type</var> as inputs.</li>
+            and <var>type</var> as inputs.
+            </li>
             <li>For each <var>entry</var> in <var>entries</var>,
             <a data-xref-for="list">append</a> <var>entry</var> to
-            <var>result</var>.</li>
+            <var>result</var>.
+            </li>
           </ol>
         </li>
         <li>Sort <var>results</var>'s entries in chronological order with
-        respect to <a>startTime</a></li>
+        respect to <a>startTime</a>
+        </li>
         <li>Return <var>result</var>.</li>
       </ol>
     </section>
@@ -718,36 +758,43 @@
       algorithm, with <var>buffer</var>, <var>name</var>, and <var>type</var>
       as inputs, run the following steps:</p>
       <ol>
-        <li>Let <var>result</var> be an initially empty
-        <a>list</a>.</li>
+        <li>Let <var>result</var> be an initially empty <a>list</a>.
+        </li>
         <li>For each <a>PerformanceEntry</a> <var>entry</var> in
         <var>buffer</var>, run the following steps:
           <ol>
-            <li>If <var>type</var> is not null and if <var>type</var> does
-            not match <var>entry</var>'s <code>entryType</code> attribute in a
-             <a>case-sensitive</a> manner, continue to next <var>entry</var>.</li>
-            <li>If <var>name</var> is not null and if <var>name</var> does
-            not match <var>entry</var>'s <code>name</code> attribute in a
-             <a>case-sensitive</a> manner, continue to next <var>entry</var>.</li>
-            <li><a data-xref-for="list">append</a>
-            <var>entry</var> to <var>result</var>.</li>
+            <li>If <var>type</var> is not null and if <var>type</var> does not
+            match <var>entry</var>'s <code>entryType</code> attribute in a <a>
+              case-sensitive</a> manner, continue to next <var>entry</var>.
+            </li>
+            <li>If <var>name</var> is not null and if <var>name</var> does not
+            match <var>entry</var>'s <code>name</code> attribute in a
+            <a>case-sensitive</a> manner, continue to next <var>entry</var>.
+            </li>
+            <li>
+              <a data-xref-for="list">append</a> <var>entry</var> to
+              <var>result</var>.
+            </li>
           </ol>
         </li>
         <li>Sort <var>results</var>'s entries in chronological order with
-        respect to <a>startTime</a></li>
+        respect to <a>startTime</a>
+        </li>
         <li>Return <var>result</var>.</li>
       </ol>
     </section>
     <section data-link-for="PerformanceObserver">
       <h2>Eligibility for adding a PerformanceEntry to a buffer</h2>
       <p>To <dfn>determine eligibility for adding a performance entry</dfn>,
-      with required performance entry <var>tuple</var>,
-      run the following steps:</p>
+      with required performance entry <var>tuple</var>, run the following
+      steps:</p>
       <ol>
-        <li>Let <var>num current entries</var> be the size of <var>tuple</var>'s
-          <a>performance entry buffer</a>.</li>
+        <li>Let <var>num current entries</var> be the size of
+        <var>tuple</var>'s <a>performance entry buffer</a>.
+        </li>
         <li>If <var>num current entries</var> is less than <var>tuples</var>'s
-          <a>maxBufferSize</a>, return true.</li>
+        <a>maxBufferSize</a>, return true.
+        </li>
         <li>Return false.</li>
       </ol>
     </section>
@@ -763,22 +810,21 @@
   <section>
     <h2>Dependencies</h2>
     <p>The [[HR-TIME]] specification defines the <code><dfn data-cite=
-      "hr-time/#dom-domhighrestimestamp">DOMHighResTimeStamp</dfn></code> interface.</p>
-    <p>The [[INFRA]] specification defines the following:
-      <dfn data-cite="infra" data-xref-for="list">append</dfn>,
-      <dfn data-lt="keyed" data-cite="INFRA#map-key">key</dfn>,
-      <dfn data-cite="infra">value</dfn>,
-      <dfn data-lt="getting the value of entry"
-           data-cite="INFRA#map-get">getting the value of an entry</dfn>.
-    </p>
-    <p>The [[HTML]] specification defines the following:
-      <dfn data-cite="HTML/webappapis.html#task-queue">task queue</dfn>.</p>
+    "hr-time/#dom-domhighrestimestamp">DOMHighResTimeStamp</dfn></code>
+    interface.</p>
+    <p>The [[INFRA]] specification defines the following: <dfn data-cite=
+    "infra" data-xref-for="list">append</dfn>, <dfn data-lt="keyed" data-cite=
+    "INFRA#map-key">key</dfn>, <dfn data-cite="infra">value</dfn>,
+    <dfn data-lt="getting the value of entry" data-cite="INFRA#map-get">getting
+    the value of an entry</dfn>.</p>
+    <p>The [[HTML]] specification defines the following: <dfn data-cite=
+    "HTML/webappapis.html#task-queue">task queue</dfn>.</p>
     <p>The [[WebIDL]] specification defines the following:
-      <code><dfn data-cite="WEBIDL#syntaxerror">SyntaxError</dfn></code>,
-      <dfn data-cite="WebIDL#es-environment">ECMAScript global environment</dfn>,
-      <code><dfn data-cite="WEBIDL#invalidmodificationerror">InvalidModificationError</dfn></code>.
+    <code><dfn data-cite="WEBIDL#syntaxerror">SyntaxError</dfn></code>,
+    <dfn data-cite="WebIDL#es-environment">ECMAScript global environment</dfn>,
+    <code><dfn data-cite=
+    "WEBIDL#invalidmodificationerror">InvalidModificationError</dfn></code>.</p>
   </section>
-
   <section class="appendix" id="idl-index"></section>
   <section class="appendix">
     <h2>Acknowledgments</h2>
