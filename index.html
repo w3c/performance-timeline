@@ -220,9 +220,10 @@
       <li>a <dfn>performance observer task queued flag</dfn></li>
       <li>a <dfn>list of <a>registered performance observer</a> objects</dfn>
       that is initially empty</li>
-      <li>a <dfn>performance entry buffer map</dfn> <a>map</a>, <a>keyed</a> on
+      <li>a <dfn>performance entry buffer map</dfn> <a data-cite=infra>map</a>, <a>keyed</a> on
       a <code>DOMString</code>, representing the entry type to which the buffer
-      belongs. The <a>map</a>'s <a>value</a> is the following tuple:
+      belongs. The <a data-cite=infra>map</a>'s <a
+      data-cite="INFRA#map-value">value</a> is the following tuple:
         <ul>
           <li>A <dfn>performance entry buffer</dfn> to store
           <a>PerformanceEntry</a> objects, that is initially empty.
@@ -392,10 +393,12 @@
         global object</a>.
         </li>
         <li>If <var>options</var>'s <a>entryTypes</a> and <a>type</a> members
-        are both omitted, then <a>throw</a> a <a>SyntaxError</a>.
+        are both omitted, then <a data-cite="WEBIDL#dfn-throw">throw</a> a
+        <a>SyntaxError</a>.
         </li>
         <li>If <var>options</var>'s <a>entryTypes</a> is present and any other
-        member is also present, then <a>throw</a> a <a>SyntaxError</a>.
+        member is also present, then <a
+        data-cite="WEBIDL#dfn-throw">throw</a> a <a>SyntaxError</a>.
         </li>
         <li>Update or check <var>observer</var>'s <a>observer type</a> by
         running these steps:
@@ -415,12 +418,14 @@
             </li>
             <li>If <var>observer</var>'s <a>observer type</a> is
             <code>"single"</code> and <var>options</var>'s <a>entryTypes</a>
-            member is present, then <a>throw</a> an
+            member is present, then <a
+            data-cite="WEBIDL#dfn-throw">throw</a> an
             <a>InvalidModificationError</a>.
             </li>
             <li>If <var>observer</var>'s <a>observer type</a> is
             <code>"multiple"</code> and <var>options</var>'s <a>type</a> member
-            is present, then <a>throw</a> an <a>InvalidModificationError</a>.
+            is present, then <a data-cite="WEBIDL#dfn-throw">throw</a> an
+            <a>InvalidModificationError</a>.
             </li>
           </ol>
         </li>
@@ -696,8 +701,9 @@
                 <li>If <var>entries</var> is non-empty, call <var>po</var>’s
                 callback with <var>entries</var> as first argument and
                 <var>po</var> as the second argument and <a>callback this
-                value</a>. If this <a>throw</a>s an exception, <a>report the
-                exception</a>.
+                value</a>. If this <a
+                data-cite="WEBIDL#dfn-throw">throw</a>s an exception, <a>report
+                the exception</a>.
                 </li>
               </ol>
             </li>
@@ -725,7 +731,8 @@
         <li>If <var>type</var> is not null, append the result of <a>getting the
         value of entry</a> on <var>map</var> given <var>type</var> as
         <a>key</a> to <var>tuple list</var>. Otherwise, assign the result of
-        <a>get the values</a> on <var>map</var> to <var>tuple list</var>
+        <a data-cite=INFRA/#map-getting-the-values>get the values</a> on
+        <var>map</var> to <var>tuple list</var>.
         </li>
         <li>For each <var>tuple</var> in <var>tuple list</var>, run the
         following steps:
@@ -814,7 +821,7 @@
     interface.</p>
     <p>The [[INFRA]] specification defines the following: <dfn data-cite=
     "infra" data-xref-for="list">append</dfn>, <dfn data-lt="keyed" data-cite=
-    "INFRA#map-key">key</dfn>, <dfn data-cite="infra">value</dfn>,
+    "INFRA#map-key">key</dfn>, <dfn data-cite="INFRA#map-value">value</dfn>,
     <dfn data-lt="getting the value of entry" data-cite="INFRA#map-get">getting
     the value of an entry</dfn>.</p>
     <p>The [[HTML]] specification defines the following: <dfn data-cite=
