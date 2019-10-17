@@ -43,7 +43,7 @@
         "check-punctuation": true,
       },
       doJsonLd: true,
-      xref: "web-platform",
+      xref: ["hr-time", "hr-time-2", "infra", "html", "dom"],
       mdn: true,
     };
   </script>
@@ -215,15 +215,16 @@
   </section>
   <section>
     <h2><dfn>Performance Timeline</dfn></h2>
-    <p>Each <a>ECMAScript global environment</a> has:</p>
+    <p>Each <a>global object</a> has:</p>
     <ul>
       <li>a <dfn>performance observer task queued flag</dfn></li>
       <li>a <dfn>list of <a>registered performance observer</a> objects</dfn>
       that is initially empty</li>
-      <li>a <dfn>performance entry buffer map</dfn> <a data-cite=infra>map</a>, <a>keyed</a> on
-      a <code>DOMString</code>, representing the entry type to which the buffer
-      belongs. The <a data-cite=infra>map</a>'s <a
-      data-cite="INFRA#map-value">value</a> is the following tuple:
+      <li>a <dfn>performance entry buffer map</dfn> <a data-cite=
+      "infra">map</a>, <a>keyed</a> on a <code>DOMString</code>, representing
+      the entry type to which the buffer belongs. The <a data-cite=
+      "infra">map</a>'s <a data-cite="INFRA#map-value">value</a> is the
+      following tuple:
         <ul>
           <li>A <dfn>performance entry buffer</dfn> to store
           <a>PerformanceEntry</a> objects, that is initially empty.
@@ -394,12 +395,10 @@
         global object</a>.
         </li>
         <li>If <var>options</var>'s <a>entryTypes</a> and <a>type</a> members
-        are both omitted, then <a data-cite="WEBIDL#dfn-throw">throw</a> a
-        <a>SyntaxError</a>.
+        are both omitted, then [=exception/throw=] a {{"SyntaxError"}}.
         </li>
         <li>If <var>options</var>'s <a>entryTypes</a> is present and any other
-        member is also present, then <a
-        data-cite="WEBIDL#dfn-throw">throw</a> a <a>SyntaxError</a>.
+        member is also present, then [=exception/throw=] a {{"SyntaxError"}}.
         </li>
         <li>Update or check <var>observer</var>'s <a>observer type</a> by
         running these steps:
@@ -419,14 +418,13 @@
             </li>
             <li>If <var>observer</var>'s <a>observer type</a> is
             <code>"single"</code> and <var>options</var>'s <a>entryTypes</a>
-            member is present, then <a
-            data-cite="WEBIDL#dfn-throw">throw</a> an
-            <a>InvalidModificationError</a>.
+            member is present, then [=exception/throw=] an
+            {{"InvalidModificationError"}}.
             </li>
             <li>If <var>observer</var>'s <a>observer type</a> is
             <code>"multiple"</code> and <var>options</var>'s <a>type</a> member
-            is present, then <a data-cite="WEBIDL#dfn-throw">throw</a> an
-            <a>InvalidModificationError</a>.
+            is present, then [=exception/throw=] an
+            {{"InvalidModificationError"}}.
             </li>
           </ol>
         </li>
@@ -502,9 +500,8 @@
                 <var>relevantGlobal</var>.
                 </li>
                 <li>For each <var>entry</var> in <var>tuple</var>'s
-                <a>performance entry buffer</a> <a data-xref-for=
-                "list">append</a> <var>entry</var> to the <a>observer
-                buffer</a>.
+                <a>performance entry buffer</a> [=list/append=]
+                <var>entry</var> to the <a>observer buffer</a>.
                 </li>
               </ol>
             </li>
@@ -671,8 +668,8 @@
         </li>
         <li>Call the <a>determine eligibility for adding a performance
         entry</a> algorithm with <var>tuple</var> as input. If it returns true,
-        <a data-xref-for="list">append</a> <var>newEntry</var> to
-        <var>tuple</var>'s <a>performance entry buffer</a>.
+        [=list/append=] <var>newEntry</var> to <var>tuple</var>'s
+        <a>performance entry buffer</a>.
         </li>
         <li>If the <a>performance observer task queued flag</a> is set,
         terminate these steps.
@@ -702,8 +699,7 @@
                 <li>If <var>entries</var> is non-empty, call <var>po</var>’s
                 callback with <var>entries</var> as first argument and
                 <var>po</var> as the second argument and <a>callback this
-                value</a>. If this <a
-                data-cite="WEBIDL#dfn-throw">throw</a>s an exception, <a>report
+                value</a>. If this [=exception/throws=] an exception, <a>report
                 the exception</a>.
                 </li>
               </ol>
@@ -711,9 +707,10 @@
           </ol>
         </li>
       </ol>
-      <p>The <i>performance timeline</i> <a>task queue</a> is a low priority
-      queue that, if possible, should be processed by the user agent during
-      idle periods to minimize impact of performance monitoring code.</p>
+      <p>The <i>performance timeline</i> <a data-lt="queue a task">task
+      queue</a> is a low priority queue that, if possible, should be processed
+      by the user agent during idle periods to minimize impact of performance
+      monitoring code.</p>
     </section>
     <section data-link-for="PerformanceEntry">
       <h2>Filter buffer map by name and type</h2>
@@ -732,7 +729,7 @@
         <li>If <var>type</var> is not null, append the result of <a>getting the
         value of entry</a> on <var>map</var> given <var>type</var> as
         <a>key</a> to <var>tuple list</var>. Otherwise, assign the result of
-        <a data-cite=INFRA/#map-getting-the-values>get the values</a> on
+        <a data-cite="INFRA/#map-getting-the-values">get the values</a> on
         <var>map</var> to <var>tuple list</var>.
         </li>
         <li>For each <var>tuple</var> in <var>tuple list</var>, run the
@@ -749,9 +746,7 @@
             and <var>type</var> as inputs.
             </li>
             <li>For each <var>entry</var> in <var>entries</var>,
-            <a data-xref-for="list">append</a> <var>entry</var> to
-            <var>result</var>.
-            </li>
+            [=list/append=] <var>entry</var> to <var>result</var>.</li>
           </ol>
         </li>
         <li>Sort <var>results</var>'s entries in chronological order with
@@ -779,10 +774,7 @@
             match <var>entry</var>'s <code>name</code> attribute in a
             <a>case-sensitive</a> manner, continue to next <var>entry</var>.
             </li>
-            <li>
-              <a data-xref-for="list">append</a> <var>entry</var> to
-              <var>result</var>.
-            </li>
+            <li>[=list/append=] <var>entry</var> to <var>result</var>.</li>
           </ol>
         </li>
         <li>Sort <var>results</var>'s entries in chronological order with
@@ -817,21 +809,10 @@
   </section>
   <section>
     <h2>Dependencies</h2>
-    <p>The [[HR-TIME]] specification defines the <code><dfn data-cite=
-    "hr-time/#dom-domhighrestimestamp">DOMHighResTimeStamp</dfn></code>
-    interface.</p>
-    <p>The [[INFRA]] specification defines the following: <dfn data-cite=
-    "infra" data-xref-for="list">append</dfn>, <dfn data-lt="keyed" data-cite=
-    "INFRA#map-key">key</dfn>, <dfn data-cite="INFRA#map-value">value</dfn>,
-    <dfn data-lt="getting the value of entry" data-cite="INFRA#map-get">getting
-    the value of an entry</dfn>.</p>
-    <p>The [[HTML]] specification defines the following: <dfn data-cite=
-    "HTML/webappapis.html#task-queue">task queue</dfn>.</p>
-    <p>The [[WebIDL]] specification defines the following:
-    <code><dfn data-cite="WEBIDL#syntaxerror">SyntaxError</dfn></code>,
-    <dfn data-cite="WebIDL#es-environment">ECMAScript global environment</dfn>,
-    <code><dfn data-cite=
-    "WEBIDL#invalidmodificationerror">InvalidModificationError</dfn></code>.</p>
+    <p>The [[INFRA]] specification defines the following: <dfn data-lt="keyed"
+    data-cite="INFRA#map-key">key</dfn>, <dfn data-lt=
+    "getting the value of entry" data-cite="INFRA#map-get">getting the value of
+    an entry</dfn>.</p>
   </section>
   <section class="appendix" id="idl-index"></section>
   <section class="appendix">
