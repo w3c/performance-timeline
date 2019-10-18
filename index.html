@@ -39,6 +39,7 @@
       testSuiteURI:
         "https://github.com/web-platform-tests/wpt/tree/master/performance-timeline",
       wgPatentURI: "https://www.w3.org/2004/01/pp-impl/45211/status",
+      xref: ["hr-time-2"]
     };
   </script>
 </head>
@@ -323,7 +324,7 @@
       [Exposed=(Window,Worker)]
       interface PerformanceObserver {
         constructor(PerformanceObserverCallback callback);
-        void observe (PerformanceObserverInit options);
+        void observe (optional PerformanceObserverInit options = {});
         void disconnect ();
         PerformanceEntryList takeRecords();
         [SameObject] static readonly attribute FrozenArray&lt;DOMString&gt; supportedEntryTypes;
