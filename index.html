@@ -501,6 +501,7 @@
                 <li>For each <var>entry</var> in <var>tuple</var>'s
                 <a>performance entry buffer</a> [=list/append=]
                 <var>entry</var> to the <a>observer buffer</a>.
+                <li><a>Queue the PerformanceObserver task</a>.</li>
                 </li>
               </ol>
             </li>
@@ -670,6 +671,14 @@
         [=list/append=] <var>newEntry</var> to <var>tuple</var>'s
         <a>performance entry buffer</a>.
         </li>
+        <li><a>Queue the PerformanceObserver task</a>.</li>
+      </ol>
+    </section>
+    <section data-link-for="PerformanceObserver">
+      <h2>Queue the PerformanceObserver task</h2>
+      <p>When asked to <dfn>queue the PerformanceObserver task</dfn>, run the
+      following steps:</p>
+      <ol>
         <li>If the <a>performance observer task queued flag</a> is set,
         terminate these steps.
         </li>
