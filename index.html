@@ -500,8 +500,9 @@
                 </li>
                 <li>For each <var>entry</var> in <var>tuple</var>'s
                 <a>performance entry buffer</a> [=list/append=]
-                <var>entry</var> to the <a>observer buffer</a>.
-                </li>
+                <var>entry</var> to the <a>observer buffer</a>.</li>
+                <li><a>Queue the PerformanceObserver task</a> with
+                <var>relevantGlobal</var> as input.</li>
               </ol>
             </li>
           </ol>
@@ -670,10 +671,20 @@
         [=list/append=] <var>newEntry</var> to <var>tuple</var>'s
         <a>performance entry buffer</a>.
         </li>
-        <li>If the <a>performance observer task queued flag</a> is set,
-        terminate these steps.
+        <li><a>Queue the PerformanceObserver task</a> with
+        <var>relevantGlobal</var> as input.</li>
+      </ol>
+    </section>
+    <section data-link-for="PerformanceObserver">
+      <h2>Queue the PerformanceObserver task</h2>
+      <p>When asked to <dfn>queue the PerformanceObserver task</dfn>, given
+      <var>relevantGlobal</var> as input, run the following steps:</p>
+      <ol>
+        <li>If <var>relevantGlobal</var>'s <a>performance observer task queued
+        flag</a> is set, terminate these steps.
         </li>
-        <li>Set <a>performance observer task queued flag</a>.
+        <li>Set <var>relevantGlobal</var>'s <a>performance observer task queued
+        flag</a>.
         </li>
         <li>
           <a>Queue a task</a> that consists of running the following substeps.
