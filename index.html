@@ -597,10 +597,13 @@
     </section>
     <section>
       <h2><dfn>disconnect()</dfn> method</h2>
-      <p>The <a>disconnect()</a> method must remove the <a>context object</a>
-      from the <a>list of registered performance observer objects</a> of
-      <a>relevant global object</a>, and also empty <a>context object</a>'s
-      <a>observer buffer</a>.</p>
+      <p>The <a>disconnect()</a> method must do the following:</p>
+      <ol>
+        <li>Remove the <a>context object</a> from the <a>list of registered
+        performance observer objects</a> of <a>relevant global object</a>.</li>
+        <li>Empty the <a>context object</a>'s <a>observer buffer</a>.</li>
+        <li>Empty the <a>context object</a>'s <a>options list</a>.</li>
+      </ol>
     </section>
     <section>
       <h2><a>supportedEntryTypes</a> attribute</h2>
