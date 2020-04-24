@@ -498,9 +498,16 @@
                 tuple</a> of <var>options</var>'s <a>type</a> and
                 <var>relevantGlobal</var>.
                 </li>
-                <li>For each <var>entry</var> in <var>tuple</var>'s
-                <a>performance entry buffer</a> [=list/append=]
-                <var>entry</var> to the <a>observer buffer</a>.</li>
+                <li><p>For each <var>entry</var> in <var>tuple</var>'s
+                <a>performance entry buffer</a>:</p>
+                  <ol>
+                  <li>If <a href=
+                    "https://w3c.github.io/timing-entrytypes-registry/#dfn-should-add-entry">
+                    should add entry</a> with <var>entry</var> and <var>options</var> as
+                    parameters returns true, [=list/append=] <var>entry</var> to the
+                    <a>observer buffer</a>.</li>
+                  </ol>
+                </li>
                 <li><a>Queue the PerformanceObserver task</a> with
                 <var>relevantGlobal</var> as input.</li>
               </ol>
@@ -647,13 +654,20 @@
         (<var>regObs</var>):
           <ol>
             <li>If <var>regObs</var>'s <a>options list</a> contains a
-            <a>PerformanceObserverInit</a> item whose <a data-link-for=
+            <a>PerformanceObserverInit</a> <var>options</var> whose <a data-link-for=
             "PerformanceObserverInit">entryTypes</a> member includes
             <var>entryType</var> or whose <a data-link-for=
             "PerformanceObserverInit">type</a> member equals to
-            <var>entryType</var>, append <var>regObs</var>'s <a>observer</a> to
-            <var>interested observers</var>.
+            <var>entryType</var>:
             </li>
+            <ol>
+              <li>If <a href=
+                "https://w3c.github.io/timing-entrytypes-registry/#dfn-should-add-entry">
+                should add entry</a> with <var>newEntry</var> and <var>options</var>
+                returns true, append <var>regObs</var>'s <a>observer</a> to
+                <var>interested observers</var>.
+              </li>
+            </ol>
           </ol>
         </li>
         <li>For each <var>observer</var> in <var>interested observers</var>:
