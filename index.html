@@ -341,7 +341,7 @@
       </dd>
     </dl>
     <p>When <dfn>toJSON</dfn> is called, run [[WebIDL]]'s <a>default toJSON
-    operation</a>.</p>
+    steps</a>.</p>
   </section>
   <section data-link-for="PerformanceObserver" data-dfn-for=
   "PerformanceObserver">
@@ -570,18 +570,21 @@
             PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type);
           };
           </pre>
+          <p>Each {{PerformanceObserverEntryList}} object has an associated
+          <dfn>entry list</dfn>, which consists of a {{PerformanceEntryList}} and is
+          initialized upon construction.</p>
         <section>
           <h2><dfn>getEntries()</dfn> method</h2>
           <p>Returns a <a>PerformanceEntryList</a> object returned by <a>filter
           buffer by name and type</a> algorithm with the <a>context
-          object</a>'s <a>observer buffer</a>, <var>name</var> and
+          object</a>'s <a>entry list</a>, <var>name</var> and
           <var>type</var> set to <code>null</code>.</p>
         </section>
         <section>
           <h2><dfn>getEntriesByType()</dfn> method</h2>
           <p>Returns a <a>PerformanceEntryList</a> object returned by <a>filter
           buffer by name and type</a> algorithm with the <a>context
-          object</a>'s <a>observer buffer</a>, <var>name</var> set to
+          object</a>'s <a>entry list</a>, <var>name</var> set to
           <code>null</code>, and <var>type</var> set to the method's input
           <code>type</code> parameter.</p>
         </section>
@@ -589,7 +592,7 @@
           <h2><dfn>getEntriesByName()</dfn> method</h2>
           <p>Returns a <a>PerformanceEntryList</a> object returned by <a>filter
           buffer by name and type</a> algorithm with the <a>context
-          object</a>'s <a>observer buffer</a>, <var>name</var> set to the
+          object</a>'s <a>entry list</a>, <var>name</var> set to the
           method input <code>name</code> parameter, and <var>type</var> set to
           <code>null</code> if optional `entryType` is omitted, or set to the
           method's input <code>type</code> parameter otherwise.</p>
@@ -721,11 +724,16 @@
                 <li>Let <var>entries</var> be a copy of <var>po</var>’s
                 <a>observer buffer</a>.
                 </li>
+                <li>If <var>entries</var> is empty, return.</li>
                 <li>Empty <var>po</var>’s <a>observer buffer</a>.
                 </li>
-                <li>If <var>entries</var> is non-empty, call <var>po</var>’s
-                callback with <var>entries</var> as first argument and
-                <var>po</var> as the second argument and <a>callback this
+                <li>Let <var>observerEntryList</var> be a new
+                {{PerformanceObserverEntryList}}, with its <a>entry list</a> set
+                to <var>entries</var>.
+                </li>
+                <li>Call <var>po</var>’s callback with
+                <var>observerEntryList</var> as the first argument and with
+                <var>po</var> as the second argument and as <a>callback this
                 value</a>. If this [=exception/throws=] an exception, <a>report
                 the exception</a>.
                 </li>
@@ -793,13 +801,13 @@
         <li>For each <a>PerformanceEntry</a> <var>entry</var> in
         <var>buffer</var>, run the following steps:
           <ol>
-            <li>If <var>type</var> is not null and if <var>type</var> does not
-            match <var>entry</var>'s <code>entryType</code> attribute in a <a>
-              case-sensitive</a> manner, continue to next <var>entry</var>.
+            <li>If <var>type</var> is not null and if <var>type</var> is not
+            <a data-cite=INFRA#string-is>identical to</a> <var>entry</var>'s
+            <code>entryType</code> attribute, continue to next <var>entry</var>.
             </li>
-            <li>If <var>name</var> is not null and if <var>name</var> does not
-            match <var>entry</var>'s <code>name</code> attribute in a
-            <a>case-sensitive</a> manner, continue to next <var>entry</var>.
+            <li>If <var>name</var> is not null and if <var>name</var> is not
+            <a data-cite=INFRA#string-is>identical to</a> <var>entry</var>'s
+            <code>name</code> attribute, continue to next <var>entry</var>.
             </li>
             <li>[=list/append=] <var>entry</var> to <var>result</var>.</li>
           </ol>
