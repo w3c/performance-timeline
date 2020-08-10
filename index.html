@@ -237,6 +237,7 @@
           "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>
           value for this entry type.
           </li>
+          <li>A <code>boolean</code> <dfn>has dropped entry</dfn> that is initially false.</li>
         </ul>
       </li>
     </ul>
@@ -351,7 +352,8 @@
     they are recorded, and optionally buffered performance metrics.</p>
     <p>Each <a>PerformanceObserver</a> has these associated concepts:</p>
     <ul>
-      <li>A <dfn>PerformanceObserverCallback</dfn> set on creation.</li>
+      <li>A <dfn>PerformanceObserverCallback</dfn> <dfn>observer callback</dfn> set on creation.
+      </li>
       <li>A <a>PerformanceEntryList</a> object called the <dfn>observer
       buffer</dfn> that is initially empty.
       </li>
@@ -359,7 +361,7 @@
       <code>"undefined"</code>.</li>
     </ul>
     <p>The `PerformanceObserver(callback)` constructor must create a new
-    <a>PerformanceObserver</a> object with <a>PerformanceObserverCallback</a>
+    <a>PerformanceObserver</a> object with its <a>observer callback</a>
     set to <var>callback</var> and then return it.</p>
     <p>A <dfn>registered performance observer</dfn> is a <a>struct</a>
     consisting of an <dfn>observer</dfn> member (a <a>PerformanceObserver</a>
@@ -367,7 +369,8 @@
     <a>PerformanceObserverInit</a> dictionaries).</p>
     <pre class="idl">
       callback PerformanceObserverCallback = void (PerformanceObserverEntryList entries,
-                                                   PerformanceObserver observer);
+                                                   PerformanceObserver observer,
+                                                   optional boolean hasDroppedEntry = false);
       [Exposed=(Window,Worker)]
       interface PerformanceObserver {
         constructor(PerformanceObserverCallback callback);
@@ -653,8 +656,11 @@
         <li>Let <var>entryType</var> be <var>newEntry</var>’s <a data-lt=
         "PerformanceEntry.entryType">entryType</a> value.
         </li>
-        <li>For each <a>registered performance observer</a>
-        (<var>regObs</var>):
+        <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s <a>relevant
+        global object</a>.
+        </li>
+        <li>For each <a>registered performance observer</a> <var>regObs</var> in
+        <var>relevantGlobal</var>'s <a>list of registered performance observer objects</a>:
           <ol>
             <li>If <var>regObs</var>'s <a>options list</a> contains a
             <a>PerformanceObserverInit</a> <var>options</var> whose <a data-link-for=
@@ -679,9 +685,6 @@
             buffer</a>.
             </li>
           </ol>
-        </li>
-        <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s <a>relevant
-        global object</a>.
         </li>
         <li>Let <var>tuple</var> be the <a>relevant performance entry tuple</a>
         of <var>entryType</var> and <var>relevantGlobal</var>.
@@ -718,9 +721,10 @@
             <var>relevantGlobal</var>'s <a>list of registered performance
             observer objects</a>.
             </li>
-            <li>For each <a>PerformanceObserver</a> object <var>po</var> in
-            <var>notifyList</var>, run these steps:
+            <li>For each <a>registered performance observer</a> object <var>registeredObserver</var>
+            in <var>notifyList</var>, run these steps:
               <ol>
+                <li>Let <var>po</var> be <var>registeredObserver</var>'s <a>observer</a>.</li>
                 <li>Let <var>entries</var> be a copy of <var>po</var>’s
                 <a>observer buffer</a>.
                 </li>
@@ -731,11 +735,30 @@
                 {{PerformanceObserverEntryList}}, with its <a>entry list</a> set
                 to <var>entries</var>.
                 </li>
-                <li>Call <var>po</var>’s callback with
-                <var>observerEntryList</var> as the first argument and with
-                <var>po</var> as the second argument and as <a>callback this
-                value</a>. If this [=exception/throws=] an exception, <a>report
-                the exception</a>.
+                <li>Let <var>hasDroppedEntry</var> be false.</li>
+                <li>For each <a>PerformanceObserverInit</a> <var>item</var> in
+                <var>registeredObserver</var>'s <a>options list</a>:
+                  <ol>
+                    <li>For each <a data-cite="WEBIDL#idl-DOMString">DOMString</a>
+                    <var>entryType</var> that appears either as <var>item</var>'s <a data-link-for=
+                    "PerformanceObserverInit">type</a> or in <var>item</var>'s
+                    <a data-link-for="PerformanceObserverInit">entryTypes</a>:
+                      <ol>
+                        <li>Let <var>map</var> be <var>relevantGlobal</var>'s <a>performance entry
+                        buffer map</a>.</li>
+                        <li>Let <var>tuple</var> be the result of <a>getting the value of entry</a>
+                        on <var>map</var> given <var>entryType</var> as <a>key</a>.</li>
+                        <li>If <var>tuple</var>'s <a>has dropped entry</a> is true, set
+                        <var>hasDroppedEntry</var> to true.</li>
+                      </ol>
+                    </li>
+                  </ol>
+                </li>
+                <li>Call <var>po</var>’s <a>observer callback</a> with
+                <var>observerEntryList</var> as the first argument, with <var>po</var>
+                as the second argument and as <a>callback this value</a>, and with
+                <var>hasDroppedEntry</var> as the third argument. If this [=exception/throws=]
+                an exception, <a>report the exception</a>.
                 </li>
               </ol>
             </li>
@@ -830,6 +853,7 @@
         <li>If <var>num current entries</var> is less than <var>tuples</var>'s
         <a>maxBufferSize</a>, return true.
         </li>
+        <li>Set <var>tuple</var>'s <a>has dropped entry</a> to true.</li>
         <li>Return false.</li>
       </ol>
     </section>
