@@ -237,7 +237,7 @@
           "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>
           value for this entry type.
           </li>
-          <li>A <code>boolean</code> <dfn>has unbuffered entry</dfn> that is initially false.</li>
+          <li>A <code>boolean</code> <dfn>has dropped entry</dfn> that is initially false.</li>
         </ul>
       </li>
     </ul>
@@ -370,7 +370,7 @@
     <pre class="idl">
       callback PerformanceObserverCallback = void (PerformanceObserverEntryList entries,
                                                    PerformanceObserver observer,
-                                                   optional boolean unbufferedEntry = false);
+                                                   optional boolean hasDroppedEntry = false);
       [Exposed=(Window,Worker)]
       interface PerformanceObserver {
         constructor(PerformanceObserverCallback callback);
@@ -656,8 +656,11 @@
         <li>Let <var>entryType</var> be <var>newEntry</var>’s <a data-lt=
         "PerformanceEntry.entryType">entryType</a> value.
         </li>
-        <li>For each <a>registered performance observer</a>
-        (<var>regObs</var>):
+        <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s <a>relevant
+        global object</a>.
+        </li>
+        <li>For each <a>registered performance observer</a> <var>regObs</var> in
+        <var>relevantGlobal</var>'s <a>list of registered performance observer objects</a>:
           <ol>
             <li>If <var>regObs</var>'s <a>options list</a> contains a
             <a>PerformanceObserverInit</a> <var>options</var> whose <a data-link-for=
@@ -682,9 +685,6 @@
             buffer</a>.
             </li>
           </ol>
-        </li>
-        <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s <a>relevant
-        global object</a>.
         </li>
         <li>Let <var>tuple</var> be the <a>relevant performance entry tuple</a>
         of <var>entryType</var> and <var>relevantGlobal</var>.
@@ -721,8 +721,8 @@
             <var>relevantGlobal</var>'s <a>list of registered performance
             observer objects</a>.
             </li>
-            <li>For each <a>PerformanceObserver</a> object <var>registeredObserver</var> in
-            <var>notifyList</var>, run these steps:
+            <li>For each <a>registered performance observer</a> object <var>registeredObserver</var>
+            in <var>notifyList</var>, run these steps:
               <ol>
                 <li>Let <var>po</var> be <var>registeredObserver</var>'s <a>observer</a>.</li>
                 <li>Let <var>entries</var> be a copy of <var>po</var>’s
@@ -735,7 +735,7 @@
                 {{PerformanceObserverEntryList}}, with its <a>entry list</a> set
                 to <var>entries</var>.
                 </li>
-                <li>Let <var>hasUnbufferedEntry</var> be false.</li>
+                <li>Let <var>hasDroppedEntry</var> be false.</li>
                 <li>For each <a>PerformanceObserverInit</a> <var>item</var> in
                 <var>registeredObserver</var>'s <a>options list</a>:
                   <ol>
@@ -748,8 +748,8 @@
                         buffer map</a>.</li>
                         <li>Let <var>tuple</var> be the result of <a>getting the value of entry</a>
                         on <var>map</var> given <var>entryType</var> as <a>key</a>.</li>
-                        <li>If <var>tuple</var>'s <a>has unbuffered entry</a> is true, set
-                        <var>hasUnbufferedEntry</var> to true.</li>
+                        <li>If <var>tuple</var>'s <a>has dropped entry</a> is true, set
+                        <var>hasDroppedEntry</var> to true.</li>
                       </ol>
                     </li>
                   </ol>
@@ -757,7 +757,7 @@
                 <li>Call <var>po</var>’s <a>observer callback</a> with
                 <var>observerEntryList</var> as the first argument, with <var>po</var>
                 as the second argument and as <a>callback this value</a>, and with
-                <var>hasUnbufferedEntry</var> as the third argument. If this [=exception/throws=]
+                <var>hasDroppedEntry</var> as the third argument. If this [=exception/throws=]
                 an exception, <a>report the exception</a>.
                 </li>
               </ol>
@@ -853,7 +853,7 @@
         <li>If <var>num current entries</var> is less than <var>tuples</var>'s
         <a>maxBufferSize</a>, return true.
         </li>
-        <li>Set <var>tuple</var>'s <a>has unbuffered entry</a> to true.</li>
+        <li>Set <var>tuple</var>'s <a>has dropped entry</a> to true.</li>
         <li>Return false.</li>
       </ol>
     </section>
