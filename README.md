@@ -54,6 +54,14 @@ The PerformanceObserver initially does not observer anything: the `observe()` me
 The `observe()` method can be called with either an 'entryTypes' array or with a single 'type' string, as detailed below.
 Those modes cannot be mixed, or an exception will be thrown.
 
+#### PerformanceObserverCallback
+
+The callback passed onto `PerformanceObserver` upon construction is a `PerformanceObserverCallback`. It is a void callback with the following parameters:
+
+* `entries`: a `PerformanceObserverEntryList` object containing the list of entries being dispatched in the callback.
+* `observer`: the `PerformanceObserver` object that is receiving the above entries.
+* `hasDroppedEntries`: a `boolean` indicating whether `observer` is currently observing an `entryType` for which at least one entry has been lost due to the corresponding buffer being full. See the buffered flag [section](#buffered-flag).
+
 #### `supportedEntryTypes`
 
 The static `PerformanceObserver.supportedEntryTypes` returns an array of the `entryType` values which the user agent supports, sorted in alphabetical order.
@@ -79,6 +87,8 @@ One parameter that can be used with `observe(type)` is defined in this specifica
 When this flag is set, the user agent dispatches records that it has buffered prior to the PerformanceObserver's creation, and thus they are received in the first callback after this `observe()` call occurs.
 This enables web developers to register PerformanceObservers when it is convenient to do so without missing out on entries dispatched early on during the page load.
 Example of a call using this flag: `observer.observe({type: "measure", buffered: true})`.
+
+Each `entryType` has special characteristics around buffering, described in the [registry](https://w3c.github.io/timing-entrytypes-registry/#registry). In particular, note that there are limits to the numbers of entries of each type that are buffered. When the buffer of an `entryType` becomes full, no new entries are buffered. A PerformanceObserver may query whether an entry was dropped (not buffered) due to the buffer being full via the `hasDroppedEntry` parameter of its callback.
 
 #### `disconnect()`
 
