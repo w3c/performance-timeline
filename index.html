@@ -689,13 +689,19 @@
         <li>Let <var>tuple</var> be the <a>relevant performance entry tuple</a>
         of <var>entryType</var> and <var>relevantGlobal</var>.
         </li>
-        <li>Call the <a>determine eligibility for adding a performance
-        entry</a> algorithm with <var>tuple</var> as input. If it returns true,
-        [=list/append=] <var>newEntry</var> to <var>tuple</var>'s
-        <a>performance entry buffer</a>.
+        <li>Let <var>isBufferFull</var> be the return value of the <a>determine if a performance
+        entry buffer is full</a> algorithm with <var>tuple</var> as input.
+        </li>
+        <li>Let <var>shouldAdd</var> be the result of <a href=
+        "https://w3c.github.io/timing-entrytypes-registry/#dfn-should-add-entry">should add
+        entry</a> with <var>newEntry</var> as input.
+        </li>
+        <li>If <var>isBufferFull</var> is false and <var>shouldAdd</var> is true, [=list/append=]
+        <var>newEntry</var> to <var>tuple</var>'s <a>performance entry buffer</a>.
         </li>
         <li><a>Queue the PerformanceObserver task</a> with
-        <var>relevantGlobal</var> as input.</li>
+        <var>relevantGlobal</var> as input.
+        </li>
       </ol>
     </section>
     <section data-link-for="PerformanceObserver">
@@ -842,19 +848,19 @@
       </ol>
     </section>
     <section data-link-for="PerformanceObserver">
-      <h2>Eligibility for adding a PerformanceEntry to a buffer</h2>
-      <p>To <dfn>determine eligibility for adding a performance entry</dfn>,
-      with required performance entry <var>tuple</var>, run the following
+      <h2>Determine if a performance entry buffer is full</h2>
+      <p>To <dfn>determine if a performance entry buffer is full</dfn>,
+      with <var>tuple</var> as input, run the following
       steps:</p>
       <ol>
         <li>Let <var>num current entries</var> be the size of
         <var>tuple</var>'s <a>performance entry buffer</a>.
         </li>
         <li>If <var>num current entries</var> is less than <var>tuples</var>'s
-        <a>maxBufferSize</a>, return true.
+        <a>maxBufferSize</a>, return false.
         </li>
         <li>Set <var>tuple</var>'s <a>has dropped entry</a> to true.</li>
-        <li>Return false.</li>
+        <li>Return true.</li>
       </ol>
     </section>
   </section>
