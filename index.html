@@ -368,18 +368,18 @@
     object) and an <dfn>options list</dfn> member (a list of
     <a>PerformanceObserverInit</a> dictionaries).</p>
     <pre class="idl">
-      callback PerformanceObserverCallback = void (PerformanceObserverEntryList entries,
+      callback PerformanceObserverCallback = undefined (PerformanceObserverEntryList entries,
                                                    PerformanceObserver observer,
                                                    optional boolean hasDroppedEntry = false);
       [Exposed=(Window,Worker)]
       interface PerformanceObserver {
         constructor(PerformanceObserverCallback callback);
-        void observe (optional PerformanceObserverInit options = {});
-        void disconnect ();
+        undefined observe (optional PerformanceObserverInit options = {});
+        undefined disconnect ();
         PerformanceEntryList takeRecords();
         [SameObject] static readonly attribute FrozenArray&lt;DOMString&gt; supportedEntryTypes;
       };
-      </pre>
+    </pre>
     <p class="note">To keep the performance overhead to minimum the application
     ought to only subscribe to event types that it is interested in, and
     disconnect the observer once it no longer needs to observe the performance
