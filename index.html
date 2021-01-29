@@ -33,16 +33,14 @@
           note: "Until July 2013",
         },
       ],
-      wg: "Web Performance Working Group",
-      wgURI: "https://www.w3.org/webperf/",
       testSuiteURI:
         "https://github.com/web-platform-tests/wpt/tree/master/performance-timeline",
-      wgPatentURI: "https://www.w3.org/2004/01/pp-impl/45211/status",
+      group: "webperf",
       lint: {
         "check-punctuation": true,
       },
       doJsonLd: true,
-      xref: ["hr-time-2", "infra", "html", "dom"],
+      xref: ["hr-time-3", "infra", "html", "dom"],
       mdn: true,
     };
   </script>
@@ -237,7 +235,7 @@
           "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>
           value for this entry type.
           </li>
-          <li>A <code>boolean</code> <dfn>has dropped entry</dfn> that is initially false.</li>
+          <li>An integer <dfn>number of dropped entries</dfn> that is initially 0.</li>
         </ul>
       </li>
     </ul>
@@ -370,7 +368,7 @@
     <pre class="idl">
       callback PerformanceObserverCallback = undefined (PerformanceObserverEntryList entries,
                                                    PerformanceObserver observer,
-                                                   optional boolean hasDroppedEntry = false);
+                                                   optional PerformanceObserverCallbackOptions options = {});
       [Exposed=(Window,Worker)]
       interface PerformanceObserver {
         constructor(PerformanceObserverCallback callback);
@@ -386,6 +384,20 @@
     data. Filtering by name is not supported, as it would implicitly require a
     subscription for all event types — this is possible, but discouraged, as it
     will generate a significant volume of events.</p>
+    <section data-dfn-for="PerformanceObserverCallbackOptions" data-link-for=
+    "PerformanceObserverCallbackOptions">>
+      <h2><dfn>PerformanceObserverCallbackOptions</dfn> dictionary</h2>
+      <pre class="idl">
+        dictionary PerformanceObserverCallbackOptions {
+          unsigned long long numDroppedEntries;
+        };
+      </pre>
+      <dl>
+        <dt><dfn>numDroppedEntries</dfn></dt>
+        <dd>An integer representing the number of dropped entries for the entry types that the
+        observer is observing when its callback is run.</dd>
+      </dl>
+</section>
     <section>
       <h2><dfn>observe()</dfn> method</h2>
       <p>The <a>observe()</a> method instructs the user agent to <dfn>register
@@ -741,7 +753,7 @@
                 {{PerformanceObserverEntryList}}, with its <a>entry list</a> set
                 to <var>entries</var>.
                 </li>
-                <li>Let <var>hasDroppedEntry</var> be false.</li>
+                <li>Let <var>numDroppedEntries</var> be 0.</li>
                 <li>For each <a>PerformanceObserverInit</a> <var>item</var> in
                 <var>registeredObserver</var>'s <a>options list</a>:
                   <ol>
@@ -754,16 +766,19 @@
                         buffer map</a>.</li>
                         <li>Let <var>tuple</var> be the result of <a>getting the value of entry</a>
                         on <var>map</var> given <var>entryType</var> as <a>key</a>.</li>
-                        <li>If <var>tuple</var>'s <a>has dropped entry</a> is true, set
-                        <var>hasDroppedEntry</var> to true.</li>
+                        <li>Increase <var>numDroppedEntries</var> by <var>tuple</var>'s
+                        <a>number of dropped entries</a>.</li>
                       </ol>
                     </li>
                   </ol>
                 </li>
+                <li>Let <var>callbackOptions</var> be a <a>PerformanceObserverCallbackOptions</a>
+                with its <a data-link-for="PerformanceObserverCallbackOptions">numDroppedEntries</a>
+                set to <var>numDroppedEntries</var>.</li>
                 <li>Call <var>po</var>’s <a>observer callback</a> with
                 <var>observerEntryList</var> as the first argument, with <var>po</var>
                 as the second argument and as <a>callback this value</a>, and with
-                <var>hasDroppedEntry</var> as the third argument. If this [=exception/throws=]
+                <var>callbackOptions</var> as the third argument. If this [=exception/throws=]
                 an exception, <a>report the exception</a>.
                 </li>
               </ol>
@@ -859,7 +874,7 @@
         <li>If <var>num current entries</var> is less than <var>tuples</var>'s
         <a>maxBufferSize</a>, return false.
         </li>
-        <li>Set <var>tuple</var>'s <a>has dropped entry</a> to true.</li>
+        <li>Increase <var>tuple</var>'s <a>number of dropped entries</a> by 1.</li>
         <li>Return true.</li>
       </ol>
     </section>
