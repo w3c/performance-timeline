@@ -243,7 +243,7 @@
           "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>
           value for this entry type.
           </li>
-          <li>A <code>boolean</code> <dfn>has dropped entry</dfn> that is initially false.</li>
+          <li>An integer <dfn>dropped entries count</dfn> that is initially 0.</li>
         </ul>
       </li>
     </ul>
@@ -376,7 +376,7 @@
     <pre class="idl">
       callback PerformanceObserverCallback = undefined (PerformanceObserverEntryList entries,
                                                    PerformanceObserver observer,
-                                                   optional boolean hasDroppedEntry = false);
+                                                   optional PerformanceObserverCallbackOptions options = {});
       [Exposed=(Window,Worker)]
       interface PerformanceObserver {
         constructor(PerformanceObserverCallback callback);
@@ -392,6 +392,20 @@
     data. Filtering by name is not supported, as it would implicitly require a
     subscription for all event types — this is possible, but discouraged, as it
     will generate a significant volume of events.</p>
+    <section data-dfn-for="PerformanceObserverCallbackOptions" data-link-for=
+    "PerformanceObserverCallbackOptions">>
+      <h2><dfn>PerformanceObserverCallbackOptions</dfn> dictionary</h2>
+      <pre class="idl">
+        dictionary PerformanceObserverCallbackOptions {
+          unsigned long long droppedEntriesCount;
+        };
+      </pre>
+      <dl>
+        <dt><dfn>droppedEntriesCount</dfn></dt>
+        <dd>An integer representing the dropped entries count for the entry types that the
+        observer is observing when its callback is run.</dd>
+      </dl>
+</section>
     <section>
       <h2><dfn>observe()</dfn> method</h2>
       <p>The <a>observe()</a> method instructs the user agent to <dfn>register
@@ -747,7 +761,7 @@
                 {{PerformanceObserverEntryList}}, with its <a>entry list</a> set
                 to <var>entries</var>.
                 </li>
-                <li>Let <var>hasDroppedEntry</var> be false.</li>
+                <li>Let <var>droppedEntriesCount</var> be 0.</li>
                 <li>For each <a>PerformanceObserverInit</a> <var>item</var> in
                 <var>registeredObserver</var>'s <a>options list</a>:
                   <ol>
@@ -760,16 +774,19 @@
                         buffer map</a>.</li>
                         <li>Let <var>tuple</var> be the result of <a>getting the value of entry</a>
                         on <var>map</var> given <var>entryType</var> as <a>key</a>.</li>
-                        <li>If <var>tuple</var>'s <a>has dropped entry</a> is true, set
-                        <var>hasDroppedEntry</var> to true.</li>
+                        <li>Increase <var>droppedEntriesCount</var> by <var>tuple</var>'s
+                        <a>dropped entries count</a>.</li>
                       </ol>
                     </li>
                   </ol>
                 </li>
+                <li>Let <var>callbackOptions</var> be a <a>PerformanceObserverCallbackOptions</a>
+                with its <a data-link-for="PerformanceObserverCallbackOptions">droppedEntriesCount</a>
+                set to <var>droppedEntriesCount</var>.</li>
                 <li>Call <var>po</var>’s <a>observer callback</a> with
                 <var>observerEntryList</var> as the first argument, with <var>po</var>
                 as the second argument and as <a>callback this value</a>, and with
-                <var>hasDroppedEntry</var> as the third argument. If this [=exception/throws=]
+                <var>callbackOptions</var> as the third argument. If this [=exception/throws=]
                 an exception, <a>report the exception</a>.
                 </li>
               </ol>
@@ -865,7 +882,7 @@
         <li>If <var>num current entries</var> is less than <var>tuples</var>'s
         <a>maxBufferSize</a>, return false.
         </li>
-        <li>Set <var>tuple</var>'s <a>has dropped entry</a> to true.</li>
+        <li>Increase <var>tuple</var>'s <a>dropped entries count</a> by 1.</li>
         <li>Return true.</li>
       </ol>
     </section>
