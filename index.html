@@ -674,13 +674,12 @@
         <li>For each <a>registered performance observer</a> <var>regObs</var> in
         <var>relevantGlobal</var>'s <a>list of registered performance observer objects</a>:
           <ol>
-            <li>If <var>regObs</var>'s <a>options list</a> contains a
+            <li><p>If <var>regObs</var>'s <a>options list</a> contains a
             <a>PerformanceObserverInit</a> <var>options</var> whose <a data-link-for=
             "PerformanceObserverInit">entryTypes</a> member includes
             <var>entryType</var> or whose <a data-link-for=
             "PerformanceObserverInit">type</a> member equals to
-            <var>entryType</var>:
-            </li>
+            <var>entryType</var>:</p>
             <ol>
               <li>If <a href=
                 "https://w3c.github.io/timing-entrytypes-registry/#dfn-should-add-entry">
@@ -689,6 +688,7 @@
                 <var>interested observers</var>.
               </li>
             </ol>
+            </li>
           </ol>
         </li>
         <li>For each <var>observer</var> in <var>interested observers</var>:
