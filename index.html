@@ -365,6 +365,7 @@
       </li>
       <li>A <code>DOMString</code> <dfn>observer type</dfn> which is initially
       <code>"undefined"</code>.</li>
+      <li>A boolean <code>requires dropped entries</code> which is initially set to false.</li>
     </ul>
     <p>The `PerformanceObserver(callback)` constructor must create a new
     <a>PerformanceObserver</a> object with its <a>observer callback</a>
@@ -403,7 +404,8 @@
       <dl>
         <dt><dfn>droppedEntriesCount</dfn></dt>
         <dd>An integer representing the dropped entries count for the entry types that the
-        observer is observing when its callback is run.</dd>
+        observer is observing when the <a>PerformanceObserver</a>'s <a>requires dropped entries</a>
+        is set.</dd>
       </dl>
 </section>
     <section>
@@ -448,6 +450,7 @@
             </li>
           </ol>
         </li>
+        <li>Set <a>this</a>'s <a>requires dropped entries</a> to true.</li>
         <li>If <a>this</a>'s <a>observer type</a> is
         <code>"multiple"</code>, run the following steps:
           <ol>
@@ -753,9 +756,12 @@
                 {{PerformanceObserverEntryList}}, with its <a>entry list</a> set
                 to <var>entries</var>.
                 </li>
-                <li>Let <var>droppedEntriesCount</var> be 0.</li>
-                <li>For each <a>PerformanceObserverInit</a> <var>item</var> in
-                <var>registeredObserver</var>'s <a>options list</a>:
+                <li>Let <var>droppedEntriesCount</var> be null.</li>
+                <li>If <var>po</var>'s <a>requires dropped entries</a> is set, perform the following
+                  steps:
+                  <ol>
+                  <li>For each <a>PerformanceObserverInit</a> <var>item</var> in
+                  <var>registeredObserver</var>'s <a>options list</a>:
                   <ol>
                     <li>For each <a data-cite="WEBIDL#idl-DOMString">DOMString</a>
                     <var>entryType</var> that appears either as <var>item</var>'s <a data-link-for=
@@ -770,6 +776,9 @@
                         <a>dropped entries count</a>.</li>
                       </ol>
                     </li>
+                  </ol>
+                  </li>
+                  <li>Set <var>po</var>'s <a>requires dropped entries</a> to false.</li>
                   </ol>
                 </li>
                 <li>Let <var>callbackOptions</var> be a <a>PerformanceObserverCallbackOptions</a>
