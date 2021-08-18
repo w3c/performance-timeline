@@ -760,6 +760,7 @@
                 <li>If <var>po</var>'s <a>requires dropped entries</a> is set, perform the following
                 steps:
                   <ol>
+                    <li>Set <var>droppedEntriesCount</var> to 0.</li>
                     <li>For each <a>PerformanceObserverInit</a> <var>item</var> in
                     <var>registeredObserver</var>'s <a>options list</a>:
                     <ol>
@@ -783,7 +784,8 @@
                 </li>
                 <li>Let <var>callbackOptions</var> be a <a>PerformanceObserverCallbackOptions</a>
                 with its <a data-link-for="PerformanceObserverCallbackOptions">droppedEntriesCount</a>
-                set to <var>droppedEntriesCount</var>.</li>
+                set to <var>droppedEntriesCount</var> if <var>droppedEntriesCount</var> is not null,
+                otherwise unset.</li>
                 <li>Call <var>po</var>’s <a>observer callback</a> with
                 <var>observerEntryList</var> as the first argument, with <var>po</var>
                 as the second argument and as <a>callback this value</a>, and with
