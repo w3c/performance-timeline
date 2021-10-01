@@ -249,7 +249,6 @@
           <li>An integer <dfn>dropped entries count</dfn> that is initially 0.</li>
         </ul>
       </li>
-      <li>An integer <dfn>current navigation id</dfn> that is initially 0.</li>
     </ul>
     <p>In order to get the <dfn>relevant performance entry tuple</dfn>, given
     <var>entryType</var> and <var>globalObject</var> as input, run the
@@ -262,17 +261,6 @@
         map</var>, given <var>entryType</var> as the <a>key</a>.
       </li>
     </ol>
-    <p>The <a
-    href="https://html.spec.whatwg.org/#session-history-document-visibility-change-steps">session
-    history document visibility change steps</a> defined by this specification are:</p>
-    <ol>
-      <li>Increment <var>newDocument</var>'s [=relevant global object=]'s <a>current navigation
-      id</a>.</li>
-    </ol>
-    <p class="note">These steps will be called from [[HTML]]'s <a
-    href="https://html.spec.whatwg.org/#traverse-the-history">traverse the history</a>
-    algorithm whenever a document is restored from the bfcache, immediately before the
-    [=Window/pageshow=] event is fired.</p>
     <section data-dfn-for="Performance" data-link-for="Performance">
       <h2>Extensions to the {{Performance}} interface</h2>
       <p>This extends the {{Performance}} interface from [[HR-TIME-3]] and
@@ -362,9 +350,7 @@
       </dd>
       <dt><dfn>navigationId</dfn></dt>
       <dd>
-        This attribute MUST return the value of the global object's <a>current
-        navigation id</a> at the time that this <a>PerformanceEntry</a> was
-        queued.
+        This attribute MUST return the value of <a>this</a>'s <a>navigationId</a>.
       </dd>
     </dl>
     <p>When <dfn>toJSON</dfn> is called, run [[WebIDL]]'s <a>default toJSON
@@ -694,8 +680,17 @@
         <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s <a>relevant
         global object</a>.
         </li>
-        <li>Set <var>newEntry</var>'s <a data-lt="PerformanceEntry.navigationId">navigationId</a>
-        to <var>relevantGlobal</var>'s <a>current navigation id</a>.</li>
+        <li>If <var>relevantGlobal</var>'s <a>environment settings object</a> has a
+        [=environment settings object/responsible document=]:
+          <ol>
+            <li>Set <var>newEntry</var>'s <a
+            data-lt="PerformanceEntry.navigationId">navigationId</a> to the value of
+            <var>relevantGlobal</var>'s <a>environment settings object</a>'s [=environment
+            settings object/responsible document=]'s <a>navigation counter</a>.</li>
+          </ol>
+        </li>
+        <li>Otherwise, set <var>newEntry</var>'s <a
+        data-lt="PerformanceEntry.navigationId">navigationId</a> to 0.</li>
         <li>For each <a>registered performance observer</a> <var>regObs</var> in
         <var>relevantGlobal</var>'s <a>list of registered performance observer objects</a>:
           <ol>
