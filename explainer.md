@@ -59,6 +59,8 @@ The entry has the following attributes:
 * `entryType`: a string representing the type of performance data being exposed. It is also used to filter entries in the `getEntriesByType()` method and in the `PerformanceObserver`.
 * `startTime`: a timestamp representing the starting point for the performance data being recorded. The semantics of this attribute depend on the `entryType`.
 * `duration`: a time duration representing the duration of the performance data being recorded. The semantics of this one also depend on the `entryType`.
+* `navigationId`: an integer indicating how many times the user has navigated to this document
+since it was initially loaded.
 
 If these sound abstract, it’s because they are.
 A specification whose goal is to expose new measurements to web developers will define a new interface which extends `PerformanceEntry`.
@@ -149,6 +151,21 @@ Having both polling and callbacks has proved to be useful.
 For entryTypes with a fixed amount of entries, like Paint Timing, using the polling method is more convenient, especially in the current state of the world where analytics providers often only send a single beacon per page load.
 At the same time, the callback is more useful for cases where there is varying amount of entries of the given entryType, like in Resource Timing.
 The web performance monitoring service can process all the performance information while the page is still running and only has to do very minimal work when the data needs to be reported.
+
+## Page lifetime issues
+When this API was originally designed, documents had a relatively simple lifecycle: they were
+loaded when the user navigated to them, and unloaded when the user navigated away, with the
+JavaScript environment being torn down at that time. Since then, the sitution has become more
+complex, with many browsers introducing a back-forwards-cache, with which a user can return
+a document wich they have previously navigated away from. The web has also seen a rise in
+popularity of Single Page Apps, where what appears to the user to be a navigation is actually
+just a change in state of a running page. In both of these situations, a navigation (or what
+appears to the user as a navigation) can occur without the performance timeline being reset.
+In order to allow developers to reason about such events during the life of a page,
+PerformanceEntry objects now include a navigation counter field. This field captures the
+count of navigations which had occurred when the entry was generated (starting at 1 when the
+document is initially loaded, and being incremented by one with each subsequent navigation of
+the document.)
 
 # Standards Status
 The Performance Timeline specification is widely approved.
