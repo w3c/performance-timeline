@@ -296,7 +296,7 @@
     </section>
   </section>
   <section data-dfn-for="PerformanceEntry" data-link-for="PerformanceEntry">
-    <h2>The <dfn class="export">PerformanceEntry</dfn> interface</h2>
+    <h2>The <dfn>PerformanceEntry</dfn> interface</h2>
     <p>The <a>PerformanceEntry</a> interface hosts the performance data of
     various metrics.</p>
     <pre class='idl'>
@@ -309,13 +309,13 @@
         [Default] object toJSON();
       };</pre>
     <dl>
-      <dt><dfn class="export">name</dfn></dt>
+      <dt><dfn>name</dfn></dt>
       <dd>
         This attribute MUST return an identifier for this
         <a>PerformanceEntry</a> object. This identifier does not have to be
         unique.
       </dd>
-      <dt><dfn class="export">entryType</dfn></dt>
+      <dt><dfn>entryType</dfn></dt>
       <dd>
         This attribute MUST return the type of the interface represented by
         this <a>PerformanceEntry</a> object.
@@ -328,12 +328,12 @@
         <!-- TODO: add long task spec reference -->
          and <code>"longtask"</code>.</p>
       </dd>
-      <dt><dfn class="export">startTime</dfn></dt>
+      <dt><dfn>startTime</dfn></dt>
       <dd>This attribute MUST return the time value of the first recorded
       timestamp of this performance metric. If the startTime concept doesn't
       apply, a performance metric may choose to return a `startTime` of
       <code>0</code>.</dd>
-      <dt><dfn class="export">duration</dfn></dt>
+      <dt><dfn>duration</dfn></dt>
       <dd>
         This attribute MUST return the time value of the duration of the entire
         event being recorded by this <a>PerformanceEntry</a>. Typically, this
@@ -348,7 +348,7 @@
   </section>
   <section data-link-for="PerformanceObserver" data-dfn-for=
   "PerformanceObserver">
-    <h2>The <dfn class="export">PerformanceObserver</dfn> interface</h2>
+    <h2>The <dfn>PerformanceObserver</dfn> interface</h2>
     <p>The <a>PerformanceObserver</a> interface can be used to observe the
     <a>Performance Timeline</a> to be notified of new performance metrics as
     they are recorded, and optionally buffered performance metrics.</p>
@@ -639,7 +639,7 @@
       strings among the <a href=
       "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>
       that are supported for the global object, in alphabetical order.</p>
-      <p>When <dfn class="export">supportedEntryTypes</dfn>'s attribute getter is called, run
+      <p>When <dfn>supportedEntryTypes</dfn>'s attribute getter is called, run
       the following steps:</p>
       <ol>
         <li>Let <var>globalObject</var> be the <a data-cite=
