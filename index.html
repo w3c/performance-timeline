@@ -300,7 +300,7 @@
     <p>The <a>PerformanceEntry</a> interface hosts the performance data of
     various metrics.</p>
     <pre class='idl'>
-      [Exposed=*]
+      [Exposed=(Window,Worker)]
       interface PerformanceEntry {
         readonly    attribute DOMString           name;
         readonly    attribute DOMString           entryType;
@@ -374,7 +374,7 @@
       callback PerformanceObserverCallback = undefined (PerformanceObserverEntryList entries,
                                                    PerformanceObserver observer,
                                                    optional PerformanceObserverCallbackOptions options = {});
-      [Exposed=*]
+      [Exposed=(Window,Worker)]
       interface PerformanceObserver {
         constructor(PerformanceObserverCallback callback);
         undefined observe (optional PerformanceObserverInit options = {});
@@ -580,7 +580,7 @@
       "PerformanceObserverEntryList">
         <h2><dfn>PerformanceObserverEntryList</dfn> interface</h2>
         <pre class="idl">
-          [Exposed=*]
+          [Exposed=(Window,Worker)]
           interface PerformanceObserverEntryList {
             PerformanceEntryList getEntries();
             PerformanceEntryList getEntriesByType (DOMString type);
