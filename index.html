@@ -16,7 +16,6 @@
         {
           name: "Nicolás Peña Moreno",
           url: 'https://github.com/npm1',
-          mailto: "npm@chromium.org",
           company: "Google",
           companyURL: "https://www.google.com/",
           w3cid: "103755",
@@ -26,14 +25,13 @@
         {
           name: "Ilya Grigorik",
           url: "https://www.igvita.com/",
-          mailto: "igrigorik@gmail.com",
           company: "Google",
           companyURL: "https://www.google.com/",
           w3cid: "56102",
         },
         {
           name: "Jatinder Mann",
-          mailto: "jmann@microsoft.com",
+          url: "mailto:jmann@microsoft.com",
           company: "Microsoft Corp.",
           note: "Until November 2014",
         },
@@ -234,7 +232,7 @@
       "infra">map</a>'s <a data-cite="INFRA#map-value">value</a> is the
       following tuple:
         <ul>
-          <li>A <dfn>performance entry buffer</dfn> to store
+          <li>A <dfn class="export">performance entry buffer</dfn> to store
           <a>PerformanceEntry</a> objects, that is initially empty.
           </li>
           <li>An integer <dfn>maxBufferSize</dfn>, initialized to the
@@ -416,8 +414,8 @@
 </section>
     <section>
       <h2><dfn>observe()</dfn> method</h2>
-      <p>The <a>observe()</a> method instructs the user agent to <dfn>register
-      the observer</dfn> and must run these steps:</p>
+      <p>The <a>observe()</a> method instructs the user agent to register
+      the observer and must run these steps:</p>
       <ol data-link-for="PerformanceObserverInit">
         <li>Let <var>relevantGlobal</var> be <a>this</a>'s <a>relevant
         global object</a>.
@@ -668,7 +666,7 @@
     <h2>Processing</h2>
     <section data-link-for="PerformanceObserver">
       <h2>Queue a <code>PerformanceEntry</code></h2>
-      <p>To <dfn>queue a PerformanceEntry</dfn> (<var>newEntry</var>), run
+      <p>To <dfn class="export">queue a PerformanceEntry</dfn> (<var>newEntry</var>), run
       these steps:</p>
       <ol>
         <li>Let <var>interested observers</var> be an initially empty set of
@@ -749,7 +747,7 @@
         </li>
         <li>
           <a>Queue a task</a> that consists of running the following substeps.
-          The <a>task source</a> for the queued task is the <dfn data-export="">performance
+          The <a>task source</a> for the queued task is the <dfn class="export">performance
           timeline task source</dfn>.
           <ol>
             <li>Unset <a>performance observer task queued flag</a> of
@@ -906,12 +904,21 @@
       </ol>
     </section>
   </section>
-  <section id="privacy-security">
-    <h3>Privacy and Security</h3>
-    <p>This specification extends the {{Performance}} interface defined by
-    [[HR-TIME-3]] and provides methods to queue and retrieve entries from the
-    <a>performance timeline</a>. Please refer to [[HR-TIME-3]] for privacy and
-    security considerations of exposing high-resoluting timing information.</p>
+  <section id="privacy">
+    <h3>Privacy Considerations</h3>
+    <p>This specification extends the {{Performance}} interface defined by [[HR-TIME-3]] and
+      provides methods to queue and retrieve entries from the <a>performance timeline</a>. Please
+      refer to [[HR-TIME-3]] for privacy considerations of exposing high-resoluting timing
+      information. Each new specification introducing new performance entries should have its own
+      privacy considerations as well.</p>
+  </section>
+  <section id="security">
+    <h3>Security Considerations</h3>
+    <p>This specification extends the {{Performance}} interface defined by [[HR-TIME-3]] and
+      provides methods to queue and retrieve entries from the <a>performance timeline</a>. Please
+      refer to [[HR-TIME-3]] for security considerations of exposing high-resoluting timing
+      information. Each new specification introducing new performance entries should have its own
+      security considerations as well.</p>
   </section>
   <section>
     <h2>Dependencies</h2>
