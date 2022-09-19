@@ -678,13 +678,11 @@
         <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s <a>relevant
         global object</a>.
         </li>
-        <li>If <var>relevantGlobal</var>'s <a>environment settings object</a> has a
-        [=environment settings object/responsible document=]:
+        <li>If <var>relevantGlobal</var> has an [=associated document=]:
           <ol>
             <li>Set <var>newEntry</var>'s <a
             data-lt="PerformanceEntry.navigationId">navigationId</a> to the value of
-            <var>relevantGlobal</var>'s <a>environment settings object</a>'s [=environment
-            settings object/responsible document=]'s <a>navigation counter</a>.</li>
+            <var>relevantGlobal</var>'s [=associated document=]'s [=navigation id=].</li>
           </ol>
         </li>
         <li>Otherwise, set <var>newEntry</var>'s <a
@@ -903,6 +901,19 @@
         <li>Return true.</li>
       </ol>
     </section>
+  </section>
+  <section>
+    <h3>Integration with HTML</h3>
+    <p class="note">This section defines concepts which should rightly be defined in
+      [[HTML]]. Remove this section once those definitions exist there.</p>
+    <p>A [=Document=] has a <dfn>navigation id</dfn> which is an integer. It is
+      initially 0.</p>
+    <p>In [[HTML#history-traversal]], in the [[HTML#traverse-the-history]]
+      algorithm, add the following line after step 4.7.2:
+      <ol>
+        <li>Increment <var>newDocument</var>'s [=navigation id=].</li>
+      </ol>
+    </p>
   </section>
   <section id="privacy">
     <h3>Privacy Considerations</h3>
