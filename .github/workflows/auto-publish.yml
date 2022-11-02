@@ -17,3 +17,4 @@ jobs:
              shortName: performance-timeline
              specStatus: CRD
              historyURI: "https://www.w3.org/standards/history/performance-timeline"
+             crEnd: "01-02-2022"
