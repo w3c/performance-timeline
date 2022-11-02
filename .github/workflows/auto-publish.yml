@@ -15,4 +15,5 @@ jobs:
           W3C_WG_DECISION_URL: https://lists.w3.org/Archives/Public/public-web-perf/2021Apr/0005.html
           W3C_BUILD_OVERRIDE: |
              shortName: performance-timeline
-             specStatus: WD
+             specStatus: CRD
+             historyURI: "https://www.w3.org/standards/history/performance-timeline"
