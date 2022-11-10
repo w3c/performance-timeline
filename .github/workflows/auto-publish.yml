@@ -18,4 +18,4 @@ jobs:
              specStatus: CRD
              historyURI: "https://www.w3.org/standards/history/performance-timeline"
              crEnd: "2022-02-01"
-             implementationReportURI: "https://wpt.fyi/results/user-timing"
+             implementationReportURI: "https://wpt.fyi/results/performance-timeline"
