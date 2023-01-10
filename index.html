@@ -263,31 +263,50 @@
       hosts performance related attributes and methods used to retrieve the
       performance metric data from the <a>Performance Timeline</a>.</p>
       <pre class="idl">
+      dictionary PerformanceEntryOptions {
+        DOMString type;
+        DOMString name;
+        boolean includeFrames;
+      };
+
       partial interface Performance {
-        PerformanceEntryList getEntries (optional boolean includeFrames = false);
-        PerformanceEntryList getEntriesByType (DOMString type, optional boolean includeFrames = false);
-        PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type, optional boolean includeFrames = false);
+        PerformanceEntryList getEntries (optional PerformanceEntryOptions options = {});
+        PerformanceEntryList getEntriesByType (DOMString type);
+        PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type);
       };
       typedef sequence&lt;PerformanceEntry&gt; PerformanceEntryList;
       </pre>
       <p>The <dfn>PerformanceEntryList</dfn> represents a sequence of
       <a>PerformanceEntry</a>, providing developers with all the convenience
       methods found on JavaScript arrays.</p>
+      <section data-dfn-for="PerformanceEntryOptions" data-link-for=
+      "PerformanceEntryOptions">
+        <h2><dfn>PerformanceEntryOptions</dfn> dictionary</h2>
+        <dl>
+          <dt><dfn>type</dfn></dt>
+          <dd>A single entry type to be retrieved.</dd>
+          <dt><dfn>name</dfn></dt>
+          <dd>A string representing the name of entries to be retrieved.</dd>
+          <dt><dfn>includeFrames</dfn></dt>
+          <dd>A flag to indicate whether entries from child frames should be
+          retrieved.</dd>
+        </dl>
+      </section>
       <section>
         <h2><dfn>getEntries()</dfn> method</h2>
         <p>Returns a <a>PerformanceEntryList</a> object returned by the
         <a>filter buffer map by name and type</a> algorithm with
-        <var>name</var> and <var>type</var> set to <code>null</code>, and
-        <var>includeFrames</var> set to the method's input
-        <code>includeFrames</code> parameter.</p>
+        <var>name</var>, <var>type</var> and <var>includeFrames</var> set to the
+        corresponding members of the method's input <code>options</code>
+        parameter.</p>
       </section>
       <section>
         <h2><dfn>getEntriesByType()</dfn> method</h2>
         <p>Returns a <a>PerformanceEntryList</a> object returned by <a>filter
         buffer map by name and type</a> algorithm with <var>name</var> set to
         <code>null</code>, <var>type</var> set to the method's input
-        <code>type</code> parameter, and <var>includeFrames</var> set to the
-        method's input <code>includeFrames</code> parameter.</p>
+        <code>type</code> parameter, and <var>includeFrames</var> set to
+        <code>false</code>.</p>
       </section>
       <section>
         <h2><dfn>getEntriesByName()</dfn> method</h2>
@@ -296,8 +315,7 @@
         the method's input <code>name</code> parameter, <var>type</var> set to
         either <code>null</code> if optional `entryType` is omitted, or the
         method's input <code>type</code> parameter otherwise, and
-        <var>includeFrames</var> set to the method's input
-        <code>includeFrames</code> parameter.</p>
+        <var>includeFrames</var> set to <code>false</code>.</p>
       </section>
     </section>
   </section>
