@@ -59,8 +59,7 @@ The entry has the following attributes:
 * `entryType`: a string representing the type of performance data being exposed. It is also used to filter entries in the `getEntriesByType()` method and in the `PerformanceObserver`.
 * `startTime`: a timestamp representing the starting point for the performance data being recorded. The semantics of this attribute depend on the `entryType`.
 * `duration`: a time duration representing the duration of the performance data being recorded. The semantics of this one also depend on the `entryType`.
-* `navigationId`: an integer indicating how many times the user has navigated to this document
-since it was initially loaded.
+* `navigationId`: a string identifying the `PerformanceEntry` object corresponding to the last navigation or navigation-like event that had occurred in the document at the time that this `PerformanceEntry` object was recorded.
 
 If these sound abstract, it’s because they are.
 A specification whose goal is to expose new measurements to web developers will define a new interface which extends `PerformanceEntry`.
@@ -161,11 +160,10 @@ a document wich they have previously navigated away from. The web has also seen 
 popularity of Single Page Apps, where what appears to the user to be a navigation is actually
 just a change in state of a running page. In both of these situations, a navigation (or what
 appears to the user as a navigation) can occur without the performance timeline being reset.
-In order to allow developers to reason about such events during the life of a page,
-PerformanceEntry objects now include a navigation counter field. This field captures the
-count of navigations which had occurred when the entry was generated (starting at 1 when the
-document is initially loaded, and being incremented by one with each subsequent navigation of
-the document.)
+In order to allow developers to reason about such events during the life of a page, some
+PerformanceEntry objects mark navigations, or navigation-like events. All PerformanceEntry
+objects include a navigation ID field, which links each PerformanceEntry to the most recent
+navigation entry which had occurred when the entry was generated.
 
 # Standards Status
 The Performance Timeline specification is widely approved.

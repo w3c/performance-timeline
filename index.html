@@ -247,6 +247,12 @@
         </ul>
       </li>
     </ul>
+    <p>Each <a>Document</a> has:</p>
+    <ul>
+      <li>a <dfn>most recent navigation</dfn>, which is a <a>PerformanceEntry</a>,
+      initially unset.
+      </li>
+    </ul>
     <p>In order to get the <dfn>relevant performance entry tuple</dfn>, given
     <var>entryType</var> and <var>globalObject</var> as input, run the
     following steps:</p>
@@ -308,7 +314,7 @@
         readonly    attribute DOMString           entryType;
         readonly    attribute DOMHighResTimeStamp startTime;
         readonly    attribute DOMHighResTimeStamp duration;
-        readonly    attribute unsigned long       navigationId;
+        readonly    attribute DOMString           navigationId;
         [Default] object toJSON();
       };</pre>
     <dl>
@@ -592,6 +598,7 @@
             PerformanceEntryList getEntries();
             PerformanceEntryList getEntriesByType (DOMString type);
             PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type);
+            PerformanceEntryList getEntriesByNavigationId (DOMString navigationId);
           };
           </pre>
           <p>Each {{PerformanceObserverEntryList}} object has an associated
@@ -600,23 +607,33 @@
         <section>
           <h2><dfn>getEntries()</dfn> method</h2>
           <p>Returns a <a>PerformanceEntryList</a> object returned by <a>filter
-          buffer by name and type</a> algorithm with <a>this</a>'s <a>entry list</a>,
-          <var>name</var> and <var>type</var> set to <code>null</code>.</p>
+          buffer</a> algorithm with <a>this</a>'s <a>entry list</a>,
+          <var>name</var>, <var>type</var> and <var>navigationId</var> set to
+          <code>null</code>.</p>
         </section>
         <section>
           <h2><dfn>getEntriesByType()</dfn> method</h2>
           <p>Returns a <a>PerformanceEntryList</a> object returned by <a>filter
-          buffer by name and type</a> algorithm with <a>this</a>'s <a>entry list</a>,
-          <var>name</var> set to <code>null</code>, and <var>type</var> set to the
-          method's input <code>type</code> parameter.</p>
+          buffer</a> algorithm with <a>this</a>'s <a>entry list</a>,
+          <var>name</var> set to <code>null</code>, <var>type</var> set to the
+          method's input <code>type</code> parameter, and <var>navigationId</var>
+          set to <code>null</code>.</p>
         </section>
         <section>
           <h2><dfn>getEntriesByName()</dfn> method</h2>
           <p>Returns a <a>PerformanceEntryList</a> object returned by <a>filter
-          buffer by name and type</a> algorithm with <a>this</a>'s <a>entry list</a>,
+          buffer</a> algorithm with <a>this</a>'s <a>entry list</a>,
           <var>name</var> set to the method input <code>name</code> parameter, and
           <var>type</var> set to <code>null</code> if optional `entryType` is omitted,
           or set to the method's input <code>type</code> parameter otherwise.</p>
+        </section>
+        <section>
+          <h2><dfn>getEntriesByNavigationId()</dfn> method</h2>
+          <p>Returns a <a>PerformanceEntryList</a> object returned by <a>filter
+          buffer</a> algorithm with <a>this</a>'s <a>entry list</a>,
+          <var>name</var> and <var>type</var> set to <code>null</code>, and
+          <var>navigationId</var> set to the method's input
+          <code>navigationId</code> parameter.</p>
         </section>
       </section>
     </section>
@@ -681,11 +698,11 @@
           <ol>
             <li>Set <var>newEntry</var>'s <a
             data-lt="PerformanceEntry.navigationId">navigationId</a> to the value of
-            <var>relevantGlobal</var>'s [=associated document=]'s [=navigation id=].</li>
+            <var>relevantGlobal</var>'s [=associated document=]'s [=most recent navigation=]'s {{PerformanceEntry/navigationId}}.</li>
           </ol>
         </li>
         <li>Otherwise, set <var>newEntry</var>'s <a
-        data-lt="PerformanceEntry.navigationId">navigationId</a> to 0.</li>
+        data-lt="PerformanceEntry.navigationId">navigationId</a> to null.</li>
         <li>For each <a>registered performance observer</a> <var>regObs</var> in
         <var>relevantGlobal</var>'s <a>list of registered performance observer objects</a>:
           <ol>
@@ -729,6 +746,24 @@
         <li><a>Queue the PerformanceObserver task</a> with
         <var>relevantGlobal</var> as input.
         </li>
+      </ol>
+    </section>
+    <section data-link-for="PerformanceObserver">
+      <h2>Queue a navigation <code>PerformanceEntry</code></h2>
+      <p>To <dfn class="export">queue a navigation PerformanceEntry</dfn> (<var>newEntry</var>), run
+      these steps:</p>
+      <ol>
+        <li>Let <var>navigationId</var> be the result of running <a>generate a navigationId</a> for <var>newEntry</var>.</li>
+        <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s <a>relevant
+        global object</a>.
+        </li>
+        <li>Set <var>newEntry</var>'s {{PerformanceEntry/navigationId}} to <var>navigationId</var>.</li>
+        <li>If <var>relevantGlobal</var> has an [=associated document=]:
+          <ol>
+            <li>Set <var>relevantGlobal</var>'s [=associated document=]'s [=most recent navigation=] to <var>newEntry</var>.</li>
+          </ol>
+        </li>
+        <li><a>Queue a PerformanceEntry</a> with <var>newEntry</var> as input.</li>
       </ol>
     </section>
     <section data-link-for="PerformanceObserver">
@@ -843,7 +878,7 @@
             continue to the next <var>tuple</var>.
             </li>
             <li>Let <var>entries</var> be the result of running <a>filter
-            buffer by name and type</a> with <var>buffer</var>, <var>name</var>
+            buffer</a> with <var>buffer</var>, <var>name</var>
             and <var>type</var> as inputs.
             </li>
             <li>For each <var>entry</var> in <var>entries</var>,
@@ -857,10 +892,10 @@
       </ol>
     </section>
     <section data-link-for="PerformanceEntry">
-      <h2>Filter buffer by name and type</h2>
-      <p>When asked to run the <dfn>filter buffer by name and type</dfn>
-      algorithm, with <var>buffer</var>, <var>name</var>, and <var>type</var>
-      as inputs, run the following steps:</p>
+      <h2>Filter buffer</h2>
+      <p>When asked to run the <dfn>filter buffer</dfn>
+      algorithm, with <var>buffer</var>, <var>name</var>, <var>type</var>, and
+      <var>navigationId</var> as inputs, run the following steps:</p>
       <ol>
         <li>Let <var>result</var> be an initially empty <a>list</a>.
         </li>
@@ -874,6 +909,12 @@
             <li>If <var>name</var> is not null and if <var>name</var> is not
             <a data-cite=INFRA#string-is>identical to</a> <var>entry</var>'s
             <code>name</code> attribute, continue to next <var>entry</var>.
+            </li>
+            <li>If <var>navigationId</var> is not null and if
+            <var>navigationId</var> is not
+            <a data-cite=INFRA#string-is>identical to</a> <var>entry</var>'s
+            <code>navigationId</code> attribute, continue to next
+            <var>entry</var>.
             </li>
             <li>[=list/append=] <var>entry</var> to <var>result</var>.</li>
           </ol>
@@ -900,19 +941,18 @@
         <li>Return true.</li>
       </ol>
     </section>
-  </section>
-  <section>
-    <h3>Integration with HTML</h3>
-    <p class="note">This section defines concepts which should rightly be defined in
-      [[HTML]]. Remove this section once those definitions exist there.</p>
-    <p>A [=Document=] has a <dfn>navigation id</dfn> which is an integer. It is
-      initially 0.</p>
-    <p>In [[HTML#history-traversal]], in the [[HTML#traverse-the-history]]
-      algorithm, add the following line after step 4.7.2:
+    <section data-link-for="PerformanceEntry">
+      <h2>Generate a navigationId</h2>
+      <p>When asked to <dfn class="export">generate a navigationId</dfn> for a
+      <a>PerformanceEntry</a> <var>entry</a>, run the following steps:</p>
       <ol>
-        <li>Increment <var>newDocument</var>'s [=navigation id=].</li>
+        <li>Let <var>type</var> be <var>entry</var>'s <a>entryType</a>.</li>
+        <li>Let <var>startTime</var> be <var>entry</var>'s <a>startTime</a>.
+        </li>
+        <li>Return the [=string/concatenation=] of « <var>type</var>,
+        <var>time</var> » using U+002D HYPHEN-MINUS.</li>
       </ol>
-    </p>
+    </section>
   </section>
   <section id="privacy">
     <h3>Privacy Considerations</h3>
