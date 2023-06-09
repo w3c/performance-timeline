@@ -9,7 +9,6 @@
     var respecConfig = {
       github: "https://github.com/w3c/performance-timeline/",
       shortName: "performance-timeline",
-      level: 2,
       latestVersion: "TR/performance-timeline/",
       specStatus: "ED",
       editors: [
@@ -60,7 +59,7 @@
     performance metric data.</p>
   </section>
   <section id='sotd'>
-    <p>Performance Timeline Level 2 replaces the first version of
+    <p>This Performance Timeline specification replaces the first version of
     [[PERFORMANCE-TIMELINE]] and includes:</p>
     <ul>
       <li>Extends the base definition of the {{Performance}} interface defined by
@@ -119,8 +118,8 @@
     and be notified of new performance metrics and, optionally, previously
     buffered performance metrics of specified type, via the
     <a>PerformanceObserver</a> interface.</p>
-    <p>The <a>PerformanceObserver</a> interface was added in Performance
-    Timeline Level 2 and is designed to address limitations of the buffer-based
+    <p>The <a>PerformanceObserver</a> interface was added 
+    and is designed to address limitations of the buffer-based
     approach shown in the first example. By using the PerformanceObserver
     interface, the application can:</p>
     <ul>
@@ -398,7 +397,7 @@
     subscription for all event types — this is possible, but discouraged, as it
     will generate a significant volume of events.</p>
     <section data-dfn-for="PerformanceObserverCallbackOptions" data-link-for=
-    "PerformanceObserverCallbackOptions">>
+    "PerformanceObserverCallbackOptions">
       <h2><dfn>PerformanceObserverCallbackOptions</dfn> dictionary</h2>
       <pre class="idl">
         dictionary PerformanceObserverCallbackOptions {
