@@ -155,15 +155,15 @@ The web performance monitoring service can process all the performance informati
 When this API was originally designed, documents had a relatively simple lifecycle: they were
 loaded when the user navigated to them, and unloaded when the user navigated away, with the
 JavaScript environment being torn down at that time. Since then, the sitution has become more
-complex, with many browsers introducing a back-forwards-cache, with which a user can return
-a document wich they have previously navigated away from. The web has also seen a rise in
+complex, with many browsers introducing a back-forward cache, with which a user can return to
+a document which they have previously navigated away from. The web has also seen a rise in
 popularity of Single Page Apps, where what appears to the user to be a navigation is actually
 just a change in state of a running page. In both of these situations, a navigation (or what
 appears to the user as a navigation) can occur without the performance timeline being reset.
 In order to allow developers to reason about such events during the life of a page, some
 PerformanceEntry objects mark navigations, or navigation-like events. All PerformanceEntry
-objects include a navigation ID field, which links each PerformanceEntry to the most recent
-navigation entry which had occurred when the entry was generated.
+objects include a navigation ID field, which ties each PerformanceEntry to the most recent
+navigation entry which had occurred before the entry was generated.
 
 # Standards Status
 The Performance Timeline specification is widely approved.

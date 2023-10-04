@@ -47,7 +47,7 @@
         "check-punctuation": true,
       },
       doJsonLd: true,
-      xref: ["hr-time-3", "infra", "html", "dom"],
+      xref: ["hr-time-3", "infra", "html", "dom", 'ecmascript'],
       mdn: "performance-timeline",
     };
   </script>
@@ -249,7 +249,7 @@
     </ul>
     <p>Each <a>Document</a> has:</p>
     <ul>
-      <li>a <dfn>most recent navigation</dfn>, which is a <a>PerformanceEntry</a>,
+      <li>A <dfn>most recent navigation</dfn>, which is a <a>PerformanceEntry</a>,
       initially unset.
       </li>
     </ul>
@@ -598,7 +598,6 @@
             PerformanceEntryList getEntries();
             PerformanceEntryList getEntriesByType (DOMString type);
             PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type);
-            PerformanceEntryList getEntriesByNavigationId (DOMString navigationId);
           };
           </pre>
           <p>Each {{PerformanceObserverEntryList}} object has an associated
@@ -607,33 +606,23 @@
         <section>
           <h2><dfn>getEntries()</dfn> method</h2>
           <p>Returns a <a>PerformanceEntryList</a> object returned by <a>filter
-          buffer</a> algorithm with <a>this</a>'s <a>entry list</a>,
-          <var>name</var>, <var>type</var> and <var>navigationId</var> set to
-          <code>null</code>.</p>
+          buffer by name and type</a> algorithm with <a>this</a>'s <a>entry list</a>,
+          <var>name</var> and <var>type</var> set to <code>null</code>.</p>
         </section>
         <section>
           <h2><dfn>getEntriesByType()</dfn> method</h2>
           <p>Returns a <a>PerformanceEntryList</a> object returned by <a>filter
-          buffer</a> algorithm with <a>this</a>'s <a>entry list</a>,
-          <var>name</var> set to <code>null</code>, <var>type</var> set to the
-          method's input <code>type</code> parameter, and <var>navigationId</var>
-          set to <code>null</code>.</p>
+          buffer by name and type</a> algorithm with <a>this</a>'s <a>entry list</a>,
+          <var>name</var> set to <code>null</code>, and <var>type</var> set to the
+          method's input <code>type</code> parameter.</p>
         </section>
         <section>
           <h2><dfn>getEntriesByName()</dfn> method</h2>
           <p>Returns a <a>PerformanceEntryList</a> object returned by <a>filter
-          buffer</a> algorithm with <a>this</a>'s <a>entry list</a>,
+          buffer by name and type</a> algorithm with <a>this</a>'s <a>entry list</a>,
           <var>name</var> set to the method input <code>name</code> parameter, and
           <var>type</var> set to <code>null</code> if optional `entryType` is omitted,
           or set to the method's input <code>type</code> parameter otherwise.</p>
-        </section>
-        <section>
-          <h2><dfn>getEntriesByNavigationId()</dfn> method</h2>
-          <p>Returns a <a>PerformanceEntryList</a> object returned by <a>filter
-          buffer</a> algorithm with <a>this</a>'s <a>entry list</a>,
-          <var>name</var> and <var>type</var> set to <code>null</code>, and
-          <var>navigationId</var> set to the method's input
-          <code>navigationId</code> parameter.</p>
         </section>
       </section>
     </section>
@@ -878,7 +867,7 @@
             continue to the next <var>tuple</var>.
             </li>
             <li>Let <var>entries</var> be the result of running <a>filter
-            buffer</a> with <var>buffer</var>, <var>name</var>
+            buffer by name and type</a> with <var>buffer</var>, <var>name</var>
             and <var>type</var> as inputs.
             </li>
             <li>For each <var>entry</var> in <var>entries</var>,
@@ -892,10 +881,10 @@
       </ol>
     </section>
     <section data-link-for="PerformanceEntry">
-      <h2>Filter buffer</h2>
-      <p>When asked to run the <dfn>filter buffer</dfn>
-      algorithm, with <var>buffer</var>, <var>name</var>, <var>type</var>, and
-      <var>navigationId</var> as inputs, run the following steps:</p>
+      <h2>Filter buffer by name and type</h2>
+      <p>When asked to run the <dfn>filter buffer by name and type</dfn>
+      algorithm, with <var>buffer</var>, <var>name</var>, and <var>type</var>
+      as inputs, run the following steps:</p>
       <ol>
         <li>Let <var>result</var> be an initially empty <a>list</a>.
         </li>
@@ -909,12 +898,6 @@
             <li>If <var>name</var> is not null and if <var>name</var> is not
             <a data-cite=INFRA#string-is>identical to</a> <var>entry</var>'s
             <code>name</code> attribute, continue to next <var>entry</var>.
-            </li>
-            <li>If <var>navigationId</var> is not null and if
-            <var>navigationId</var> is not
-            <a data-cite=INFRA#string-is>identical to</a> <var>entry</var>'s
-            <code>navigationId</code> attribute, continue to next
-            <var>entry</var>.
             </li>
             <li>[=list/append=] <var>entry</var> to <var>result</var>.</li>
           </ol>
@@ -948,9 +931,21 @@
       <ol>
         <li>Let <var>type</var> be <var>entry</var>'s <a>entryType</a>.</li>
         <li>Let <var>startTime</var> be <var>entry</var>'s <a>startTime</a>.
+        <li>Let <var>timeString</var> be the result of calling
+        {{Number/toString(radix)}}(<var>startTime</var>, 10).
+        </li>
+        <li>If <var>timeString</var> contains the code point U+002E FULL STOP:
+          <ol>
+            <li><a>Assert</a>: <var>timeString</var> contains only one instance
+            of U+002E FULL STOP.</li>
+            <li><a>Assert</a>: <var>timeString</var> contains at least one code
+            point following the U+002E FULL STOP code point.</li>
+            <li>Truncate <var>timeString</var> after the first code point
+            following the U+002E FULL STOP code point.</li>
+          </ol>
         </li>
         <li>Return the [=string/concatenation=] of « <var>type</var>,
-        <var>time</var> » using U+002D HYPHEN-MINUS.</li>
+        <var>timeString</var> » using U+002D HYPHEN-MINUS.</li>
       </ol>
     </section>
   </section>
