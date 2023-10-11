@@ -55,11 +55,12 @@ In order to prevent the user agent from storing too much performance data in mem
 This specification defines the `PerformanceEntry` interface, which is used to host performance data of the web application.
 A single `PerformanceEntry` object corresponds to one nugget of information about the performance of the website.
 The entry has the following attributes:
+* `id`: an integer identifying this `PerformanceEntry` object.
 * `name`: a string identifier for the object, also used to filter entries in the `getEntriesByName()` method.
 * `entryType`: a string representing the type of performance data being exposed. It is also used to filter entries in the `getEntriesByType()` method and in the `PerformanceObserver`.
 * `startTime`: a timestamp representing the starting point for the performance data being recorded. The semantics of this attribute depend on the `entryType`.
 * `duration`: a time duration representing the duration of the performance data being recorded. The semantics of this one also depend on the `entryType`.
-* `navigationId`: a string identifying the `PerformanceEntry` object corresponding to the last navigation or navigation-like event that had occurred in the document at the time that this `PerformanceEntry` object was recorded.
+* `navigationId`: an integer identifying (by `id`)  the `PerformanceEntry` object corresponding to last navigation or navigation-like event that had occurred in the document at the time that this `PerformanceEntry` object was recorded.
 
 If these sound abstract, it’s because they are.
 A specification whose goal is to expose new measurements to web developers will define a new interface which extends `PerformanceEntry`.
