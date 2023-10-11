@@ -55,10 +55,12 @@ In order to prevent the user agent from storing too much performance data in mem
 This specification defines the `PerformanceEntry` interface, which is used to host performance data of the web application.
 A single `PerformanceEntry` object corresponds to one nugget of information about the performance of the website.
 The entry has the following attributes:
+* `id`: an integer identifying this `PerformanceEntry` object.
 * `name`: a string identifier for the object, also used to filter entries in the `getEntriesByName()` method.
 * `entryType`: a string representing the type of performance data being exposed. It is also used to filter entries in the `getEntriesByType()` method and in the `PerformanceObserver`.
 * `startTime`: a timestamp representing the starting point for the performance data being recorded. The semantics of this attribute depend on the `entryType`.
 * `duration`: a time duration representing the duration of the performance data being recorded. The semantics of this one also depend on the `entryType`.
+* `navigationId`: an integer identifying (by `id`)  the `PerformanceEntry` object corresponding to last navigation or navigation-like event that had occurred in the document at the time that this `PerformanceEntry` object was recorded.
 
 If these sound abstract, it’s because they are.
 A specification whose goal is to expose new measurements to web developers will define a new interface which extends `PerformanceEntry`.
@@ -149,6 +151,20 @@ Having both polling and callbacks has proved to be useful.
 For entryTypes with a fixed amount of entries, like Paint Timing, using the polling method is more convenient, especially in the current state of the world where analytics providers often only send a single beacon per page load.
 At the same time, the callback is more useful for cases where there is varying amount of entries of the given entryType, like in Resource Timing.
 The web performance monitoring service can process all the performance information while the page is still running and only has to do very minimal work when the data needs to be reported.
+
+## Page lifetime issues
+When this API was originally designed, documents had a relatively simple lifecycle: they were
+loaded when the user navigated to them, and unloaded when the user navigated away, with the
+JavaScript environment being torn down at that time. Since then, the sitution has become more
+complex, with many browsers introducing a back-forward cache, with which a user can return to
+a document which they have previously navigated away from. The web has also seen a rise in
+popularity of Single Page Apps, where what appears to the user to be a navigation is actually
+just a change in state of a running page. In both of these situations, a navigation (or what
+appears to the user as a navigation) can occur without the performance timeline being reset.
+In order to allow developers to reason about such events during the life of a page, some
+PerformanceEntry objects mark navigations, or navigation-like events. All PerformanceEntry
+objects include a navigation ID field, which ties each PerformanceEntry to the most recent
+navigation entry which had occurred before the entry was generated.
 
 # Standards Status
 The Performance Timeline specification is widely approved.
