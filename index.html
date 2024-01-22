@@ -340,7 +340,7 @@
       </dd>
       <dt><dfn>startTime</dfn></dt>
       <dd>This attribute must return the value it is initialized to. It represents the time value of
-      the first recorded timestamp of this performance metric. Its initial value is <code>0</code>.</dd>
+      the first recorded timestamp of this performance metric.</dd>
       <dt><dfn>duration</dfn></dt>
       <dd>
         The getter steps for the <a>duration</a> attribute are to return 0 if <a>this</a>'s <a>endTime</a>
@@ -348,7 +348,7 @@
       </dd>
       <dt><dfn>navigationId</dfn></dt>
       <dd>
-        This attribute MUST return the value of it is initialized to.
+        This attribute MUST return the value it is initialized to.
       </dd>
     </dl>
     <p>When <dfn>toJSON</dfn> is called, run [[WebIDL]]'s <a>default toJSON
@@ -381,7 +381,7 @@
       <li>A <a>PerformanceEntryList</a> object called the <dfn>observer
       buffer</dfn> that is initially empty.
       </li>
-      <li>A <code>DOMS<tring</code> <dfn>observer type</dfn> which is initially
+      <li>A <code>DOMString</code> <dfn>observer type</dfn> which is initially
       <code>"undefined"</code>.</li>
       <li>A boolean <dfn>requires dropped entries</dfn> which is initially set to false.</li>
     </ul>
