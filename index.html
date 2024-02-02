@@ -322,50 +322,51 @@
         [Default] object toJSON();
       };</pre>
     <dl>
-      <dt><dfn>id</dfn></dt>
-      <dd>
-        This attribute MUST return the value of <a>this</a>'s <a>id</a>.
-      </dd>
       <dt><dfn>name</dfn></dt>
       <dd>
-        This attribute MUST return an identifier for this
-        <a>PerformanceEntry</a> object. This identifier does not have to be
-        unique.
+        This attribute must return the value it is initialized to. It represents an identifier for
+        this <a>PerformanceEntry</a> object. This identifier does not have to be unique.
       </dd>
       <dt><dfn>entryType</dfn></dt>
       <dd>
-        This attribute MUST return the type of the interface represented by
-        this <a>PerformanceEntry</a> object.
+        This attribute must return the value it is initialized to.
+
         <p class="note">All `entryType` values are defined in the
         relevant<a href=
         "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>.
         Examples include: <code>"mark"</code> and <code>"measure"</code>
         [[USER-TIMING-2]], <code>"navigation"</code> [[NAVIGATION-TIMING-2]],
-        <code>"resource"</code> [[RESOURCE-TIMING-2]],
-        <!-- TODO: add long task spec reference -->
-         and <code>"longtask"</code>.</p>
+        and <code>"resource"</code> [[RESOURCE-TIMING-2]].</p>
       </dd>
       <dt><dfn>startTime</dfn></dt>
-      <dd>This attribute MUST return the time value of the first recorded
-      timestamp of this performance metric. If the startTime concept doesn't
-      apply, a performance metric may choose to return a `startTime` of
-      <code>0</code>.</dd>
+      <dd>This attribute must return the value it is initialized to. It represents the time value of
+      the first recorded timestamp of this performance metric.</dd>
       <dt><dfn>duration</dfn></dt>
       <dd>
-        This attribute MUST return the time value of the duration of the entire
-        event being recorded by this <a>PerformanceEntry</a>. Typically, this
-        would be the time difference between the last recorded timestamp and
-        the first recorded timestamp of this <a>PerformanceEntry</a>. If the
-        duration concept doesn't apply, a performance metric may choose to
-        return a `duration` of <code>0</code>.
+        The getter steps for the <a>duration</a> attribute are to return 0 if <a>this</a>'s <a>endTime</a>
+        is 0; otherwise <a>this</a>'s <a>endTime</a> - <a>this</a>'s <a>startTime</a>.
       </dd>
       <dt><dfn>navigationId</dfn></dt>
       <dd>
-        This attribute MUST return the value of <a>this</a>'s <a>navigationId</a>.
+        This attribute MUST return the value it is initialized to.
       </dd>
     </dl>
     <p>When <dfn>toJSON</dfn> is called, run [[WebIDL]]'s <a>default toJSON
     steps</a>.</p>
+
+    <p>A <a>PerformanceEntry</a> has a {{DOMHighResTimeStamp}} <dfn>endTime</dfn>,
+    initially 0.
+
+    <p>To <dfn class="export">initialize a <a>PerformanceEntry</a></dfn> <var>entry</var> given a {{DOMHighResTimeStamp}} <var>startTime</var>,
+    a <code>DOMString</code> <var>entryType</var>, a <code>DOMString</code> name, and an optional {{DOMHighResTimeStamp}} <var>endTime</var> (default <code>0</code>):
+
+    <ol>
+      <li>Assert: <var>entryType</var> is defined in the <a href="https://w3c.github.io/timing-entrytypes-registry/#registry">entry type registry</a>.
+      <li>Initialize <var>entry</var>'s <a>startTime</a> to <var>startTime</var>.
+      <li>Initialize <var>entry</var>'s <a>entryType</a> to <var>entryType</var>.
+      <li>Initialize <var>entry</var>'s <a>name</a> to <var>name</var>.
+      <li>Initialize <var>entry</var>'s <a>endTime</a> to <var>endTime</var>.
+    </ol>
   </section>
   <section data-link-for="PerformanceObserver" data-dfn-for=
   "PerformanceObserver">
