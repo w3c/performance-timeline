@@ -343,8 +343,8 @@
       the first recorded timestamp of this performance metric.</dd>
       <dt><dfn>duration</dfn></dt>
       <dd>
-        The getter steps for the <a>duration</a> attribute are to return 0 if <a>this</a>'s <a>endTime</a>
-        is 0; otherwise <a>this</a>'s <a>endTime</a> - <a>this</a>'s <a>startTime</a>.
+        The getter steps for the <a>duration</a> attribute are to return 0 if <a>this</a>'s <a>end time</a>
+        is 0; otherwise <a>this</a>'s <a>end time</a> - <a>this</a>'s <a>startTime</a>.
       </dd>
       <dt><dfn>navigationId</dfn></dt>
       <dd>
@@ -354,7 +354,7 @@
     <p>When <dfn>toJSON</dfn> is called, run [[WebIDL]]'s <a>default toJSON
     steps</a>.</p>
 
-    <p>A <a>PerformanceEntry</a> has a {{DOMHighResTimeStamp}} <dfn>endTime</dfn>,
+    <p>A <a>PerformanceEntry</a> has a {{DOMHighResTimeStamp}} <dfn export>end time</dfn>,
     initially 0.
 
     <p>To <dfn class="export">initialize a <a>PerformanceEntry</a></dfn> <var>entry</var> given a {{DOMHighResTimeStamp}} <var>startTime</var>,
