@@ -314,7 +314,6 @@
     <pre class='idl'>
       [Exposed=(Window,Worker)]
       interface PerformanceEntry {
-        readonly    attribute unsigned long long  id;
         readonly    attribute DOMString           name;
         readonly    attribute DOMString           entryType;
         readonly    attribute DOMHighResTimeStamp startTime;
@@ -680,16 +679,28 @@
   <section>
     <h2>Processing</h2>
     <section data-link-for="PerformanceObserver">
+      <h2>Queue a navigation <code>PerformanceEntry</code></h2>
+      <p>To <dfn class="export">queue a navigation PerformanceEntry</dfn> (<var>newEntry</var>), run
+      these steps:</p>
+      <ol>
+        <li>Let <var>id</var> be the result of running <a>generate a navigation id</a> for <var>newEntry</var>.</li>
+        <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s <a>relevant
+        global object</a>.
+        </li>
+        <li>Set <var>newEntry</var>'s {{PerformanceEntry/navigationId}} to <var>id</var>.</li>
+        <li>If <var>relevantGlobal</var> has an [=associated document=]:
+          <ol>
+            <li>Set <var>relevantGlobal</var>'s [=associated document=]'s [=most recent navigation=] to <var>newEntry</var>.</li>
+          </ol>
+        </li>
+        <li><a>Queue a PerformanceEntry</a> with <var>newEntry</var> as input.</li>
+      </ol>
+    </section>
+    <section data-link-for="PerformanceObserver">
       <h2>Queue a <code>PerformanceEntry</code></h2>
       <p>To <dfn class="export">queue a PerformanceEntry</dfn> (<var>newEntry</var>), run
       these steps:</p>
       <ol>
-        <li>If <var>newEntry</var>'s {{PerformanceEntry/id}} is unset:
-          <ol>
-            <li>Let <var>id</var> be the result of running <a>generate an id</a> for <var>newEntry</var>.</li>
-            <li>Set <var>newEntry</var>'s {{PerformanceEntry/id}} to <var>id</var>.</li>
-          </ol>
-        </li>
         <li>Let <var>interested observers</var> be an initially empty set of
         <a>PerformanceObserver</a> objects.
         </li>
@@ -703,7 +714,7 @@
           <ol>
             <li>Set <var>newEntry</var>'s <a
             data-lt="PerformanceEntry.navigationId">navigationId</a> to the value of
-            <var>relevantGlobal</var>'s [=associated document=]'s [=most recent navigation=]'s {{PerformanceEntry/id}}.</li>
+            <var>relevantGlobal</var>'s [=associated document=]'s [=most recent navigation=]'s {{PerformanceEntry/navigationId}}.</li>
           </ol>
         </li>
         <li>Otherwise, set <var>newEntry</var>'s <a
@@ -751,25 +762,6 @@
         <li><a>Queue the PerformanceObserver task</a> with
         <var>relevantGlobal</var> as input.
         </li>
-      </ol>
-    </section>
-    <section data-link-for="PerformanceObserver">
-      <h2>Queue a navigation <code>PerformanceEntry</code></h2>
-      <p>To <dfn class="export">queue a navigation PerformanceEntry</dfn> (<var>newEntry</var>), run
-      these steps:</p>
-      <ol>
-        <li>Let <var>id</var> be the result of running <a>generate an id</a> for <var>newEntry</var>.</li>
-        <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s <a>relevant
-        global object</a>.
-        </li>
-        <li>Set <var>newEntry</var>'s {{PerformanceEntry/id}} to <var>id</var>.</li>
-        <li>Set <var>newEntry</var>'s {{PerformanceEntry/navigationId}} to <var>id</var>.</li>
-        <li>If <var>relevantGlobal</var> has an [=associated document=]:
-          <ol>
-            <li>Set <var>relevantGlobal</var>'s [=associated document=]'s [=most recent navigation=] to <var>newEntry</var>.</li>
-          </ol>
-        </li>
-        <li><a>Queue a PerformanceEntry</a> with <var>newEntry</var> as input.</li>
       </ol>
     </section>
     <section data-link-for="PerformanceObserver">
@@ -942,26 +934,27 @@
       </ol>
     </section>
     <section data-link-for="PerformanceEntry">
-      <h2>Generate a Performance Entry id</h2>
-      <p>When asked to <dfn class="export">generate an id</dfn> for a
+      <h2>Generate a Navigation id</h2>
+      <p>When asked to <dfn class="export">generate a navigation id</dfn> for a navigation
       <a>PerformanceEntry</a> <var>entry</a>, run the following steps:</p>
       <ol>
         <li>Let <var>relevantGlobal</var> be <var>entry</var>'s <a>relevant
-        global object</a>.
-        <li>Increase <var>relevantGlobal</var>'s <a>last performance entry
-        id</a> by a small number chosen by the user agent.</li>
-        <li>Return <var>relevantGlobal</var>'s <a>last performance entry id</a>.
+            global object</a>.
+        <li>If <var>relevantGlobal</var> has an [=associated document=]
+          with a [=most recent navigation=]:
+          <ol>
+            <li>Return the sum of the [=most recent navigation=]'s
+              <var>navigationId</var> and a small integer.
+          </ol>
+        <li>Otherwise return a random integer.
       </ol>
-      <p>A user agent may choose to increase the <a>last performance entry
-      id</a>it by a small random integer every time. A user agent must not pick
-      a single global random integer and increase the <a>last performance entry
-      id</a> of all global objects by that amount because this could introduce
-      cross origin leaks.
-      </p>
-      <p class="note">The <a>last performance entry id</a> has an initial random
-      value, and is increased by a small number chosen by the user agent instead
-      of 1 to discourage developers from considering it as a counter of the
-      number of entries that have been generated in the web application.</p>
+      <p class="note">Sequences of navigation ids that are associated with
+        the same document can be used to establish order, by sorting by
+        navigation id.</p>
+      <p calss="note">The increcase between same-document navigation ids is
+        as small number as opposed to 1, to discourage developers from considering
+        navigation ids as a counter of the number of entries that have been generated
+        in the web application.</p>
     </section>
   </section>
   <section id="privacy">
@@ -971,8 +964,9 @@
       refer to [[HR-TIME-3]] for privacy considerations of exposing high-resoluting timing
       information. Each new specification introducing new performance entries should have its own
       privacy considerations as well.</p>
-    <p>The <a>last performance entry id</a> is deliberately initialized to a
+    <p>The <a>last navigation id</a> is deliberately initialized to a
       random value, and is incremented by another small value every time a new
+      navigation
       {{PerformanceEntry}} is queued. User agents may choose to use a consistent
       increment for all users, or may pick a different increment for each
       <a>global object</a>, or may choose a new random increment for each
