@@ -679,24 +679,6 @@
   <section>
     <h2>Processing</h2>
     <section data-link-for="PerformanceObserver">
-      <h2>Queue a navigation <code>PerformanceEntry</code></h2>
-      <p>To <dfn class="export">queue a navigation PerformanceEntry</dfn> (<var>newEntry</var>), run
-      these steps:</p>
-      <ol>
-        <li>Let <var>id</var> be the result of running <a>generate a navigation id</a> for <var>newEntry</var>.</li>
-        <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s <a>relevant
-        global object</a>.
-        </li>
-        <li>Set <var>newEntry</var>'s {{PerformanceEntry/navigationId}} to <var>id</var>.</li>
-        <li>If <var>relevantGlobal</var> has an [=associated document=]:
-          <ol>
-            <li>Set <var>relevantGlobal</var>'s [=associated document=]'s [=most recent navigation=] to <var>newEntry</var>.</li>
-          </ol>
-        </li>
-        <li><a>Queue a PerformanceEntry</a> with <var>newEntry</var> as input.</li>
-      </ol>
-    </section>
-    <section data-link-for="PerformanceObserver">
       <h2>Queue a <code>PerformanceEntry</code></h2>
       <p>To <dfn class="export">queue a PerformanceEntry</dfn> (<var>newEntry</var>), run
       these steps:</p>
@@ -762,6 +744,24 @@
         <li><a>Queue the PerformanceObserver task</a> with
         <var>relevantGlobal</var> as input.
         </li>
+      </ol>
+    </section>
+    <section data-link-for="PerformanceObserver">
+      <h2>Queue a navigation <code>PerformanceEntry</code></h2>
+      <p>To <dfn class="export">queue a navigation PerformanceEntry</dfn> (<var>newEntry</var>), run
+      these steps:</p>
+      <ol>
+        <li>Let <var>id</var> be the result of running <a>generate a navigation id</a> for <var>newEntry</var>.</li>
+        <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s <a>relevant
+        global object</a>.
+        </li>
+        <li>Set <var>newEntry</var>'s {{PerformanceEntry/navigationId}} to <var>id</var>.</li>
+        <li>If <var>relevantGlobal</var> has an [=associated document=]:
+          <ol>
+            <li>Set <var>relevantGlobal</var>'s [=associated document=]'s [=most recent navigation=] to <var>newEntry</var>.</li>
+          </ol>
+        </li>
+        <li><a>Queue a PerformanceEntry</a> with <var>newEntry</var> as input.</li>
       </ol>
     </section>
     <section data-link-for="PerformanceObserver">
