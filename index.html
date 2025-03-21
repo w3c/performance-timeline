@@ -925,8 +925,8 @@
           or if <var>relevantDoc</var> is not null and <var>relevantGlobal</var>'s
           [=current navigation id=] differs from <var>doc</var>'s [=current document navigation id=],
           then let <var>navigationId</var> be a random integer between 100 and 10000000.
-        <li>Otherwise, let <var>navigationId</var> be <var>relevantGlobal</var>'s [=current navigation id=]
-          plus a small integer.
+        <li>Otherwise, let <var>navigationId</var> be the sum of <var>relevantGlobal</var>'s
+          [=current navigation id=] and a small integer.
         <li>Set <var>relevantGlobal</var>'s [=current navigation id=] to <var>navigationId</var>.
         <li>If <var>relevantDoc</var> is not null, set <var>relevantDoc</var>'s [=current document navigation id=]
           to <var>navigationId</var>.
