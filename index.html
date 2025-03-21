@@ -252,7 +252,7 @@
     </ul>
     <p>Each <a>Document</a> has:</p>
     <ul>
-      An integer <dfn>current navigation id</dfn>, which is initially 0.
+      An integer <dfn>current document navigation id</dfn>, which is initially 0.
     </ul>
     <p>In order to get the <dfn>relevant performance entry tuple</dfn>, given
     <var>entryType</var> and <var>globalObject</var> as input, run the
@@ -691,7 +691,9 @@
         <li>If the <code>PerformanceEntry</code> to be queued is a navigation
           entry (in other words, <code>entryType=='navigation'</code>), then
           let <var>navigationId</var> be the result of running
-          <a>generate a navigation id</a>. Otherwise, let <var>navigationId</var>
+          <a>generate a navigation id</a>.
+        </li>
+        <li>Otherwise, let <var>navigationId</var>
           be the <var>relevantGlobal</var>’s <var>current navigation id</var>.
         </li>
         <li>Set <var>newEntry</var>'s <a
@@ -921,12 +923,12 @@
         <li>If <var>relevantGlobal</var>'s [=current navigation id=] is 0 (the initial value),
           of if <var>relevantDoc</var> is null,
           or if <var>relevantDoc</var> is not null and <var>relevantGlobal</var>'s
-          [=current navigation id=] differs from <var>doc</var>'s [=current navigation id=],
+          [=current navigation id=] differs from <var>doc</var>'s [=current document navigation id=],
           then let <var>navigationId</var> be a random integer between 100 and 10000000.
         <li>Otherwise, let <var>navigationId</var> be <var>relevantGlobal</var>'s [=current navigation id=]
           plus a small integer.
         <li>Set <var>relevantGlobal</var>'s [=current navigation id=] to <var>navigationId</var>.
-        <li>If <var>relevantDoc</var> is not null, set <var>relevantDoc</var>'s [=current navigation id=]
+        <li>If <var>relevantDoc</var> is not null, set <var>relevantDoc</var>'s [=current document navigation id=]
           to <var>navigationId</var>.
         <li>Return <var>navigationId</var>.
       </ol>
