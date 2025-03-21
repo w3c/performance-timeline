@@ -247,15 +247,12 @@
           <li>An integer <dfn>dropped entries count</dfn> that is initially 0.</li>
         </ul>
       </li>
-      <li>An integer <dfn>last performance entry id</dfn> that is initially set
-      to a random integer between 100 and 10000.
+      <li>An integer <dfn>current navigation id</dfn>, which is initially 0.
       </li>
     </ul>
     <p>Each <a>Document</a> has:</p>
     <ul>
-      <li>A <dfn>most recent navigation</dfn>, which is a <a>PerformanceEntry</a>,
-      initially unset.
-      </li>
+      An integer <dfn>current navigation id</dfn>, which is initially 0.
     </ul>
     <p>In order to get the <dfn>relevant performance entry tuple</dfn>, given
     <var>entryType</var> and <var>globalObject</var> as input, run the
@@ -318,7 +315,7 @@
         readonly    attribute DOMString           entryType;
         readonly    attribute DOMHighResTimeStamp startTime;
         readonly    attribute DOMHighResTimeStamp duration;
-        readonly    attribute unsigned long long  navigationId;
+        readonly    attribute long                navigationId;
         [Default] object toJSON();
       };</pre>
     <dl>
@@ -331,9 +328,8 @@
       <dd>
         This attribute must return the value it is initialized to.
 
-        <p class="note">All `entryType` values are defined in the
-        relevant<a href=
-        "https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>.
+        <p class="note">All `entryType` values are defined in the relevant
+        <a href="https://w3c.github.io/timing-entrytypes-registry/#registry">registry</a>.
         Examples include: <code>"mark"</code> and <code>"measure"</code>
         [[USER-TIMING-2]], <code>"navigation"</code> [[NAVIGATION-TIMING-2]],
         and <code>"resource"</code> [[RESOURCE-TIMING-2]].</p>
@@ -686,21 +682,20 @@
         <li>Let <var>interested observers</var> be an initially empty set of
         <a>PerformanceObserver</a> objects.
         </li>
-        <li>Let <var>entryType</var> be <var>newEntry</var>’s <a data-lt=
+        <li>Let <var>entryType</var> be <var>newEntry</var>'s <a data-lt=
         "PerformanceEntry.entryType">entryType</a> value.
         </li>
         <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s <a>relevant
         global object</a>.
         </li>
-        <li>If <var>relevantGlobal</var> has an [=associated document=]:
-          <ol>
-            <li>Set <var>newEntry</var>'s <a
-            data-lt="PerformanceEntry.navigationId">navigationId</a> to the value of
-            <var>relevantGlobal</var>'s [=associated document=]'s [=most recent navigation=]'s {{PerformanceEntry/navigationId}}.</li>
-          </ol>
+        <li>If the <code>PerformanceEntry</code> to be queued is a navigation
+          entry (in other words, <code>entryType=='navigation'</code>), then
+          let <var>navigationId</var> be the result of running
+          <a>generate a navigation id</a>. Otherwise, let <var>navigationId</var>
+          be the <var>relevantGlobal</var>’s <var>current navigation id</var>.
         </li>
-        <li>Otherwise, set <var>newEntry</var>'s <a
-        data-lt="PerformanceEntry.navigationId">navigationId</a> to null.</li>
+        <li>Set <var>newEntry</var>'s <a
+        data-lt="PerformanceEntry.navigationId">navigationId</a> to <var>navigationId</var>.</li>
         <li>For each <a>registered performance observer</a> <var>regObs</var> in
         <var>relevantGlobal</var>'s <a>list of registered performance observer objects</a>:
           <ol>
@@ -744,24 +739,6 @@
         <li><a>Queue the PerformanceObserver task</a> with
         <var>relevantGlobal</var> as input.
         </li>
-      </ol>
-    </section>
-    <section data-link-for="PerformanceObserver">
-      <h2>Queue a navigation <code>PerformanceEntry</code></h2>
-      <p>To <dfn class="export">queue a navigation PerformanceEntry</dfn> (<var>newEntry</var>), run
-      these steps:</p>
-      <ol>
-        <li>Let <var>id</var> be the result of running <a>generate a navigation id</a> for <var>newEntry</var>.</li>
-        <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s <a>relevant
-        global object</a>.
-        </li>
-        <li>Set <var>newEntry</var>'s {{PerformanceEntry/navigationId}} to <var>id</var>.</li>
-        <li>If <var>relevantGlobal</var> has an [=associated document=]:
-          <ol>
-            <li>Set <var>relevantGlobal</var>'s [=associated document=]'s [=most recent navigation=] to <var>newEntry</var>.</li>
-          </ol>
-        </li>
-        <li><a>Queue a PerformanceEntry</a> with <var>newEntry</var> as input.</li>
       </ol>
     </section>
     <section data-link-for="PerformanceObserver">
@@ -940,13 +917,18 @@
       <ol>
         <li>Let <var>relevantGlobal</var> be <var>entry</var>'s <a>relevant
             global object</a>.
-        <li>If <var>relevantGlobal</var> has an [=associated document=]
-          with a [=most recent navigation=]:
-          <ol>
-            <li>Return the sum of the [=most recent navigation=]'s
-              <var>navigationId</var> and a small integer.
-          </ol>
-        <li>Otherwise return a random integer.
+        <li>Let <var>relevantDoc</var> be <var>relevantGlobal</var>'s [=associated document=], or null.
+        <li>If <var>relevantGlobal</var>'s [=current navigation id=] is 0 (the initial value),
+          of if <var>relevantDoc</var> is null,
+          or if <var>relevantDoc</var> is not null and <var>relevantGlobal</var>'s
+          [=current navigation id=] differs from <var>doc</var>'s [=current navigation id=],
+          then let <var>navigationId</var> be a random integer between 100 and 10000000.
+        <li>Otherwise, let <var>navigationId</var> be <var>relevantGlobal</var>'s [=current navigation id=]
+          plus a small integer.
+        <li>Set <var>relevantGlobal</var>'s [=current navigation id=] to <var>navigationId</var>.
+        <li>If <var>relevantDoc</var> is not null, set <var>relevantDoc</var>'s [=current navigation id=]
+          to <var>navigationId</var>.
+        <li>Return <var>navigationId</var>.
       </ol>
       <p class="note">Sequences of navigation ids that are associated with
         the same document can be used to establish order, by sorting by
@@ -955,6 +937,8 @@
         as small number as opposed to 1, to discourage developers from considering
         navigation ids as a counter of the number of entries that have been generated
         in the web application.</p>
+      <p class="note">To avoid integer overflow, the same-document mechanism may revert to assign
+        a random integer between 10 and 10000000, but this is expected to be extremeley rare.</p>
     </section>
   </section>
   <section id="privacy">
