@@ -810,11 +810,9 @@
                 with its <a data-link-for="PerformanceObserverCallbackOptions">droppedEntriesCount</a>
                 set to <var>droppedEntriesCount</var> if <var>droppedEntriesCount</var> is not null,
                 otherwise unset.</li>
-                <li>Call <var>po</var>’s <a>observer callback</a> with
-                <var>observerEntryList</var> as the first argument, with <var>po</var>
-                as the second argument and as <a>callback this value</a>, and with
-                <var>callbackOptions</var> as the third argument. If this [=exception/throws=]
-                an exception, <a>report the exception</a>.
+                <li>[=Invoke=] <var>po</var>’s <a>observer callback</a> with «
+                <var>observerEntryList</var>, <var>po</var>, <var>callbackOptions</var> », "`report`",
+                and <var>po</var>.
                 </li>
               </ol>
             </li>
