@@ -913,7 +913,7 @@
     <section data-link-for="PerformanceEntry">
       <h2>Generate a Navigation id</h2>
       <p>When asked to <dfn class="export">generate a navigation id</dfn> for a navigation
-      <a>PerformanceEntry</a> <var>entry</a>, run the following steps:</p>
+      <a>PerformanceEntry</a> <var>entry</var>, run the following steps:</p>
       <ol>
         <li>Let <var>relevantGlobal</var> be <var>entry</var>'s <a>relevant
             global object</a>.
@@ -948,7 +948,7 @@
       refer to [[HR-TIME-3]] for privacy considerations of exposing high-resoluting timing
       information. Each new specification introducing new performance entries should have its own
       privacy considerations as well.</p>
-    <p>The <a>last navigation id</a> is deliberately initialized to a
+    <p>The <a>current navigation id</a> is deliberately initialized to a
       random value, and is incremented by another small value every time a new
       navigation
       {{PerformanceEntry}} is queued. User agents may choose to use a consistent
