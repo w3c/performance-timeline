@@ -1,0 +1,936 @@
+<pre class='metadata'>
+Title: Performance Timeline
+Shortname: performance-timeline
+Status: ED
+Group: webperf
+URL: https://w3c.github.io/performance-timeline/
+TR: https://www.w3.org/TR/performance-timeline/
+Editor: Nicolás Peña Moreno, Google https://google.com/, https://github.com/npm1, w3cid 103755
+Former Editor: Ilya Grigorik, Google https://google.com/, https://www.igvita.com/, w3cid 56102
+Former Editor: Jatinder Mann, Microsoft Corp., jmann@microsoft.com
+Former Editor: Zhiheng Wang, Google Inc., w3cid 43685
+Repository: w3c/performance-timeline
+Test Suite: https://github.com/web-platform-tests/wpt/tree/master/performance-timeline
+Abstract: This specification extends the High Resolution Time specification [[HR-TIME-3]] by providing methods to store and retrieve high resolution performance metric data.
+Level: none
+Complain About: accidental-2119 yes
+Markup Shorthands: markdown no
+Include MDN Panels: no
+Status Text:
+	<p>This Performance Timeline specification replaces the first version of
+	[[PERFORMANCE-TIMELINE]] and includes:</p>
+	<ul>
+		<li>Extends the base definition of the {{Performance}} interface defined by
+		[[HR-TIME-3]];</li>
+		<li>Exposes {{PerformanceEntry}} in Web Workers [[WORKERS]];</li>
+		<li>Formalizes support for multiple navigation events over a document's
+		lifetime.</li>
+		<li>Adds support for {{PerformanceObserver}}.</li>
+	</ul>
+</pre>
+
+<pre class=link-defaults>
+spec:html; type:dfn; for:/; text:global object
+spec:html; type:dfn; text:queue a task
+spec:html; type:dfn; text:task source
+spec:infra; type:dfn; text:list
+spec:infra; type:dfn; text:struct
+</pre>
+
+<pre class=anchors>
+urlPrefix: https://html.spec.whatwg.org/multipage/; spec: HTML
+    type: dfn
+        urlPrefix: webappapis.html
+            text: relevant global object; url: #concept-relevant-global
+        urlPrefix: nav-history-apis.html
+            text: associated document; url: #concept-document-window
+urlPrefix: https://webidl.spec.whatwg.org/; spec: WEBIDL
+    type: dfn
+        text: default toJSON steps; url: #default-tojson-steps
+urlPrefix: https://infra.spec.whatwg.org/; spec: INFRA
+    type: dfn
+        for: map
+            text: get the value of an entry; url: #map-get
+urlPrefix: https://w3c.github.io/timing-entrytypes-registry/; spec: TIMING-ENTRYTYPES-REGISTRY
+    type: dfn
+        text: registry; url: #registry
+        text: should add entry; url: #dfn-should-add-entry
+        text: entry type registry; url: #registry
+</pre>
+
+<style>
+.note:not(.no-marker)::before {
+  content: "Note";
+}
+</style>
+
+<section class='informative'>
+  <h2 id="introduction">Introduction</h2>
+  <em>This section is non-normative.</em>
+  <p>Accurately measuring performance characteristics of web applications is
+  an important aspect of making web applications faster. This specification
+  defines the necessary [=Performance Timeline=] primitives that enable
+  web developers to access, instrument, and retrieve various performance
+  metrics from the full lifecycle of a web application.</p>
+  <p>[[NAVIGATION-TIMING-2]], [[RESOURCE-TIMING-2]], and [[USER-TIMING-2]]
+  are examples of specifications that define timing information related to
+  the navigation of the document, resources on the page, and developer
+  scripts, respectively. Together these and other performance interfaces
+  define performance metrics that describe the [=Performance Timeline=] of
+  a web application. For example, the following script shows how a developer
+  can access the [=Performance Timeline=] to obtain performance metrics
+  related to the navigation of the document, resources on the page, and
+  developer scripts:</p>
+  <pre class="example" id="example-perf-timeline" highlight="html">
+    &lt;!doctype html&gt;
+    &lt;html&gt;
+    &lt;head&gt;&lt;/head&gt;
+    &lt;body onload="init()"&gt;
+      &lt;img id="image0" src="https://www.w3.org/Icons/w3c_main.png" /&gt;
+      &lt;script&gt;
+        function init() {
+          // see [[USER-TIMING-2]]
+          performance.mark("startWork");
+          doWork(); // Some developer code
+          performance.mark("endWork");
+          measurePerf();
+        }
+        function measurePerf() {
+          performance
+            .getEntries()
+            .map(entry =&gt; JSON.stringify(entry, null, 2))
+            .forEach(json =&gt; console.log(json));
+        }
+      &lt;/script&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  </pre>
+  <p>Alternatively, the developer can observe the [=Performance Timeline=]
+  and be notified of new performance metrics and, optionally, previously
+  buffered performance metrics of specified type, via the
+  {{PerformanceObserver}} interface.</p>
+  <p>The {{PerformanceObserver}} interface was added
+  and is designed to address limitations of the buffer-based
+  approach shown in the first example. By using the PerformanceObserver
+  interface, the application can:</p>
+  <ul>
+    <li>Avoid polling the timeline to detect new metrics</li>
+    <li>Eliminate costly deduplication logic to identify new metrics</li>
+    <li><span class="allow-2119">Eliminate race conditions with other consumers that may want to
+    manipulate the buffer</span></li>
+  </ul>
+  <p><span class="allow-2119">The developer is encouraged to use {{PerformanceObserver}} where
+  possible. Further, new performance API's and metrics may only be available
+  through the {{PerformanceObserver}} interface.</span> The observer works by
+  specifying a callback in the constructor and specifying the performance
+  entries it's interested in via the {{PerformanceObserver/observe()}} method.
+  The user agent chooses when to execute the callback, which receives
+  performance entries that have been queued.</p>
+  <p><span class="allow-2119">There are special considerations regarding initial page load when using
+  the {{PerformanceObserver}} interface: a registration must be active to
+  receive events but the registration script may not be available or may not
+  be desired in the critical path.</span> To address this, user agents buffer some
+  number of events while the page is being constructed, and these buffered
+  events can be accessed via the {{PerformanceObserverInit/buffered}} flag
+  when registering the observer. When this flag is set, the user agent
+  retrieves and dispatches events that it has buffered, for the specified
+  entry type, and delivers them in the first callback after the
+  {{PerformanceObserver/observe()}} call occurs.</p>
+  <p class="note">The number of buffered events is determined by the
+  specification that defines the metric and buffering is intended to used for
+  first-N events only; buffering is not unbounded or continuous.</p>
+  <pre class="example" id="example-perf-observer" highlight="html">
+  &lt;!doctype html&gt;
+  &lt;html&gt;
+  &lt;head&gt;&lt;/head&gt;
+  &lt;body&gt;
+  &lt;img id="image0" src="https://www.w3.org/Icons/w3c_main.png" /&gt;
+  &lt;script&gt;
+  // Know when the entry types we would like to use are not supported.
+  function detectSupport(entryTypes) {
+    for (const entryType of entryTypes) {
+      if (!PerformanceObserver.supportedEntryTypes.includes(entryType)) {
+        // Indicate to client-side analytics that |entryType| is not supported.
+      }
+    }
+  }
+  detectSupport(["resource", "mark", "measure"]);
+  const userTimingObserver = new PerformanceObserver(list =&gt; {
+    list
+      .getEntries()
+      // Get the values we are interested in
+      .map(({ name, entryType, startTime, duration }) =&gt; {
+        const obj = {
+          "Duration": duration,
+          "Entry Type": entryType,
+          "Name": name,
+          "Start Time": startTime,
+        };
+        return JSON.stringify(obj, null, 2);
+      })
+      // Display them to the console.
+      .forEach(console.log);
+    // Disconnect after processing the events.
+    userTimingObserver.disconnect();
+  });
+  // Subscribe to new events for User-Timing.
+  userTimingObserver.observe({entryTypes: ["mark", "measure"]});
+  const resourceObserver = new PerformanceObserver(list =&gt; {
+    list
+      .getEntries()
+      // Get the values we are interested in
+      .map(({ name, startTime, fetchStart, responseStart, responseEnd }) =&gt; {
+        const obj = {
+          "Name": name,
+          "Start Time": startTime,
+          "Fetch Start": fetchStart,
+          "Response Start": responseStart,
+          "Response End": responseEnd,
+        };
+        return JSON.stringify(obj, null, 2);
+      })
+      // Display them to the console.
+      .forEach(console.log);
+    // Disconnect after processing the events.
+    resourceObserver.disconnect();
+  });
+  // Retrieve buffered events and subscribe to newer events for Resource Timing.
+  resourceObserver.observe({type: "resource", buffered: true});
+  &lt;/script&gt;
+  &lt;/body&gt;
+  &lt;/html&gt;
+  </pre>
+</section>
+
+<h2 id="dfn-performance-timeline">
+  <dfn data-export>Performance Timeline</dfn>
+</h2>
+<p>Each [=global object=] has:</p>
+<ul>
+  <li>a <dfn>performance observer task queued flag</dfn></li>
+  <li>a <dfn>list of registered performance observer objects</dfn>
+  that is initially empty</li>
+  <li>a <dfn>performance entry buffer map</dfn> [=ordered map=],
+  [=map/key|keyed=] on a <code>DOMString</code>, representing
+  the entry type to which the buffer belongs. The [=ordered map=]'s
+  [=map/value=] is the
+  following tuple:
+    <ul>
+      <li>A <dfn data-export>performance entry buffer</dfn> to store
+      {{PerformanceEntry}} objects, that is initially empty.
+      </li>
+      <li>An integer <dfn>maxBufferSize</dfn>, initialized to the
+        [=registry=] value for this entry type.
+      </li>
+      <li>A <code>boolean</code> <dfn>availableFromTimeline</dfn>,
+      initialized to the [=registry=] value for this entry type.
+      </li>
+      <li>An integer <dfn>dropped entries count</dfn> that is initially 0.</li>
+    </ul>
+  </li>
+  <li>An integer <dfn>last performance entry id</dfn> that is initially set
+  to a random integer between 100 and 10000.
+  </li>
+</ul>
+<p>Each {{Document}} has:</p>
+<ul>
+  <li>A <dfn>most recent navigation</dfn>, which is a {{PerformanceEntry}},
+  initially unset.
+  </li>
+</ul>
+<p>In order to get the <dfn>relevant performance entry tuple</dfn>, given
+<var>entryType</var> and <var>globalObject</var> as input, run the
+following steps:</p>
+<ol>
+  <li>Let <var>map</var> be the [=performance entry buffer map=]
+  associated with <var>globalObject</var>.
+  </li>
+  <li>Return the result of [=map/get the value of an entry|getting the value of an entry=] from <var>
+    map</var>, given <var>entryType</var> as the [=map/key=].
+  </li>
+</ol>
+
+<h3 id="extensions-to-the-performance-interface">Extensions to the {{Performance}} interface</h3>
+<p>This extends the {{Performance}} interface from [[HR-TIME-3]] and
+hosts performance related attributes and methods used to retrieve the
+performance metric data from the [=Performance Timeline=].</p>
+<pre class="idl">
+partial interface Performance {
+  PerformanceEntryList getEntries ();
+  PerformanceEntryList getEntriesByType (DOMString type);
+  PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type);
+};
+typedef sequence&lt;PerformanceEntry&gt; PerformanceEntryList;
+</pre>
+<p>The <dfn data-export>PerformanceEntryList</dfn> represents a sequence of
+{{PerformanceEntry}}, providing developers with all the convenience
+methods found on JavaScript arrays.</p>
+
+<h4 id="getentries-method">{{Performance/getEntries()}} method</h4>
+<p>Returns a {{PerformanceEntryList}} object returned by the
+[=filter buffer map by name and type=] algorithm with
+<var>name</var> and <var>type</var> set to <code>null</code>.</p>
+
+<h4 id="getentriesbytype-method">{{Performance/getEntriesByType()}} method</h4>
+<p>Returns a {{PerformanceEntryList}} object returned by [=filter
+buffer map by name and type=] algorithm with <var>name</var> set to
+<code>null</code>, and <var>type</var> set to the method's input
+<code>type</code> parameter.</p>
+
+<h4 id="getentriesbyname-method">{{Performance/getEntriesByName()}} method</h4>
+<p>Returns a {{PerformanceEntryList}} object returned by [=filter
+buffer map by name and type=] algorithm with <var>name</var> set to
+the method input <code>name</code> parameter, and <var>type</var> set
+to <code>null</code> if optional <code>entryType</code> is omitted, or set to the
+method's input <code>type</code> parameter otherwise.</p>
+
+<h2 id="the-performanceentry-interface">The {{PerformanceEntry}} interface</h2>
+<p>The {{PerformanceEntry}} interface hosts the performance data of
+various metrics.</p>
+<pre class='idl'>
+[Exposed=(Window,Worker)]
+interface PerformanceEntry {
+  readonly    attribute unsigned long long  id;
+  readonly    attribute DOMString           name;
+  readonly    attribute DOMString           entryType;
+  readonly    attribute DOMHighResTimeStamp startTime;
+  readonly    attribute DOMHighResTimeStamp duration;
+  readonly    attribute unsigned long long  navigationId;
+  [Default] object toJSON();
+};
+</pre>
+<dl dfn-for="PerformanceEntry" data-export>
+  <dt><dfn>name</dfn></dt>
+  <dd>
+    This attribute must return the value it is initialized to. It represents an identifier for
+    this {{PerformanceEntry}} object. This identifier does not have to be unique.
+  </dd>
+  <dt><dfn>entryType</dfn></dt>
+  <dd>
+    This attribute must return the value it is initialized to.
+
+    <p class="note">All <code>entryType</code> values are defined in the
+    relevant [=registry=].
+    Examples include: <code>"mark"</code> and <code>"measure"</code>
+    [[USER-TIMING-2]], <code>"navigation"</code> [[NAVIGATION-TIMING-2]],
+    and <code>"resource"</code> [[RESOURCE-TIMING-2]].</p>
+  </dd>
+  <dt><dfn>startTime</dfn></dt>
+  <dd>This attribute must return the value it is initialized to. It represents the time value of
+  the first recorded timestamp of this performance metric.</dd>
+  <dt><dfn>duration</dfn></dt>
+  <dd>
+    The getter steps for the {{PerformanceEntry/duration}} attribute are to return 0 if [=this=]'s [=end time=]
+    is 0; otherwise [=this=]'s [=end time=] - [=this=]'s {{PerformanceEntry/startTime}}.
+  </dd>
+  <dt><dfn>navigationId</dfn></dt>
+  <dd>
+    This attribute MUST return the value it is initialized to.
+  </dd>
+</dl>
+<p>When <dfn data-dfn-for="PerformanceEntry" data-export>toJSON</dfn> is called, run [[WEBIDL]]'s [=default toJSON
+steps=].</p>
+
+<p>A {{PerformanceEntry}} has a {{DOMHighResTimeStamp}} <dfn data-export>end time</dfn>,
+initially 0.
+
+<p>To <dfn data-export>initialize a PerformanceEntry</dfn> <var>entry</var> given a {{DOMHighResTimeStamp}} <var>startTime</var>,
+a <code>DOMString</code> <var>entryType</var>, a <code>DOMString</code> <var ignore>name</var>, and an optional {{DOMHighResTimeStamp}} <var>endTime</var> (default <code>0</code>):
+
+<ol>
+  <li>Assert: <var>entryType</var> is defined in the [=entry type registry=].
+  <li>Initialize <var>entry</var>'s {{PerformanceEntry/startTime}} to <var>startTime</var>.
+  <li>Initialize <var>entry</var>'s {{PerformanceEntry/entryType}} to <var>entryType</var>.
+  <li>Initialize <var>entry</var>'s {{PerformanceEntry/name}} to <var ignore>name</var>.
+  <li>Initialize <var>entry</var>'s [=end time=] to <var>endTime</var>.
+</ol>
+
+<h2 id="the-performanceobserver-interface">The {{PerformanceObserver}} interface</h2>
+<p>The {{PerformanceObserver}} interface can be used to observe the
+[=Performance Timeline=] to be notified of new performance metrics as
+they are recorded, and optionally buffered performance metrics.</p>
+<p>Each {{PerformanceObserver}} has these associated concepts:</p>
+<ul>
+  <li>A {{PerformanceObserverCallback}} <dfn>observer callback</dfn> set on creation.
+  </li>
+  <li>A {{PerformanceEntryList}} object called the <dfn>observer
+  buffer</dfn> that is initially empty.
+  </li>
+  <li>A <code>DOMString</code> <dfn>observer type</dfn> which is initially
+  <code>"undefined"</code>.</li>
+  <li>A boolean <dfn>requires dropped entries</dfn> which is initially set to false.</li>
+</ul>
+<p>The <code>PerformanceObserver(callback)</code> constructor must create a new
+{{PerformanceObserver}} object with its [=observer callback=]
+set to <var ignore>callback</var> and then return it.</p>
+<p>A <dfn>registered performance observer</dfn> is a [=struct=]
+consisting of an <dfn>observer</dfn> member (a {{PerformanceObserver}}
+object) and an <dfn>options list</dfn> member (a list of
+{{PerformanceObserverInit}} dictionaries).</p>
+<pre class="idl">
+callback PerformanceObserverCallback = undefined (PerformanceObserverEntryList entries,
+                                                 PerformanceObserver observer,
+                                                 optional PerformanceObserverCallbackOptions options = {});
+[Exposed=(Window,Worker)]
+interface PerformanceObserver {
+  constructor(PerformanceObserverCallback callback);
+  undefined observe (optional PerformanceObserverInit options = {});
+  undefined disconnect ();
+  PerformanceEntryList takeRecords();
+  [SameObject] static readonly attribute FrozenArray&lt;DOMString&gt; supportedEntryTypes;
+};
+</pre>
+<p class="note">To keep the performance overhead to minimum the application
+ought to only subscribe to event types that it is interested in, and
+disconnect the observer once it no longer needs to observe the performance
+data. Filtering by name is not supported, as it would implicitly require a
+subscription for all event types — this is possible, but discouraged, as it
+will generate a significant volume of events.</p>
+
+<h3 id="performanceobservercallbackoptions-dictionary">{{PerformanceObserverCallbackOptions}} dictionary</h3>
+<pre class="idl">
+dictionary PerformanceObserverCallbackOptions {
+  unsigned long long droppedEntriesCount;
+};
+</pre>
+<dl dfn-for="PerformanceObserverCallbackOptions" data-export>
+  <dt><dfn>droppedEntriesCount</dfn></dt>
+  <dd>An integer representing the dropped entries count for the entry types that the
+  observer is observing when the {{PerformanceObserver}}'s [=requires dropped entries=]
+  is set.</dd>
+</dl>
+
+<h3 id="observe-method">{{PerformanceObserver/observe()}} method</h3>
+<p>The {{PerformanceObserver/observe()}} method instructs the user agent to register
+the observer and must run these steps:</p>
+<ol>
+  <li>Let <var>relevantGlobal</var> be [=this=]'s [=relevant
+  global object=].
+  </li>
+  <li>If <var>options</var>'s {{PerformanceObserverInit/entryTypes}} and {{PerformanceObserverInit/type}} members
+  are both omitted, then [=exception/throw=] a {{"TypeError"}}.
+  </li>
+  <li>If <var>options</var>'s {{PerformanceObserverInit/entryTypes}} is present and any other
+  member is also present, then [=exception/throw=] a {{"TypeError"}}.
+  </li>
+  <li>Update or check [=this=]'s [=observer type=] by running these
+  steps:
+    <ol>
+      <li>If [=this=]'s [=observer type=] is
+      <code>"undefined"</code>:
+        <ol>
+          <li>If <var>options</var>'s {{PerformanceObserverInit/entryTypes}} member is
+          present, then set [=this=]'s [=observer type=] to
+          <code>"multiple"</code>.
+          </li>
+          <li>If <var>options</var>'s {{PerformanceObserverInit/type}} member is present, then
+          set [=this=]'s [=observer type=] to
+          <code>"single"</code>.
+          </li>
+        </ol>
+      </li>
+      <li>If [=this=]'s [=observer type=] is
+      <code>"single"</code> and <var>options</var>'s {{PerformanceObserverInit/entryTypes}}
+      member is present, then [=exception/throw=] an
+      {{"InvalidModificationError"}}.
+      </li>
+      <li>If [=this=]'s [=observer type=] is
+      <code>"multiple"</code> and <var>options</var>'s {{PerformanceObserverInit/type}} member
+      is present, then [=exception/throw=] an
+      {{"InvalidModificationError"}}.
+      </li>
+    </ol>
+  </li>
+  <li>Set [=this=]'s [=requires dropped entries=] to true.</li>
+  <li>If [=this=]'s [=observer type=] is
+  <code>"multiple"</code>, run the following steps:
+    <ol>
+      <li>Let <var>entry types</var> be <var>options</var>'s
+      {{PerformanceObserverInit/entryTypes}} sequence.
+      </li>
+      <li>Remove all types from <var>entry types</var> that are not
+      contained in <var>relevantGlobal</var>'s [=frozen array of
+      supported entry types=]. The user agent SHOULD notify developers
+      if <var>entry types</var> is modified. For example, a console
+      warning listing removed types might be appropriate.
+      </li>
+      <li>If the resulting <var>entry types</var> sequence is an empty
+      sequence, abort these steps. The user agent SHOULD notify
+      developers when the steps are aborted to notify that registration
+      has been aborted. For example, a console warning might be
+      appropriate.</li>
+      <li>If the [=list of registered performance observer objects=]
+      of <var>relevantGlobal</var> contains a [=registered performance
+      observer=] whose [=observer=] is [=this=],
+      replace its [=options list=] with a list containing
+      <var>options</var> as its only item.
+      </li>
+      <li>Otherwise, create and append a [=registered performance
+      observer=] object to the [=list of registered performance
+      observer objects=] of <var>relevantGlobal</var>, with
+      [=observer=] set to [=this=] and [=options list=] set to a
+      list containing <var>options</var> as its only item.
+      </li>
+    </ol>
+  </li>
+  <li>Otherwise, run the following steps:
+    <ol>
+      <li>Assert that [=this=]'s [=observer type=] is
+      <code>"single"</code>.
+      </li>
+      <li>If <var>options</var>'s {{PerformanceObserverInit/type}} is not contained in the
+      <var>relevantGlobal</var>'s [=frozen array of supported entry
+      types=], abort these steps. The user agent SHOULD notify
+      developers when this happens, for instance via a console warning.
+      </li>
+      <li>If the [=list of registered performance observer objects=]
+      of <var>relevantGlobal</var> contains a [=registered performance
+      observer=] <var>obs</var> whose [=observer=] is [=this=]:
+        <ol>
+          <li>If <var>obs</var>'s [=options list=] contains a
+          {{PerformanceObserverInit}} item <var>currentOptions</var>
+          whose {{PerformanceObserverInit/type}} is equal to <var>options</var>'s {{PerformanceObserverInit/type}},
+          replace <var>currentOptions</var> with <var>options</var> in
+          <var>obs</var>'s [=options list=].
+          </li>
+          <li>Otherwise, append <var>options</var> to <var>obs</var>'s
+          [=options list=].
+          </li>
+        </ol>
+      </li>
+      <li>Otherwise, create and append a [=registered performance
+      observer=] object to the [=list of registered performance
+      observer objects=] of <var>relevantGlobal</var>, with
+      [=observer=] set to [=this=] and [=options list=] set
+      to a list containing <var>options</var> as its only item.
+      </li>
+      <li>If <var>options</var>'s {{PerformanceObserverInit/buffered}} flag is set:
+        <ol>
+          <li>Let <var>tuple</var> be the [=relevant performance entry
+          tuple=] of <var>options</var>'s {{PerformanceObserverInit/type}} and
+          <var>relevantGlobal</var>.
+          </li>
+          <li><p>For each <var>entry</var> in <var>tuple</var>'s
+          [=performance entry buffer=]:</p>
+            <ol>
+            <li>If [=should add entry=] with <var>entry</var> and <var>options</var> as
+              parameters returns true, [=list/append=] <var>entry</var> to the
+              [=observer buffer=].</li>
+            </ol>
+          </li>
+          <li>[=Queue the PerformanceObserver task=] with
+          <var>relevantGlobal</var> as input.</li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+</ol>
+<p class="note"><span class="allow-2119">A {{PerformanceObserver}} object needs to always call
+{{PerformanceObserver/observe()}} with <var>options</var>'s
+{{PerformanceObserverInit/entryTypes}} set OR always call
+{{PerformanceObserver/observe()}} with <var>options</var>'s
+{{PerformanceObserverInit/type}} set. If one {{PerformanceObserver}}
+calls {{PerformanceObserver/observe()}} with
+{{PerformanceObserverInit/entryTypes}} and also calls observe with
+{{PerformanceObserverInit/type}}, then an exception is
+thrown. This is meant to avoid confusion with how calls would stack. When
+using {{PerformanceObserverInit/entryTypes}}, no other
+parameters in {{PerformanceObserverInit}} can be used. In addition,
+multiple {{PerformanceObserver/observe()}} calls will override for backwards compatibility
+and because a single call should suffice in this case. On the other hand,
+when using {{PerformanceObserverInit/type}}, calls
+will stack because a single call can only specify one type. Calling
+{{PerformanceObserver/observe()}} with a repeated
+{{PerformanceObserverInit/type}} will also override.</span></p>
+
+<h4 id="performanceobserverinit-dictionary">{{PerformanceObserverInit}} dictionary</h4>
+<pre class="idl">
+dictionary PerformanceObserverInit {
+  sequence&lt;DOMString&gt; entryTypes;
+  DOMString type;
+  boolean buffered;
+};
+</pre>
+<dl dfn-for="PerformanceObserverInit" data-export>
+  <dt><dfn>entryTypes</dfn></dt>
+  <dd>A list of entry types to be observed. If present, the list MUST
+  NOT be empty and all other members MUST NOT be present. Types not
+  recognized by the user agent MUST be ignored.</dd>
+  <dt><dfn>type</dfn></dt>
+  <dd>A single entry type to be observed. A type that is not recognized
+  by the user agent MUST be ignored. Other members may be present.</dd>
+  <dt><dfn>buffered</dfn></dt>
+  <dd>A flag to indicate whether buffered entries should be queued into
+  observer's buffer.</dd>
+</dl>
+
+<h4 id="performanceobserverentrylist-interface">{{PerformanceObserverEntryList}} interface</h4>
+<pre class="idl">
+[Exposed=(Window,Worker)]
+interface PerformanceObserverEntryList {
+  PerformanceEntryList getEntries();
+  PerformanceEntryList getEntriesByType (DOMString type);
+  PerformanceEntryList getEntriesByName (DOMString name, optional DOMString type);
+};
+</pre>
+<p>Each {{PerformanceObserverEntryList}} object has an associated
+<dfn>entry list</dfn>, which consists of a {{PerformanceEntryList}} and is
+initialized upon construction.</p>
+
+<h5 id="performanceobserverentrylist-getentries-method">{{PerformanceObserverEntryList/getEntries()}} method</h5>
+<p>Returns a {{PerformanceEntryList}} object returned by [=filter
+buffer by name and type=] algorithm with [=this=]'s [=entry list=],
+<var>name</var> and <var>type</var> set to <code>null</code>.</p>
+
+<h5 id="performanceobserverentrylist-getentriesbytype-method">{{PerformanceObserverEntryList/getEntriesByType()}} method</h5>
+<p>Returns a {{PerformanceEntryList}} object returned by [=filter
+buffer by name and type=] algorithm with [=this=]'s [=entry list=],
+<var>name</var> set to <code>null</code>, and <var>type</var> set to the
+method's input <code>type</code> parameter.</p>
+
+<h5 id="performanceobserverentrylist-getentriesbyname-method">{{PerformanceObserverEntryList/getEntriesByName()}} method</h5>
+<p>Returns a {{PerformanceEntryList}} object returned by [=filter
+buffer by name and type=] algorithm with [=this=]'s [=entry list=],
+<var>name</var> set to the method input <code>name</code> parameter, and
+<var>type</var> set to <code>null</code> if optional <code>entryType</code> is omitted,
+or set to the method's input <code>type</code> parameter otherwise.</p>
+
+<h3 id="takerecords-method">{{PerformanceObserver/takeRecords()}} method</h3>
+<p>The {{PerformanceObserver/takeRecords()}} method must return a copy of [=this=]'s
+[=observer buffer=], and also empty [=this=]'s [=observer
+buffer=].</p>
+
+<h3 id="disconnect-method">{{PerformanceObserver/disconnect()}} method</h3>
+<p>The {{PerformanceObserver/disconnect()}} method must do the following:</p>
+<ol>
+  <li>Remove [=this=] from the [=list of registered
+  performance observer objects=] of [=relevant global object=].</li>
+  <li>Empty [=this=]'s [=observer buffer=].</li>
+  <li>Empty [=this=]'s [=options list=].</li>
+</ol>
+
+<h3 id="supportedentrytype-attribute">{{PerformanceObserver/supportedEntryTypes}} attribute</h3>
+<p>Each [=global object=] has an associated <dfn>frozen array of supported entry
+types</dfn>, which is initialized to the
+<a href="https://webidl.spec.whatwg.org/#es-frozen-array">FrozenArray</a>
+<a href="https://webidl.spec.whatwg.org/#dfn-create-frozen-array">created</a> from the sequence of
+strings among the [=registry=]
+that are supported for the global object, in alphabetical order.</p>
+<p>When {{PerformanceObserver/supportedEntryTypes}}'s attribute getter is called, run
+the following steps:</p>
+<ol>
+  <li>Let <var>globalObject</var> be the
+  <a href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-settings-object-global">environment
+  settings object's global object</a>.
+  </li>
+  <li>Return <var>globalObject</var>'s [=frozen array of supported entry
+  types=].
+  </li>
+</ol>
+<p class="note">This attribute allows web developers to easily know which
+entry types are supported by the user agent.</p>
+
+<h2 id="processing">Processing</h2>
+
+<h3 id="queue-a-performanceentry">Queue a <code>PerformanceEntry</code></h3>
+<p>To <dfn id="dfn-queue-a-performanceentry" data-export>queue a PerformanceEntry</dfn> (<var>newEntry</var>), run
+these steps:</p>
+<ol>
+  <li>If <var>newEntry</var>'s {{PerformanceEntry/id}} is unset:
+    <ol>
+      <li>Let <var ignore>id</var> be the result of running [=generate an id=] for <var>newEntry</var>.</li>
+      <li>Set <var>newEntry</var>'s {{PerformanceEntry/id}} to <var ignore>id</var>.</li>
+    </ol>
+  </li>
+  <li>Let <var>interested observers</var> be an initially empty set of
+  {{PerformanceObserver}} objects.
+  </li>
+  <li>Let <var>entryType</var> be <var>newEntry</var>'s
+  {{PerformanceEntry/entryType}} value.
+  </li>
+  <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s [=relevant
+  global object=].
+  </li>
+  <li>If <var>relevantGlobal</var> has an [=associated document=]:
+    <ol>
+      <li>Set <var>newEntry</var>'s
+      {{PerformanceEntry/navigationId}} to the value of
+      <var>relevantGlobal</var>'s [=associated document=]'s [=most recent navigation=]'s {{PerformanceEntry/id}}.</li>
+    </ol>
+  </li>
+  <li>Otherwise, set <var>newEntry</var>'s
+  {{PerformanceEntry/navigationId}} to null.</li>
+  <li>For each [=registered performance observer=] <var>regObs</var> in
+  <var>relevantGlobal</var>'s [=list of registered performance observer objects=]:
+    <ol>
+      <li><p>If <var>regObs</var>'s [=options list=] contains a
+      {{PerformanceObserverInit}} <var>options</var> whose
+      {{PerformanceObserverInit/entryTypes}} member includes
+      <var>entryType</var> or whose
+      {{PerformanceObserverInit/type}} member equals to
+      <var>entryType</var>:</p>
+      <ol>
+        <li>If [=should add entry=] with <var>newEntry</var> and <var>options</var>
+          returns true, append <var>regObs</var>'s [=observer=] to
+          <var>interested observers</var>.
+        </li>
+      </ol>
+      </li>
+    </ol>
+  </li>
+  <li>For each <var>observer</var> in <var>interested observers</var>:
+    <ol>
+      <li>Append <var>newEntry</var> to <var>observer</var>'s [=observer
+      buffer=].
+      </li>
+    </ol>
+  </li>
+  <li>Let <var>tuple</var> be the [=relevant performance entry tuple=]
+  of <var>entryType</var> and <var>relevantGlobal</var>.
+  </li>
+  <li>Let <var>isBufferFull</var> be the return value of the [=determine if a performance
+  entry buffer is full=] algorithm with <var>tuple</var> as input.
+  </li>
+  <li>Let <var>shouldAdd</var> be the result of [=should add
+  entry=] with <var>newEntry</var> as input.
+  </li>
+  <li>If <var>isBufferFull</var> is false and <var>shouldAdd</var> is true, [=list/append=]
+  <var>newEntry</var> to <var>tuple</var>'s [=performance entry buffer=].
+  </li>
+  <li>[=Queue the PerformanceObserver task=] with
+  <var>relevantGlobal</var> as input.
+  </li>
+</ol>
+
+<h3 id="queue-a-navigation-performanceentry">Queue a navigation <code>PerformanceEntry</code></h3>
+<p>To <dfn id="dfn-queue-a-navigation-performanceentry" data-export>queue a navigation PerformanceEntry</dfn> (<var>newEntry</var>), run
+these steps:</p>
+<ol>
+  <li>Let <var ignore>id</var> be the result of running [=generate an id=] for <var>newEntry</var>.</li>
+  <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s [=relevant
+  global object=].
+  </li>
+  <li>Set <var>newEntry</var>'s {{PerformanceEntry/id}} to <var ignore>id</var>.</li>
+  <li>Set <var>newEntry</var>'s {{PerformanceEntry/navigationId}} to <var ignore>id</var>.</li>
+  <li>If <var>relevantGlobal</var> has an [=associated document=]:
+    <ol>
+      <li>Set <var>relevantGlobal</var>'s [=associated document=]'s [=most recent navigation=] to <var>newEntry</var>.</li>
+    </ol>
+  </li>
+  <li>[=Queue a PerformanceEntry=] with <var>newEntry</var> as input.</li>
+</ol>
+
+<h3 id="queue-the-performanceobserver-task">Queue the PerformanceObserver task</h3>
+<p>When asked to <dfn id="dfn-queue-the-performanceobserver-task">queue the PerformanceObserver task</dfn>, given
+<var>relevantGlobal</var> as input, run the following steps:</p>
+<ol>
+  <li>If <var>relevantGlobal</var>'s [=performance observer task queued
+  flag=] is set, terminate these steps.
+  </li>
+  <li>Set <var>relevantGlobal</var>'s [=performance observer task queued
+  flag=].
+  </li>
+  <li>
+    [=Queue a task=] that consists of running the following substeps.
+    The [=task source=] for the queued task is the <dfn id="dfn-performance-timeline-task-source" data-export>performance
+    timeline task source</dfn>.
+    <ol>
+      <li>Unset [=performance observer task queued flag=] of
+      <var>relevantGlobal</var>.
+      </li>
+      <li>Let <var>notifyList</var> be a copy of
+      <var>relevantGlobal</var>'s [=list of registered performance
+      observer objects=].
+      </li>
+      <li>For each [=registered performance observer=] object <var>registeredObserver</var>
+      in <var>notifyList</var>, run these steps:
+        <ol>
+          <li>Let <var>po</var> be <var>registeredObserver</var>'s [=observer=].</li>
+          <li>Let <var>entries</var> be a copy of <var>po</var>'s
+          [=observer buffer=].
+          </li>
+          <li>If <var>entries</var> is empty, return.</li>
+          <li>Empty <var>po</var>'s [=observer buffer=].
+          </li>
+          <li>Let <var>observerEntryList</var> be a new
+          {{PerformanceObserverEntryList}}, with its [=entry list=] set
+          to <var>entries</var>.
+          </li>
+          <li>Let <var>droppedEntriesCount</var> be null.</li>
+          <li>If <var>po</var>'s [=requires dropped entries=] is set, perform the following
+          steps:
+            <ol>
+              <li>Set <var>droppedEntriesCount</var> to 0.</li>
+              <li>For each {{PerformanceObserverInit}} <var>item</var> in
+              <var>registeredObserver</var>'s [=options list=]:
+              <ol>
+                <li>For each {{DOMString}}
+                <var>entryType</var> that appears either as <var>item</var>'s
+                {{PerformanceObserverInit/type}} or in <var>item</var>'s
+                {{PerformanceObserverInit/entryTypes}}:
+                  <ol>
+                    <li>Let <var>map</var> be <var>relevantGlobal</var>'s [=performance entry
+                    buffer map=].</li>
+                    <li>Let <var>tuple</var> be the result of [=map/get the value of an entry|getting the value of entry=]
+                    on <var>map</var> given <var>entryType</var> as [=map/key=].</li>
+                    <li>Increase <var>droppedEntriesCount</var> by <var>tuple</var>'s
+                    [=dropped entries count=].</li>
+                  </ol>
+                </li>
+              </ol>
+              </li>
+              <li>Set <var>po</var>'s [=requires dropped entries=] to false.</li>
+            </ol>
+          </li>
+          <li>Let <var>callbackOptions</var> be a {{PerformanceObserverCallbackOptions}}
+          with its {{PerformanceObserverCallbackOptions/droppedEntriesCount}}
+          set to <var>droppedEntriesCount</var> if <var>droppedEntriesCount</var> is not null,
+          otherwise unset.</li>
+          <li><a href="https://webidl.spec.whatwg.org/#invoke-a-callback-function">Invoke</a>
+          <var>po</var>'s [=observer callback=] with «
+          <var>observerEntryList</var>, <var>po</var>, <var>callbackOptions</var> », "`report`",
+          and <var>po</var>.
+          </li>
+        </ol>
+      </li>
+    </ol>
+  </li>
+</ol>
+<p>The <i>performance timeline</i> [=task source|task
+queue=] is a low priority queue that, if possible, should be processed
+by the user agent during idle periods to minimize impact of performance
+monitoring code.</p>
+
+<h3 id="filter-buffer-map-by-name-and-type">Filter buffer map by name and type</h3>
+<p>When asked to run the <dfn id="dfn-filter-buffer-map-by-name-and-type">filter buffer map by name and type</dfn>
+algorithm with optional <var>name</var> and <var>type</var>, run the
+following steps:</p>
+<ol>
+  <li>Let <var>result</var> be an initially empty [=list=].
+  </li>
+  <li>Let <var>map</var> be the [=performance entry buffer map=]
+  associated with the [=relevant global object=] of [=this=].
+  </li>
+  <li>Let <var>tuple list</var> be an empty [=list=].
+  </li>
+  <li>If <var>type</var> is not null, append the result of [=map/get the value of an entry|getting the
+  value of entry=] on <var>map</var> given <var>type</var> as
+  [=map/key=] to <var>tuple list</var>. Otherwise, assign the result of
+  [=map/getting the values|get the values=] on
+  <var>map</var> to <var>tuple list</var>.
+  </li>
+  <li>For each <var>tuple</var> in <var>tuple list</var>, run the
+  following steps:
+    <ol>
+      <li>Let <var>buffer</var> be <var>tuple</var>'s [=performance
+      entry buffer=].
+      </li>
+      <li>If <var>tuple</var>'s [=availableFromTimeline=] is false,
+      continue to the next <var>tuple</var>.
+      </li>
+      <li>Let <var>entries</var> be the result of running [=filter
+      buffer by name and type=] with <var>buffer</var>, <var>name</var>
+      and <var>type</var> as inputs.
+      </li>
+      <li>For each <var>entry</var> in <var>entries</var>,
+      [=list/append=] <var>entry</var> to <var>result</var>.</li>
+    </ol>
+  </li>
+  <li>Sort <var>results</var>'s entries in chronological order with
+  respect to {{PerformanceEntry/startTime}}
+  </li>
+  <li>Return <var>result</var>.</li>
+</ol>
+
+<h3 id="filter-buffer-by-name-and-type">Filter buffer by name and type</h3>
+<p>When asked to run the <dfn id="dfn-filter-buffer-by-name-and-type">filter buffer by name and type</dfn>
+algorithm, with <var>buffer</var>, <var>name</var>, and <var>type</var>
+as inputs, run the following steps:</p>
+<ol>
+  <li>Let <var>result</var> be an initially empty [=list=].
+  </li>
+  <li>For each {{PerformanceEntry}} <var>entry</var> in
+  <var>buffer</var>, run the following steps:
+    <ol>
+      <li>If <var>type</var> is not null and if <var>type</var> is not
+      [=string/is|identical to=] <var>entry</var>'s
+      <code>entryType</code> attribute, continue to next <var>entry</var>.
+      </li>
+      <li>If <var>name</var> is not null and if <var>name</var> is not
+      [=string/is|identical to=] <var>entry</var>'s
+      <code>name</code> attribute, continue to next <var>entry</var>.
+      </li>
+      <li>[=list/append=] <var>entry</var> to <var>result</var>.</li>
+    </ol>
+  </li>
+  <li>Sort <var>results</var>'s entries in chronological order with
+  respect to {{PerformanceEntry/startTime}}
+  </li>
+  <li>Return <var>result</var>.</li>
+</ol>
+
+<h3 id="determine-if-a-performance-entry-buffer-is-full">Determine if a performance entry buffer is full</h3>
+<p>To <dfn id="dfn-determine-if-a-performance-entry-buffer-is-full">determine if a performance entry buffer is full</dfn>,
+with <var>tuple</var> as input, run the following
+steps:</p>
+<ol>
+  <li>Let <var>num current entries</var> be the size of
+  <var>tuple</var>'s [=performance entry buffer=].
+  </li>
+  <li>If <var>num current entries</var> is less than <var>tuple</var>'s
+  [=maxBufferSize=], return false.
+  </li>
+  <li>Increase <var>tuple</var>'s [=dropped entries count=] by 1.</li>
+  <li>Return true.</li>
+</ol>
+
+<h3 id="generate-a-performance-entry-id">Generate a Performance Entry id</h3>
+<p>When asked to <dfn data-export>generate an id</dfn> for a
+{{PerformanceEntry}} <var>entry</var>, run the following steps:</p>
+<ol>
+  <li>Let <var>relevantGlobal</var> be <var>entry</var>'s [=relevant
+  global object=].
+  <li>Increase <var>relevantGlobal</var>'s [=last performance entry
+  id=] by a small number chosen by the user agent.</li>
+  <li>Return <var>relevantGlobal</var>'s [=last performance entry id=].
+</ol>
+<p>A user agent may choose to increase the [=last performance entry
+id=] by a small random integer every time. A user agent must not pick
+a single global random integer and increase the [=last performance entry
+id=] of all global objects by that amount because this could introduce
+cross origin leaks.
+</p>
+<p class="note">The [=last performance entry id=] has an initial random
+value, and is increased by a small number chosen by the user agent instead
+of 1 to discourage developers from considering it as a counter of the
+number of entries that have been generated in the web application.</p>
+
+<h2 id="privacy" class="informative">Privacy Considerations</h2>
+<em>This section is non-normative.</em>
+<p>This specification extends the {{Performance}} interface defined by [[HR-TIME-3]] and
+  provides methods to queue and retrieve entries from the [=performance timeline=]. <span class="allow-2119">Please
+  refer to [[HR-TIME-3]] for privacy considerations of exposing high-resoluting timing
+  information. Each new specification introducing new performance entries should have its own
+  privacy considerations as well.</span></p>
+<p>The [=last performance entry id=] is deliberately initialized to a
+  random value, and is incremented by another small value every time a new
+  {{PerformanceEntry}} is queued. <span class="allow-2119">User agents may choose to use a consistent
+  increment for all users, or may pick a different increment for each
+  [=global object=], or may choose a new random increment for each
+  {{PerformanceEntry}}. However, in order to prevent cross-origin leaks, and
+  ensure that this does not enable fingerprinting, user agents must not just
+  pick a unique random integer, and use it as a consistent increment for all
+  {{PerformanceEntry}} objects across all [=global objects=].</span></p>
+
+<h2 id="security" class="informative">Security Considerations</h2>
+<em>This section is non-normative.</em>
+<p>This specification extends the {{Performance}} interface defined by [[HR-TIME-3]] and
+  provides methods to queue and retrieve entries from the [=performance timeline=]. <span class="allow-2119">Please
+  refer to [[HR-TIME-3]] for security considerations of exposing high-resoluting timing
+  information. Each new specification introducing new performance entries should have its own
+  security considerations as well.</span></p>
+
+<h2 id="acknowledgments" class="no-num">Acknowledgments</h2>
+<p>Thanks to Arvind Jain, Boris Zbarsky, Jatinder Mann, Nat Duca, Philippe
+Le Hegaret, Ryosuke Niwa, Shubhie Panicker, Todd Reifsteck, Yoav Weiss, and
+Zhiheng Wang, for their contributions to this work.</p>
