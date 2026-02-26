@@ -6,6 +6,7 @@ Group: webperf
 URL: https://w3c.github.io/performance-timeline/
 TR: https://www.w3.org/TR/performance-timeline/
 Editor: Yoav Weiss, Shopify https://shopify.com/, https://blog.yoav.ws/, w3cid 58673
+Editor: Michal Mocny, Google https://google.com/, mmocny@chromium.org, w3cid 110398
 former Editor: Nicolás Peña Moreno, Google https://google.com/, https://github.com/npm1, w3cid 103755
 Former Editor: Ilya Grigorik, Google https://google.com/, https://www.igvita.com/, w3cid 56102
 Former Editor: Jatinder Mann, Microsoft Corp., jmann@microsoft.com
