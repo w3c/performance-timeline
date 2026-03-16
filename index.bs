@@ -320,7 +320,7 @@ interface PerformanceEntry {
   <dt><dfn>startTime</dfn></dt>
   <dd>This attribute must return the value it is initialized to. It represents the time value of
   the first recorded timestamp of this performance metric.</dd>
-  <dt><dfn>duration</dfn></dt>
+  <dt><dfn attribute>duration</dfn></dt>
   <dd>
     The getter steps for the {{PerformanceEntry/duration}} attribute are to return 0 if [=this=]'s [=end time=]
     is 0; otherwise [=this=]'s [=end time=] - [=this=]'s {{PerformanceEntry/startTime}}.
