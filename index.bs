@@ -301,13 +301,13 @@ interface PerformanceEntry {
   [Default] object toJSON();
 };
 </pre>
-<dl dfn-for="PerformanceEntry" data-export>
-  <dt><dfn>name</dfn></dt>
+<dl data-export>
+  <dt><dfn attribute for="PerformanceEntry">name</dfn></dt>
   <dd>
     This attribute must return the value it is initialized to. It represents an identifier for
     this {{PerformanceEntry}} object. This identifier does not have to be unique.
   </dd>
-  <dt><dfn>entryType</dfn></dt>
+  <dt><dfn attribute for="PerformanceEntry">entryType</dfn></dt>
   <dd>
     This attribute must return the value it is initialized to.
 
@@ -317,15 +317,15 @@ interface PerformanceEntry {
     [[USER-TIMING-2]], <code>"navigation"</code> [[NAVIGATION-TIMING-2]],
     and <code>"resource"</code> [[RESOURCE-TIMING-2]].</p>
   </dd>
-  <dt><dfn>startTime</dfn></dt>
+  <dt><dfn attribute for="PerformanceEntry">startTime</dfn></dt>
   <dd>This attribute must return the value it is initialized to. It represents the time value of
   the first recorded timestamp of this performance metric.</dd>
-  <dt><dfn>duration</dfn></dt>
+  <dt><dfn attribute for="PerformanceEntry">duration</dfn></dt>
   <dd>
     The getter steps for the {{PerformanceEntry/duration}} attribute are to return 0 if [=this=]'s [=end time=]
     is 0; otherwise [=this=]'s [=end time=] - [=this=]'s {{PerformanceEntry/startTime}}.
   </dd>
-  <dt><dfn>navigationId</dfn></dt>
+  <dt><dfn attribute for="PerformanceEntry">navigationId</dfn></dt>
   <dd>
     This attribute MUST return the value it is initialized to.
   </dd>
