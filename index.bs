@@ -611,7 +611,7 @@ buffer=].</p>
   <li>Empty [=this=]'s [=options list=].</li>
 </ol>
 
-<h3 id="supportedentrytype-attribute">{{PerformanceObserver/supportedEntryTypes}} attribute</h3>
+<h3 id="supportedentrytypes-attribute">{{PerformanceObserver/supportedEntryTypes}} attribute</h3>
 <p>Each [=global object=] has an associated <dfn>frozen array of supported entry
 types</dfn>, which is initialized to the
 <a href="https://webidl.spec.whatwg.org/#es-frozen-array">FrozenArray</a>
