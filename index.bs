@@ -218,7 +218,7 @@ urlPrefix: https://w3c.github.io/timing-entrytypes-registry/; spec: TIMING-ENTRY
   [=map/value=] is the
   following tuple:
     <ul>
-      <li>A <dfn data-export>performance entry buffer</dfn> to store
+      <li>A <dfn data-export oldids="dfn-performance-entry-buffer">performance entry buffer</dfn> to store
       {{PerformanceEntry}} objects, that is initially empty.
       </li>
       <li>An integer <dfn>maxBufferSize</dfn>, initialized to the
@@ -336,7 +336,7 @@ steps=].</p>
 <p>A {{PerformanceEntry}} has a {{DOMHighResTimeStamp}} <dfn data-export>end time</dfn>,
 initially 0.
 
-<p>To <dfn data-export>initialize a PerformanceEntry</dfn> <var>entry</var> given a {{DOMHighResTimeStamp}} <var>startTime</var>,
+<p>To <dfn data-export oldids="dfn-initialize-a-performanceentry">initialize a PerformanceEntry</dfn> <var>entry</var> given a {{DOMHighResTimeStamp}} <var>startTime</var>,
 a <code>DOMString</code> <var>entryType</var>, a <code>DOMString</code> <var ignore>name</var>, and an optional {{DOMHighResTimeStamp}} <var>endTime</var> (default <code>0</code>):
 
 <ol>
@@ -355,7 +355,7 @@ they are recorded, and optionally buffered performance metrics.</p>
 <ul>
   <li>A {{PerformanceObserverCallback}} <dfn>observer callback</dfn> set on creation.
   </li>
-  <li>A {{PerformanceEntryList}} object called the <dfn>observer
+  <li>A {{PerformanceEntryList}} object called the <dfn oldids="dfn-observer-buffer">observer
   buffer</dfn> that is initially empty.
   </li>
   <li>A <code>DOMString</code> <dfn>observer type</dfn> which is initially
@@ -366,8 +366,8 @@ they are recorded, and optionally buffered performance metrics.</p>
 {{PerformanceObserver}} object with its [=observer callback=]
 set to <var ignore>callback</var> and then return it.</p>
 <p>A <dfn>registered performance observer</dfn> is a [=struct=]
-consisting of an <dfn>observer</dfn> member (a {{PerformanceObserver}}
-object) and an <dfn>options list</dfn> member (a list of
+consisting of an <dfn oldids="dfn-observer">observer</dfn> member (a {{PerformanceObserver}}
+object) and an <dfn oldids="dfn-options-list">options list</dfn> member (a list of
 {{PerformanceObserverInit}} dictionaries).</p>
 <pre class="idl">
 callback PerformanceObserverCallback = undefined (PerformanceObserverEntryList entries,
