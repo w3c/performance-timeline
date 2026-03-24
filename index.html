@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 0ef803fdf, updated Tue Jan 6 11:59:39 2026 -0800" name="generator">
   <link href="https://www.w3.org/TR/performance-timeline/" rel="canonical">
-  <meta content="ddbb2ddb68407d21402b884990645dc310dfaf54" name="revision">
+  <meta content="8aa7b1db6050f75ed24b816c0786d3ac5f22445e" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>
@@ -992,7 +992,7 @@ resourceObserver<c- p>.</c->observe<c- p>({</c->type<c- o>:</c-> <c- u>"resource
   following tuple:
     
      <ul>
-      <li>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="performance-entry-buffer">performance entry buffer</dfn> to store
+      <li>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="performance-entry-buffer"><span class="bs-old-id" id="dfn-performance-entry-buffer"></span>performance entry buffer</dfn> to store
       <code class="idl"><a data-link-type="idl" href="#performanceentry" id="ref-for-performanceentry①">PerformanceEntry</a></code> objects, that is initially empty.
       
       <li>An integer <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="maxbuffersize">maxBufferSize</dfn>, initialized to the
@@ -1100,7 +1100,7 @@ various metrics.</p>
 initially 0.
 
 </p>
-   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="initialize-a-performanceentry">initialize a PerformanceEntry</dfn> <var>entry</var> given a <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/hr-time/#typedefdef-domhighrestimestamp" id="ref-for-typedefdef-domhighrestimestamp⑤">DOMHighResTimeStamp</a></code> <var>startTime</var>,
+   <p>To <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="initialize-a-performanceentry"><span class="bs-old-id" id="dfn-initialize-a-performanceentry"></span>initialize a PerformanceEntry</dfn> <var>entry</var> given a <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/hr-time/#typedefdef-domhighrestimestamp" id="ref-for-typedefdef-domhighrestimestamp⑤">DOMHighResTimeStamp</a></code> <var>startTime</var>,
 a <code>DOMString</code> <var>entryType</var>, a <code>DOMString</code> <var>name</var>, and an optional <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/hr-time/#typedefdef-domhighrestimestamp" id="ref-for-typedefdef-domhighrestimestamp⑥">DOMHighResTimeStamp</a></code> <var>endTime</var> (default <code>0</code>):
 
 </p>
@@ -1124,7 +1124,7 @@ they are recorded, and optionally buffered performance metrics.</p>
    <ul>
     <li>A <code class="idl"><a data-link-type="idl" href="#callbackdef-performanceobservercallback" id="ref-for-callbackdef-performanceobservercallback">PerformanceObserverCallback</a></code> <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="observer-callback">observer callback</dfn> set on creation.
   
-    <li>A <code class="idl"><a data-link-type="idl" href="#typedefdef-performanceentrylist" id="ref-for-typedefdef-performanceentrylist⑥">PerformanceEntryList</a></code> object called the <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="observer buffer" data-noexport id="observer-buffer">observer
+    <li>A <code class="idl"><a data-link-type="idl" href="#typedefdef-performanceentrylist" id="ref-for-typedefdef-performanceentrylist⑥">PerformanceEntryList</a></code> object called the <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="observer buffer" data-noexport id="observer-buffer"><span class="bs-old-id" id="dfn-observer-buffer"></span>observer
   buffer</dfn> that is initially empty.
   
     <li>A <code>DOMString</code> <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="observer-type">observer type</dfn> which is initially
@@ -1135,8 +1135,8 @@ they are recorded, and optionally buffered performance metrics.</p>
 <code class="idl"><a data-link-type="idl" href="#performanceobserver" id="ref-for-performanceobserver⑨">PerformanceObserver</a></code> object with its <a data-link-type="dfn" href="#observer-callback" id="ref-for-observer-callback">observer callback</a>
 set to <var>callback</var> and then return it.</p>
    <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="registered-performance-observer">registered performance observer</dfn> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct" id="ref-for-struct">struct</a>
-consisting of an <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="observer">observer</dfn> member (a <code class="idl"><a data-link-type="idl" href="#performanceobserver" id="ref-for-performanceobserver①⓪">PerformanceObserver</a></code>
-object) and an <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="options-list">options list</dfn> member (a list of
+consisting of an <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="observer"><span class="bs-old-id" id="dfn-observer"></span>observer</dfn> member (a <code class="idl"><a data-link-type="idl" href="#performanceobserver" id="ref-for-performanceobserver①⓪">PerformanceObserver</a></code>
+object) and an <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="options-list"><span class="bs-old-id" id="dfn-options-list"></span>options list</dfn> member (a list of
 <code class="idl"><a data-link-type="idl" href="#dictdef-performanceobserverinit" id="ref-for-dictdef-performanceobserverinit">PerformanceObserverInit</a></code> dictionaries).</p>
 <pre class="def highlight idl"><c- b>callback</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="callback" data-export id="callbackdef-performanceobservercallback"><code><c- g>PerformanceObserverCallback</c-></code></dfn> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined"><c- b>undefined</c-></a> (<a data-link-type="idl-name" href="#performanceobserverentrylist" id="ref-for-performanceobserverentrylist"><c- n>PerformanceObserverEntryList</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceObserverCallback" data-dfn-type="argument" data-export id="dom-performanceobservercallback-entries"><code><c- g>entries</c-></code></dfn>,
                                                  <a data-link-type="idl-name" href="#performanceobserver" id="ref-for-performanceobserver①①"><c- n>PerformanceObserver</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceObserverCallback" data-dfn-type="argument" data-export id="dom-performanceobservercallback-observer"><code><c- g>observer</c-></code></dfn>,
