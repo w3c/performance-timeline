@@ -690,14 +690,18 @@ these steps:</p>
   <li>Let <var>tuple</var> be the [=relevant performance entry tuple=]
   of <var>entryType</var> and <var>relevantGlobal</var>.
   </li>
-  <li>Let <var>isBufferFull</var> be the return value of the [=determine if a performance
-  entry buffer is full=] algorithm with <var>tuple</var> as input.
-  </li>
   <li>Let <var>shouldAdd</var> be the result of [=should add
   entry=] with <var>newEntry</var> as input.
   </li>
-  <li>If <var>isBufferFull</var> is false and <var>shouldAdd</var> is true, [=list/append=]
-  <var>newEntry</var> to <var>tuple</var>'s [=performance entry buffer=].
+  <li>If <var>shouldAdd</var> is true:
+    <ol>
+      <li>Let <var>isBufferFull</var> be the return value of the [=determine if a performance
+      entry buffer is full=] algorithm with <var>tuple</var> as input.
+      </li>
+      <li>If <var>isBufferFull</var> is false, [=list/append=]
+      <var>newEntry</var> to <var>tuple</var>'s [=performance entry buffer=].
+      </li>
+    </ol>
   </li>
   <li>[=Queue the PerformanceObserver task=] with
   <var>relevantGlobal</var> as input.
