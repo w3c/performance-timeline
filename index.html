@@ -7,7 +7,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet">
   <meta content="Bikeshed version 49e9fdd4f, updated Tue Oct 13 14:27:53 2026 -0700" name="generator">
   <link href="https://www.w3.org/TR/performance-timeline/" rel="canonical">
-  <meta content="4cb04cb48c55ef7aa0d53fba85b9589ef5a72750" name="revision">
+  <meta content="65cbbebc44784c9c1ba7e5fe9497e92424c01080" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>
@@ -735,7 +735,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
 </p>
    <h1 class="no-ref p-name" id="title">Performance Timeline</h1>
    <p id="w3c-state"><a href="https://www.w3.org/standards/types/#ED">Editor’s Draft</a>,
-    <time class="dt-updated" datetime="2026-10-26">26 October 2026</time></p>
+    <time class="dt-updated" datetime="2026-11-02">2 November 2026</time></p>
    <details open>
     <summary>More details about this document</summary>
     <div data-fill-with="spec-metadata">
@@ -889,7 +889,7 @@ lifetime.
   can access the <a data-link-type="dfn" href="#performance-timeline" id="ref-for-performance-timeline②">Performance Timeline</a> to obtain performance metrics
   related to the navigation of the document, resources on the page, and
   developer scripts:</p>
-<pre class="example highlight" id="example-perf-timeline"><a class="self-link" href="#example-perf-timeline"></a><c- cp>&lt;!doctype html></c->
+<pre class="example highlight" id="example-perf-timeline"><a class="self-link" href="#example-perf-timeline"></a><span class="bs-old-id" id="example-1"></span><c- cp>&lt;!doctype html></c->
 <c- p>&lt;</c-><c- f>html</c-><c- p>></c->
 <c- p>&lt;</c-><c- f>head</c-><c- p>>&lt;/</c-><c- f>head</c-><c- p>></c->
 <c- p>&lt;</c-><c- f>body</c-> <c- e>onload</c-><c- o>=</c-><c- s>"init()"</c-><c- p>></c->
@@ -946,7 +946,7 @@ lifetime.
     <p class="note" role="note">The number of buffered events is determined by the
   specification that defines the metric and buffering is intended to used for
   first-N events only; buffering is not unbounded or continuous.</p>
-<pre class="example highlight" id="example-perf-observer"><a class="self-link" href="#example-perf-observer"></a><c- cp>&lt;!doctype html></c->
+<pre class="example highlight" id="example-perf-observer"><a class="self-link" href="#example-perf-observer"></a><span class="bs-old-id" id="example-2"></span><c- cp>&lt;!doctype html></c->
 <c- p>&lt;</c-><c- f>html</c-><c- p>></c->
 <c- p>&lt;</c-><c- f>head</c-><c- p>>&lt;/</c-><c- f>head</c-><c- p>></c->
 <c- p>&lt;</c-><c- f>body</c-><c- p>></c->
@@ -1012,12 +1012,12 @@ resourceObserver<c- p>.</c->observe<c- p>({</c->type<c- o>:</c-> <c- u>"resource
 </span><a class="self-link" href="#dfn-performance-timeline"></a></h2>
    <p>Each <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#global-object" id="ref-for-global-object">global object</a> has:</p>
    <ul>
-    <li>a <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="performance-observer-task-queued-flag">performance observer task queued flag</dfn>
-    <li>a <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="list-of-registered-performance-observer-objects">list of registered performance observer objects</dfn>
+    <li>a <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="performance-observer-task-queued-flag"><span class="bs-old-id" id="dfn-performance-observer-task-queued-flag"></span>performance observer task queued flag</dfn>
+    <li>a <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="list-of-registered-performance-observer-objects"><span class="bs-old-id" id="dfn-list-of-registered-performance-observer-objects"></span>list of registered performance observer objects</dfn>
   that is initially empty
     <li>
-     a <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="performance-entry-buffer-map">performance entry buffer map</dfn> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map">ordered map</a>,
-  <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-key" id="ref-for-map-key">keyed</a> on a <code>DOMString</code>, representing
+     a <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="performance-entry-buffer-map"><span class="bs-old-id" id="dfn-performance-entry-buffer-map"></span>performance entry buffer map</dfn> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map">ordered map</a>,
+  <span id="dfn-keyed"><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-key" id="ref-for-map-key">keyed</a></span> on a <code>DOMString</code>, representing
   the entry type to which the buffer belongs. The <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map①">ordered map</a>’s
   <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-value" id="ref-for-map-value">value</a> is the
   following tuple:
@@ -1026,32 +1026,32 @@ resourceObserver<c- p>.</c->observe<c- p>({</c->type<c- o>:</c-> <c- u>"resource
       <li>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="performance-entry-buffer"><span class="bs-old-id" id="dfn-performance-entry-buffer"></span>performance entry buffer</dfn> to store
       <code class="idl"><a data-link-type="idl" href="#performanceentry" id="ref-for-performanceentry①">PerformanceEntry</a></code> objects, that is initially empty.
       
-      <li>An integer <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="maxbuffersize">maxBufferSize</dfn>, initialized to the
+      <li>An integer <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="maxbuffersize"><span class="bs-old-id" id="dfn-maxbuffersize"></span>maxBufferSize</dfn>, initialized to the
         <a data-link-type="dfn" href="https://w3c.github.io/timing-entrytypes-registry/#registry" id="ref-for-registry">registry</a> value for this entry type.
       
-      <li>A <code>boolean</code> <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="availablefromtimeline">availableFromTimeline</dfn>,
+      <li>A <code>boolean</code> <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="availablefromtimeline"><span class="bs-old-id" id="dfn-availablefromtimeline"></span>availableFromTimeline</dfn>,
       initialized to the <a data-link-type="dfn" href="https://w3c.github.io/timing-entrytypes-registry/#registry" id="ref-for-registry①">registry</a> value for this entry type.
       
-      <li>An integer <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="dropped-entries-count">dropped entries count</dfn> that is initially 0.
+      <li>An integer <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="dropped-entries-count"><span class="bs-old-id" id="dfn-dropped-entries-count"></span>dropped entries count</dfn> that is initially 0.
      </ul>
-    <li>An integer <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="last-performance-entry-id">last performance entry id</dfn> that is initially set
+    <li>An integer <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="last-performance-entry-id"><span class="bs-old-id" id="dfn-last-performance-entry-id"></span>last performance entry id</dfn> that is initially set
   to a random integer between 100 and 10000.
   
    </ul>
    <p>Each <code class="idl"><a data-link-type="idl" href="https://dom.spec.whatwg.org/#document" id="ref-for-document">Document</a></code> has:</p>
    <ul>
-    <li>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="most-recent-navigation">most recent navigation</dfn>, which is a <code class="idl"><a data-link-type="idl" href="#performanceentry" id="ref-for-performanceentry②">PerformanceEntry</a></code>,
+    <li>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="most-recent-navigation"><span class="bs-old-id" id="dfn-most-recent-navigation"></span>most recent navigation</dfn>, which is a <code class="idl"><a data-link-type="idl" href="#performanceentry" id="ref-for-performanceentry②">PerformanceEntry</a></code>,
   initially unset.
   
    </ul>
-   <p>In order to get the <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="relevant-performance-entry-tuple">relevant performance entry tuple</dfn>, given
+   <p>In order to get the <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="relevant-performance-entry-tuple"><span class="bs-old-id" id="dfn-relevant-performance-entry-tuple"></span>relevant performance entry tuple</dfn>, given
 <var>entryType</var> and <var>globalObject</var> as input, run the
 following steps:</p>
    <ol>
     <li>Let <var>map</var> be the <a data-link-type="dfn" href="#performance-entry-buffer-map" id="ref-for-performance-entry-buffer-map">performance entry buffer map</a>
   associated with <var>globalObject</var>.
   
-    <li>Return the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-get" id="ref-for-map-get">getting the value of an entry</a> from <var>
+    <li>Return the result of <span id="dfn-getting-the-value-of-entry"><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-get" id="ref-for-map-get">getting the value of an entry</a></span> from <var>
     map</var>, given <var>entryType</var> as the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-key" id="ref-for-map-key①">key</a>.
   
    </ol>
@@ -1059,33 +1059,33 @@ following steps:</p>
    <p>This extends the <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/hr-time/#performance" id="ref-for-performance②">Performance</a></code> interface from <a data-link-type="biblio" href="#biblio-hr-time-3" title="High Resolution Time">[HR-TIME-3]</a> and
 hosts performance related attributes and methods used to retrieve the
 performance metric data from the <a data-link-type="dfn" href="#performance-timeline" id="ref-for-performance-timeline④">Performance Timeline</a>.</p>
-<pre class="def highlight idl"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://w3c.github.io/hr-time/#performance" id="ref-for-performance③"><c- g>Performance</c-></a> {
+<pre class="def highlight idl" id="idl-def-performance-partial-1"><c- b>partial</c-> <c- b>interface</c-> <a class="idl-code" data-link-type="interface" href="https://w3c.github.io/hr-time/#performance" id="ref-for-performance③"><c- g>Performance</c-></a> {
   <a data-link-type="idl-name" href="#typedefdef-performanceentrylist" id="ref-for-typedefdef-performanceentrylist"><c- n>PerformanceEntryList</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Performance" data-dfn-type="method" data-export data-lt="getEntries()" id="dom-performance-getentries"><code><c- g>getEntries</c-></code></dfn> ();
   <a data-link-type="idl-name" href="#typedefdef-performanceentrylist" id="ref-for-typedefdef-performanceentrylist①"><c- n>PerformanceEntryList</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Performance" data-dfn-type="method" data-export data-lt="getEntriesByType(type)" id="dom-performance-getentriesbytype"><code><c- g>getEntriesByType</c-></code></dfn> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString"><c- b>DOMString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Performance/getEntriesByType(type)" data-dfn-type="argument" data-export id="dom-performance-getentriesbytype-type-type"><code><c- g>type</c-></code></dfn>);
   <a data-link-type="idl-name" href="#typedefdef-performanceentrylist" id="ref-for-typedefdef-performanceentrylist②"><c- n>PerformanceEntryList</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Performance" data-dfn-type="method" data-export data-lt="getEntriesByName(name, type)|getEntriesByName(name)" id="dom-performance-getentriesbyname"><code><c- g>getEntriesByName</c-></code></dfn> (<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString①"><c- b>DOMString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Performance/getEntriesByName(name, type), Performance/getEntriesByName(name)" data-dfn-type="argument" data-export id="dom-performance-getentriesbyname-name-type-name"><code><c- g>name</c-></code></dfn>, <c- b>optional</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString②"><c- b>DOMString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="Performance/getEntriesByName(name, type), Performance/getEntriesByName(name)" data-dfn-type="argument" data-export id="dom-performance-getentriesbyname-name-type-type"><code><c- g>type</c-></code></dfn>);
 };
 <c- b>typedef</c-> <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence"><c- b>sequence</c-></a>&lt;<a data-link-type="idl-name" href="#performanceentry" id="ref-for-performanceentry③"><c- n>PerformanceEntry</c-></a>> <dfn class="dfn-paneled idl-code" data-dfn-type="typedef" data-export id="typedefdef-performanceentrylist"><code><c- g>PerformanceEntryList</c-></code></dfn>;
 </pre>
-   <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="performanceentrylist">PerformanceEntryList</dfn> represents a sequence of
+   <p>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="performanceentrylist"><span class="bs-old-id" id="idl-def-performanceentrylist"></span><span class="bs-old-id" id="dom-performanceentrylist"></span>PerformanceEntryList</dfn> represents a sequence of
 <code class="idl"><a data-link-type="idl" href="#performanceentry" id="ref-for-performanceentry④">PerformanceEntry</a></code>, providing developers with all the convenience
 methods found on JavaScript arrays.</p>
-   <h4 class="heading settled" data-level="2.1.1" id="getentries-method"><span class="secno">2.1.1. </span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performance-getentries" id="ref-for-dom-performance-getentries">getEntries()</a></code> method</span><a class="self-link" href="#getentries-method"></a></h4>
+   <h4 class="heading settled" data-level="2.1.1" id="getentries-method"><span class="secno">2.1.1. </span><span class="bs-old-id" id="idl-def-performance-getentries"></span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performance-getentries" id="ref-for-dom-performance-getentries">getEntries()</a></code> method</span><a class="self-link" href="#getentries-method"></a></h4>
    <p>Returns a <code class="idl"><a data-link-type="idl" href="#typedefdef-performanceentrylist" id="ref-for-typedefdef-performanceentrylist③">PerformanceEntryList</a></code> object returned by the
 <a data-link-type="dfn" href="#dfn-filter-buffer-map-by-name-and-type" id="ref-for-dfn-filter-buffer-map-by-name-and-type">filter buffer map by name and type</a> algorithm with
 <var>name</var> and <var>type</var> set to <code>null</code>.</p>
-   <h4 class="heading settled" data-level="2.1.2" id="getentriesbytype-method"><span class="secno">2.1.2. </span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performance-getentriesbytype" id="ref-for-dom-performance-getentriesbytype">getEntriesByType()</a></code> method</span><a class="self-link" href="#getentriesbytype-method"></a></h4>
+   <h4 class="heading settled" data-level="2.1.2" id="getentriesbytype-method"><span class="secno">2.1.2. </span><span class="bs-old-id" id="idl-def-performance-getentriesbytype-type"></span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performance-getentriesbytype" id="ref-for-dom-performance-getentriesbytype">getEntriesByType()</a></code> method</span><a class="self-link" href="#getentriesbytype-method"></a></h4>
    <p>Returns a <code class="idl"><a data-link-type="idl" href="#typedefdef-performanceentrylist" id="ref-for-typedefdef-performanceentrylist④">PerformanceEntryList</a></code> object returned by <a data-link-type="dfn" href="#dfn-filter-buffer-map-by-name-and-type" id="ref-for-dfn-filter-buffer-map-by-name-and-type①">filter buffer map by name and type</a> algorithm with <var>name</var> set to
 <code>null</code>, and <var>type</var> set to the method’s input
 <code>type</code> parameter.</p>
-   <h4 class="heading settled" data-level="2.1.3" id="getentriesbyname-method"><span class="secno">2.1.3. </span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performance-getentriesbyname" id="ref-for-dom-performance-getentriesbyname">getEntriesByName()</a></code> method</span><a class="self-link" href="#getentriesbyname-method"></a></h4>
+   <h4 class="heading settled" data-level="2.1.3" id="getentriesbyname-method"><span class="secno">2.1.3. </span><span class="bs-old-id" id="idl-def-performance-getentriesbyname-name-type"></span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performance-getentriesbyname" id="ref-for-dom-performance-getentriesbyname">getEntriesByName()</a></code> method</span><a class="self-link" href="#getentriesbyname-method"></a></h4>
    <p>Returns a <code class="idl"><a data-link-type="idl" href="#typedefdef-performanceentrylist" id="ref-for-typedefdef-performanceentrylist⑤">PerformanceEntryList</a></code> object returned by <a data-link-type="dfn" href="#dfn-filter-buffer-map-by-name-and-type" id="ref-for-dfn-filter-buffer-map-by-name-and-type②">filter buffer map by name and type</a> algorithm with <var>name</var> set to
 the method input <code>name</code> parameter, and <var>type</var> set
 to <code>null</code> if optional <code>entryType</code> is omitted, or set to the
 method’s input <code>type</code> parameter otherwise.</p>
-   <h2 class="heading settled" data-level="3" id="the-performanceentry-interface"><span class="secno">3. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#performanceentry" id="ref-for-performanceentry⑤">PerformanceEntry</a></code> interface</span><a class="self-link" href="#the-performanceentry-interface"></a></h2>
+   <h2 class="heading settled" data-level="3" id="the-performanceentry-interface"><span class="secno">3. </span><span class="bs-old-id" id="idl-def-performanceentry"></span><span class="bs-old-id" id="dom-performanceentry"></span><span class="content">The <code class="idl"><a data-link-type="idl" href="#performanceentry" id="ref-for-performanceentry⑤">PerformanceEntry</a></code> interface</span><a class="self-link" href="#the-performanceentry-interface"></a></h2>
    <p>The <code class="idl"><a data-link-type="idl" href="#performanceentry" id="ref-for-performanceentry⑥">PerformanceEntry</a></code> interface hosts the performance data of
 various metrics.</p>
-<pre class="def highlight idl">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
+<pre class="def highlight idl" id="idl-def-performanceentry-id">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="performanceentry"><code><c- g>PerformanceEntry</c-></code></dfn> {
   <c- b>readonly</c->    <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long" id="ref-for-idl-unsigned-long-long"><c- b>unsigned</c-> <c- b>long</c-> <c- b>long</c-></a>  <dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceEntry" data-dfn-type="attribute" data-export data-readonly data-type="unsigned long long" id="dom-performanceentry-id"><code><c- g>id</c-></code></dfn>;
   <c- b>readonly</c->    <c- b>attribute</c-> <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString③"><c- b>DOMString</c-></a>           <a class="idl-code" data-link-type="attribute" data-readonly data-type="DOMString" href="#dom-performanceentry-name" id="ref-for-dom-performanceentry-name"><c- g>name</c-></a>;
@@ -1097,12 +1097,12 @@ various metrics.</p>
 };
 </pre>
    <dl>
-    <dt><dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceEntry" data-dfn-type="attribute" data-export id="dom-performanceentry-name"><code>name</code></dfn>, <span> of type <a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString⑤">DOMString</a>, readonly</span>
+    <dt><dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceEntry" data-dfn-type="attribute" data-export id="dom-performanceentry-name"><code><span class="bs-old-id" id="idl-def-performanceentry-name"></span><code>name</code></code></dfn>, <span> of type <a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString⑤">DOMString</a>, readonly</span>
     <dd>
     This attribute must return the value it is initialized to. It represents an identifier for
     this <code class="idl"><a data-link-type="idl" href="#performanceentry" id="ref-for-performanceentry⑦">PerformanceEntry</a></code> object. This identifier does not have to be unique.
   
-    <dt><dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceEntry" data-dfn-type="attribute" data-export id="dom-performanceentry-entrytype"><code>entryType</code></dfn>, <span> of type <a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString⑥">DOMString</a>, readonly</span>
+    <dt><dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceEntry" data-dfn-type="attribute" data-export id="dom-performanceentry-entrytype"><code><span class="bs-old-id" id="idl-def-performanceentry-entrytype"></span><code>entryType</code></code></dfn>, <span> of type <a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString⑥">DOMString</a>, readonly</span>
     <dd>
      
     This attribute must return the value it is initialized to.
@@ -1113,21 +1113,21 @@ various metrics.</p>
     Examples include: <code>"mark"</code> and <code>"measure"</code>
     <a data-link-type="biblio" href="#biblio-user-timing-2" title="User Timing Level 2">[USER-TIMING-2]</a>, <code>"navigation"</code> <a data-link-type="biblio" href="#biblio-navigation-timing-2" title="Navigation Timing Level 2">[NAVIGATION-TIMING-2]</a>,
     and <code>"resource"</code> <a data-link-type="biblio" href="#biblio-resource-timing-2" title="Resource Timing">[RESOURCE-TIMING-2]</a>.</p>
-    <dt><dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceEntry" data-dfn-type="attribute" data-export id="dom-performanceentry-starttime"><code>startTime</code></dfn>, <span> of type <a data-link-type="idl-name" href="https://w3c.github.io/hr-time/#typedefdef-domhighrestimestamp" id="ref-for-typedefdef-domhighrestimestamp②">DOMHighResTimeStamp</a>, readonly</span>
+    <dt><dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceEntry" data-dfn-type="attribute" data-export id="dom-performanceentry-starttime"><code><span class="bs-old-id" id="idl-def-performanceentry-starttime"></span><code>startTime</code></code></dfn>, <span> of type <a data-link-type="idl-name" href="https://w3c.github.io/hr-time/#typedefdef-domhighrestimestamp" id="ref-for-typedefdef-domhighrestimestamp②">DOMHighResTimeStamp</a>, readonly</span>
     <dd>This attribute must return the value it is initialized to. It represents the time value of
   the first recorded timestamp of this performance metric.
-    <dt><dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceEntry" data-dfn-type="attribute" data-export id="dom-performanceentry-duration"><code>duration</code></dfn>, <span> of type <a data-link-type="idl-name" href="https://w3c.github.io/hr-time/#typedefdef-domhighrestimestamp" id="ref-for-typedefdef-domhighrestimestamp③">DOMHighResTimeStamp</a>, readonly</span>
+    <dt><dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceEntry" data-dfn-type="attribute" data-export id="dom-performanceentry-duration"><code><span class="bs-old-id" id="idl-def-performanceentry-duration"></span><code>duration</code></code></dfn>, <span> of type <a data-link-type="idl-name" href="https://w3c.github.io/hr-time/#typedefdef-domhighrestimestamp" id="ref-for-typedefdef-domhighrestimestamp③">DOMHighResTimeStamp</a>, readonly</span>
     <dd>
     The getter steps for the <code class="idl"><a data-link-type="idl" href="#dom-performanceentry-duration" id="ref-for-dom-performanceentry-duration①">duration</a></code> attribute are to return 0 if <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this">this</a>’s <a data-link-type="dfn" href="#end-time" id="ref-for-end-time">end time</a>
     is 0; otherwise <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①">this</a>’s <a data-link-type="dfn" href="#end-time" id="ref-for-end-time①">end time</a> - <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②">this</a>’s <code class="idl"><a data-link-type="idl" href="#dom-performanceentry-starttime" id="ref-for-dom-performanceentry-starttime①">startTime</a></code>.
   
-    <dt><dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceEntry" data-dfn-type="attribute" data-export id="dom-performanceentry-navigationid"><code>navigationId</code></dfn>, <span> of type <a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long" id="ref-for-idl-unsigned-long-long②">unsigned long long</a>, readonly</span>
+    <dt><dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceEntry" data-dfn-type="attribute" data-export id="dom-performanceentry-navigationid"><code><span class="bs-old-id" id="idl-def-performanceentry-navigationid"></span><code>navigationId</code></code></dfn>, <span> of type <a data-link-type="idl-name" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long" id="ref-for-idl-unsigned-long-long②">unsigned long long</a>, readonly</span>
     <dd>
     This attribute MUST return the value it is initialized to.
   
    </dl>
-   <p>When <dfn class="dfn-paneled" data-dfn-for="PerformanceEntry" data-dfn-type="dfn" data-export id="performanceentry-tojson">toJSON</dfn> is called, run <a data-link-type="biblio" href="#biblio-webidl" title="Web IDL Standard">[WEBIDL]</a>’s <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#default-tojson-steps" id="ref-for-default-tojson-steps">default toJSON steps</a>.</p>
-   <p>A <code class="idl"><a data-link-type="idl" href="#performanceentry" id="ref-for-performanceentry⑧">PerformanceEntry</a></code> has a <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/hr-time/#typedefdef-domhighrestimestamp" id="ref-for-typedefdef-domhighrestimestamp④">DOMHighResTimeStamp</a></code> <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="end-time">end time</dfn>,
+   <p>When <dfn class="dfn-paneled" data-dfn-for="PerformanceEntry" data-dfn-type="dfn" data-export id="performanceentry-tojson"><span class="bs-old-id" id="idl-def-performanceentry-tojson"></span>toJSON</dfn> is called, run <a data-link-type="biblio" href="#biblio-webidl" title="Web IDL Standard">[WEBIDL]</a>’s <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#default-tojson-steps" id="ref-for-default-tojson-steps">default toJSON steps</a>.</p>
+   <p>A <code class="idl"><a data-link-type="idl" href="#performanceentry" id="ref-for-performanceentry⑧">PerformanceEntry</a></code> has a <code class="idl"><a data-link-type="idl" href="https://w3c.github.io/hr-time/#typedefdef-domhighrestimestamp" id="ref-for-typedefdef-domhighrestimestamp④">DOMHighResTimeStamp</a></code> <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="end-time"><span class="bs-old-id" id="dfn-end-time"></span>end time</dfn>,
 initially 0.
 
 </p>
@@ -1147,29 +1147,29 @@ a <code>DOMString</code> <var>entryType</var>, a <code>DOMString</code> <var>nam
     <li>Initialize <var>entry</var>’s <a data-link-type="dfn" href="#end-time" id="ref-for-end-time②">end time</a> to <var>endTime</var>.
 
    </ol>
-   <h2 class="heading settled" data-level="4" id="the-performanceobserver-interface"><span class="secno">4. </span><span class="content">The <code class="idl"><a data-link-type="idl" href="#performanceobserver" id="ref-for-performanceobserver⑥">PerformanceObserver</a></code> interface</span><a class="self-link" href="#the-performanceobserver-interface"></a></h2>
+   <h2 class="heading settled" data-level="4" id="the-performanceobserver-interface"><span class="secno">4. </span><span class="bs-old-id" id="idl-def-performanceobserver"></span><span class="bs-old-id" id="dom-performanceobserver"></span><span class="content">The <code class="idl"><a data-link-type="idl" href="#performanceobserver" id="ref-for-performanceobserver⑥">PerformanceObserver</a></code> interface</span><a class="self-link" href="#the-performanceobserver-interface"></a></h2>
    <p>The <code class="idl"><a data-link-type="idl" href="#performanceobserver" id="ref-for-performanceobserver⑦">PerformanceObserver</a></code> interface can be used to observe the
 <a data-link-type="dfn" href="#performance-timeline" id="ref-for-performance-timeline⑤">Performance Timeline</a> to be notified of new performance metrics as
 they are recorded, and optionally buffered performance metrics.</p>
    <p>Each <code class="idl"><a data-link-type="idl" href="#performanceobserver" id="ref-for-performanceobserver⑧">PerformanceObserver</a></code> has these associated concepts:</p>
    <ul>
-    <li>A <code class="idl"><a data-link-type="idl" href="#callbackdef-performanceobservercallback" id="ref-for-callbackdef-performanceobservercallback">PerformanceObserverCallback</a></code> <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="observer-callback">observer callback</dfn> set on creation.
+    <li>A <span id="dom-performanceobservercallback"><code class="idl"><a data-link-type="idl" href="#callbackdef-performanceobservercallback" id="ref-for-callbackdef-performanceobservercallback">PerformanceObserverCallback</a></code></span> <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="observer-callback"><span class="bs-old-id" id="dfn-observer-callback"></span>observer callback</dfn> set on creation.
   
     <li>A <code class="idl"><a data-link-type="idl" href="#typedefdef-performanceentrylist" id="ref-for-typedefdef-performanceentrylist⑥">PerformanceEntryList</a></code> object called the <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="observer buffer" data-noexport id="observer-buffer"><span class="bs-old-id" id="dfn-observer-buffer"></span>observer
   buffer</dfn> that is initially empty.
   
-    <li>A <code>DOMString</code> <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="observer-type">observer type</dfn> which is initially
+    <li>A <code>DOMString</code> <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="observer-type"><span class="bs-old-id" id="dfn-observer-type"></span>observer type</dfn> which is initially
   <code>"undefined"</code>.
-    <li>A boolean <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="requires-dropped-entries">requires dropped entries</dfn> which is initially set to false.
+    <li>A boolean <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="requires-dropped-entries"><span class="bs-old-id" id="dfn-requires-dropped-entries"></span>requires dropped entries</dfn> which is initially set to false.
    </ul>
-   <p>The <code>PerformanceObserver(callback)</code> constructor must create a new
+   <p id="idl-def-performanceobserver-constructor-callback">The <code id="dom-performanceobserver-constructor">PerformanceObserver(callback)</code> constructor must create a new
 <code class="idl"><a data-link-type="idl" href="#performanceobserver" id="ref-for-performanceobserver⑨">PerformanceObserver</a></code> object with its <a data-link-type="dfn" href="#observer-callback" id="ref-for-observer-callback">observer callback</a>
 set to <var>callback</var> and then return it.</p>
-   <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="registered-performance-observer">registered performance observer</dfn> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct" id="ref-for-struct">struct</a>
+   <p>A <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="registered-performance-observer"><span class="bs-old-id" id="dfn-registered-performance-observer"></span>registered performance observer</dfn> is a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#struct" id="ref-for-struct">struct</a>
 consisting of an <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="observer"><span class="bs-old-id" id="dfn-observer"></span>observer</dfn> member (a <code class="idl"><a data-link-type="idl" href="#performanceobserver" id="ref-for-performanceobserver①⓪">PerformanceObserver</a></code>
 object) and an <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="options-list"><span class="bs-old-id" id="dfn-options-list"></span>options list</dfn> member (a list of
 <code class="idl"><a data-link-type="idl" href="#dictdef-performanceobserverinit" id="ref-for-dictdef-performanceobserverinit">PerformanceObserverInit</a></code> dictionaries).</p>
-<pre class="def highlight idl"><c- b>callback</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="callback" data-export id="callbackdef-performanceobservercallback"><code><c- g>PerformanceObserverCallback</c-></code></dfn> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined"><c- b>undefined</c-></a> (<a data-link-type="idl-name" href="#performanceobserverentrylist" id="ref-for-performanceobserverentrylist"><c- n>PerformanceObserverEntryList</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceObserverCallback" data-dfn-type="argument" data-export id="dom-performanceobservercallback-entries"><code><c- g>entries</c-></code></dfn>,
+<pre class="def highlight idl" id="idl-def-performanceobservercallback"><c- b>callback</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="callback" data-export id="callbackdef-performanceobservercallback"><code><c- g>PerformanceObserverCallback</c-></code></dfn> = <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-undefined" id="ref-for-idl-undefined"><c- b>undefined</c-></a> (<a data-link-type="idl-name" href="#performanceobserverentrylist" id="ref-for-performanceobserverentrylist"><c- n>PerformanceObserverEntryList</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceObserverCallback" data-dfn-type="argument" data-export id="dom-performanceobservercallback-entries"><code><c- g>entries</c-></code></dfn>,
                                                  <a data-link-type="idl-name" href="#performanceobserver" id="ref-for-performanceobserver①①"><c- n>PerformanceObserver</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceObserverCallback" data-dfn-type="argument" data-export id="dom-performanceobservercallback-observer"><code><c- g>observer</c-></code></dfn>,
                                                  <c- b>optional</c-> <a data-link-type="idl-name" href="#dictdef-performanceobservercallbackoptions" id="ref-for-dictdef-performanceobservercallbackoptions"><c- n>PerformanceObserverCallbackOptions</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceObserverCallback" data-dfn-type="argument" data-export id="dom-performanceobservercallback-options"><code><c- g>options</c-></code></dfn> = {});
 [<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed①"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
@@ -1187,18 +1187,18 @@ disconnect the observer once it no longer needs to observe the performance
 data. Filtering by name is not supported, as it would implicitly require a
 subscription for all event types — this is possible, but discouraged, as it
 will generate a significant volume of events.</p>
-   <h3 class="heading settled" data-level="4.1" id="performanceobservercallbackoptions-dictionary"><span class="secno">4.1. </span><span class="content"><code class="idl"><a data-link-type="idl" href="#dictdef-performanceobservercallbackoptions" id="ref-for-dictdef-performanceobservercallbackoptions①">PerformanceObserverCallbackOptions</a></code> dictionary</span><a class="self-link" href="#performanceobservercallbackoptions-dictionary"></a></h3>
+   <h3 class="heading settled" data-level="4.1" id="performanceobservercallbackoptions-dictionary"><span class="secno">4.1. </span><span class="bs-old-id" id="idl-def-performanceobservercallbackoptions"></span><span class="bs-old-id" id="dom-performanceobservercallbackoptions"></span><span class="content"><code class="idl"><a data-link-type="idl" href="#dictdef-performanceobservercallbackoptions" id="ref-for-dictdef-performanceobservercallbackoptions①">PerformanceObserverCallbackOptions</a></code> dictionary</span><a class="self-link" href="#performanceobservercallbackoptions-dictionary"></a></h3>
 <pre class="def highlight idl"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-performanceobservercallbackoptions"><code><c- g>PerformanceObserverCallbackOptions</c-></code></dfn> {
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-unsigned-long-long" id="ref-for-idl-unsigned-long-long③"><c- b>unsigned</c-> <c- b>long</c-> <c- b>long</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceObserverCallbackOptions" data-dfn-type="dict-member" data-export data-type="unsigned long long" id="dom-performanceobservercallbackoptions-droppedentriescount"><code><c- g>droppedEntriesCount</c-></code></dfn>;
 };
 </pre>
    <dl>
-    <dt><dfn class="dfn-paneled" data-dfn-for="PerformanceObserverCallbackOptions" data-dfn-type="dfn" data-export id="performanceobservercallbackoptions-droppedentriescount">droppedEntriesCount</dfn>
+    <dt><dfn class="dfn-paneled" data-dfn-for="PerformanceObserverCallbackOptions" data-dfn-type="dfn" data-export id="performanceobservercallbackoptions-droppedentriescount"><span class="bs-old-id" id="idl-def-performanceobservercallbackoptions-droppedentriescount"></span>droppedEntriesCount</dfn>
     <dd>An integer representing the dropped entries count for the entry types that the
   observer is observing when the <code class="idl"><a data-link-type="idl" href="#performanceobserver" id="ref-for-performanceobserver①②">PerformanceObserver</a></code>’s <a data-link-type="dfn" href="#requires-dropped-entries" id="ref-for-requires-dropped-entries">requires dropped entries</a>
   is set.
    </dl>
-   <h3 class="heading settled" data-level="4.2" id="observe-method"><span class="secno">4.2. </span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performanceobserver-observe" id="ref-for-dom-performanceobserver-observe②">observe()</a></code> method</span><a class="self-link" href="#observe-method"></a></h3>
+   <h3 class="heading settled" data-level="4.2" id="observe-method"><span class="secno">4.2. </span><span class="bs-old-id" id="idl-def-performanceobserver-observe-options"></span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performanceobserver-observe" id="ref-for-dom-performanceobserver-observe②">observe()</a></code> method</span><a class="self-link" href="#observe-method"></a></h3>
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-performanceobserver-observe" id="ref-for-dom-performanceobserver-observe③">observe()</a></code> method instructs the user agent to register
 the observer and must run these steps:</p>
    <ol>
@@ -1336,7 +1336,7 @@ when using <code class="idl"><a data-link-type="idl" href="#dom-performanceobser
 will stack because a single call can only specify one type. Calling
 <code class="idl"><a data-link-type="idl" href="#dom-performanceobserver-observe" id="ref-for-dom-performanceobserver-observe⑧">observe()</a></code> with a repeated
 <code class="idl"><a data-link-type="idl" href="#dom-performanceobserverinit-type" id="ref-for-dom-performanceobserverinit-type①⓪">type</a></code> will also override.</span></p>
-   <h4 class="heading settled" data-level="4.2.1" id="performanceobserverinit-dictionary"><span class="secno">4.2.1. </span><span class="content"><code class="idl"><a data-link-type="idl" href="#dictdef-performanceobserverinit" id="ref-for-dictdef-performanceobserverinit④">PerformanceObserverInit</a></code> dictionary</span><a class="self-link" href="#performanceobserverinit-dictionary"></a></h4>
+   <h4 class="heading settled" data-level="4.2.1" id="performanceobserverinit-dictionary"><span class="secno">4.2.1. </span><span class="bs-old-id" id="idl-def-performanceobserverinit"></span><span class="bs-old-id" id="dom-performanceobserverinit"></span><span class="content"><code class="idl"><a data-link-type="idl" href="#dictdef-performanceobserverinit" id="ref-for-dictdef-performanceobserverinit④">PerformanceObserverInit</a></code> dictionary</span><a class="self-link" href="#performanceobserverinit-dictionary"></a></h4>
 <pre class="def highlight idl"><c- b>dictionary</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="dictionary" data-export id="dictdef-performanceobserverinit"><code><c- g>PerformanceObserverInit</c-></code></dfn> {
   <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#idl-sequence" id="ref-for-idl-sequence①"><c- b>sequence</c-></a>&lt;<a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString⑧"><c- b>DOMString</c-></a>> <dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceObserverInit" data-dfn-type="dict-member" data-export data-type="sequence<DOMString>" id="dom-performanceobserverinit-entrytypes"><code><c- g>entryTypes</c-></code></dfn>;
   <a class="idl-code" data-link-type="interface" href="https://webidl.spec.whatwg.org/#idl-DOMString" id="ref-for-idl-DOMString⑨"><c- b>DOMString</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceObserverInit" data-dfn-type="dict-member" data-export data-type="DOMString" id="dom-performanceobserverinit-type"><code><c- g>type</c-></code></dfn>;
@@ -1344,18 +1344,18 @@ will stack because a single call can only specify one type. Calling
 };
 </pre>
    <dl>
-    <dt><dfn class="dfn-paneled" data-dfn-for="PerformanceObserverInit" data-dfn-type="dfn" data-export id="performanceobserverinit-entrytypes">entryTypes</dfn>
+    <dt><dfn class="dfn-paneled" data-dfn-for="PerformanceObserverInit" data-dfn-type="dfn" data-export id="performanceobserverinit-entrytypes"><span class="bs-old-id" id="idl-def-performanceobserverinit-entrytypes"></span>entryTypes</dfn>
     <dd>A list of entry types to be observed. If present, the list MUST
   NOT be empty and all other members MUST NOT be present. Types not
   recognized by the user agent MUST be ignored.
-    <dt><dfn class="dfn-paneled" data-dfn-for="PerformanceObserverInit" data-dfn-type="dfn" data-export id="performanceobserverinit-type">type</dfn>
+    <dt><dfn class="dfn-paneled" data-dfn-for="PerformanceObserverInit" data-dfn-type="dfn" data-export id="performanceobserverinit-type"><span class="bs-old-id" id="idl-def-performanceobserverinit-type"></span>type</dfn>
     <dd>A single entry type to be observed. A type that is not recognized
   by the user agent MUST be ignored. Other members may be present.
-    <dt><dfn class="dfn-paneled" data-dfn-for="PerformanceObserverInit" data-dfn-type="dfn" data-export id="performanceobserverinit-buffered">buffered</dfn>
+    <dt><dfn class="dfn-paneled" data-dfn-for="PerformanceObserverInit" data-dfn-type="dfn" data-export id="performanceobserverinit-buffered"><span class="bs-old-id" id="idl-def-performanceobserverinit-buffered"></span>buffered</dfn>
     <dd>A flag to indicate whether buffered entries should be queued into
   observer’s buffer.
    </dl>
-   <h4 class="heading settled" data-level="4.2.2" id="performanceobserverentrylist-interface"><span class="secno">4.2.2. </span><span class="content"><code class="idl"><a data-link-type="idl" href="#performanceobserverentrylist" id="ref-for-performanceobserverentrylist①">PerformanceObserverEntryList</a></code> interface</span><a class="self-link" href="#performanceobserverentrylist-interface"></a></h4>
+   <h4 class="heading settled" data-level="4.2.2" id="performanceobserverentrylist-interface"><span class="secno">4.2.2. </span><span class="bs-old-id" id="idl-def-performanceobserverentrylist"></span><span class="bs-old-id" id="dom-performanceobserverentrylist"></span><span class="content"><code class="idl"><a data-link-type="idl" href="#performanceobserverentrylist" id="ref-for-performanceobserverentrylist①">PerformanceObserverEntryList</a></code> interface</span><a class="self-link" href="#performanceobserverentrylist-interface"></a></h4>
 <pre class="def highlight idl">[<a class="idl-code" data-link-type="extended-attribute" href="https://webidl.spec.whatwg.org/#Exposed" id="ref-for-Exposed②"><c- g>Exposed</c-></a>=(<c- n>Window</c->,<c- n>Worker</c->)]
 <c- b>interface</c-> <dfn class="dfn-paneled idl-code" data-dfn-type="interface" data-export id="performanceobserverentrylist"><code><c- g>PerformanceObserverEntryList</c-></code></dfn> {
   <a data-link-type="idl-name" href="#typedefdef-performanceentrylist" id="ref-for-typedefdef-performanceentrylist⑧"><c- n>PerformanceEntryList</c-></a> <dfn class="dfn-paneled idl-code" data-dfn-for="PerformanceObserverEntryList" data-dfn-type="method" data-export data-lt="getEntries()" id="dom-performanceobserverentrylist-getentries"><code><c- g>getEntries</c-></code></dfn>();
@@ -1364,32 +1364,32 @@ will stack because a single call can only specify one type. Calling
 };
 </pre>
    <p>Each <code class="idl"><a data-link-type="idl" href="#performanceobserverentrylist" id="ref-for-performanceobserverentrylist②">PerformanceObserverEntryList</a></code> object has an associated
-<dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="entry-list">entry list</dfn>, which consists of a <code class="idl"><a data-link-type="idl" href="#typedefdef-performanceentrylist" id="ref-for-typedefdef-performanceentrylist①①">PerformanceEntryList</a></code> and is
+<dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="entry-list"><span class="bs-old-id" id="dfn-entry-list"></span>entry list</dfn>, which consists of a <code class="idl"><a data-link-type="idl" href="#typedefdef-performanceentrylist" id="ref-for-typedefdef-performanceentrylist①①">PerformanceEntryList</a></code> and is
 initialized upon construction.</p>
-   <h5 class="heading settled" data-level="4.2.2.1" id="performanceobserverentrylist-getentries-method"><span class="secno">4.2.2.1. </span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performanceobserverentrylist-getentries" id="ref-for-dom-performanceobserverentrylist-getentries">getEntries()</a></code> method</span><a class="self-link" href="#performanceobserverentrylist-getentries-method"></a></h5>
+   <h5 class="heading settled" data-level="4.2.2.1" id="performanceobserverentrylist-getentries-method"><span class="secno">4.2.2.1. </span><span class="bs-old-id" id="idl-def-performanceobserverentrylist-getentries"></span><span class="bs-old-id" id="getentries-method-0"></span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performanceobserverentrylist-getentries" id="ref-for-dom-performanceobserverentrylist-getentries">getEntries()</a></code> method</span><a class="self-link" href="#performanceobserverentrylist-getentries-method"></a></h5>
    <p>Returns a <code class="idl"><a data-link-type="idl" href="#typedefdef-performanceentrylist" id="ref-for-typedefdef-performanceentrylist①②">PerformanceEntryList</a></code> object returned by <a data-link-type="dfn" href="#dfn-filter-buffer-by-name-and-type" id="ref-for-dfn-filter-buffer-by-name-and-type">filter buffer by name and type</a> algorithm with <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑦">this</a>’s <a data-link-type="dfn" href="#entry-list" id="ref-for-entry-list">entry list</a>,
 <var>name</var> and <var>type</var> set to <code>null</code>.</p>
-   <h5 class="heading settled" data-level="4.2.2.2" id="performanceobserverentrylist-getentriesbytype-method"><span class="secno">4.2.2.2. </span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performanceobserverentrylist-getentriesbytype" id="ref-for-dom-performanceobserverentrylist-getentriesbytype">getEntriesByType()</a></code> method</span><a class="self-link" href="#performanceobserverentrylist-getentriesbytype-method"></a></h5>
+   <h5 class="heading settled" data-level="4.2.2.2" id="performanceobserverentrylist-getentriesbytype-method"><span class="secno">4.2.2.2. </span><span class="bs-old-id" id="idl-def-performanceobserverentrylist-getentriesbytype-type"></span><span class="bs-old-id" id="getentriesbytype-method-0"></span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performanceobserverentrylist-getentriesbytype" id="ref-for-dom-performanceobserverentrylist-getentriesbytype">getEntriesByType()</a></code> method</span><a class="self-link" href="#performanceobserverentrylist-getentriesbytype-method"></a></h5>
    <p>Returns a <code class="idl"><a data-link-type="idl" href="#typedefdef-performanceentrylist" id="ref-for-typedefdef-performanceentrylist①③">PerformanceEntryList</a></code> object returned by <a data-link-type="dfn" href="#dfn-filter-buffer-by-name-and-type" id="ref-for-dfn-filter-buffer-by-name-and-type①">filter buffer by name and type</a> algorithm with <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑧">this</a>’s <a data-link-type="dfn" href="#entry-list" id="ref-for-entry-list①">entry list</a>,
 <var>name</var> set to <code>null</code>, and <var>type</var> set to the
 method’s input <code>type</code> parameter.</p>
-   <h5 class="heading settled" data-level="4.2.2.3" id="performanceobserverentrylist-getentriesbyname-method"><span class="secno">4.2.2.3. </span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performanceobserverentrylist-getentriesbyname" id="ref-for-dom-performanceobserverentrylist-getentriesbyname">getEntriesByName()</a></code> method</span><a class="self-link" href="#performanceobserverentrylist-getentriesbyname-method"></a></h5>
+   <h5 class="heading settled" data-level="4.2.2.3" id="performanceobserverentrylist-getentriesbyname-method"><span class="secno">4.2.2.3. </span><span class="bs-old-id" id="idl-def-performanceobserverentrylist-getentriesbyname-name-type"></span><span class="bs-old-id" id="getentriesbyname-method-0"></span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performanceobserverentrylist-getentriesbyname" id="ref-for-dom-performanceobserverentrylist-getentriesbyname">getEntriesByName()</a></code> method</span><a class="self-link" href="#performanceobserverentrylist-getentriesbyname-method"></a></h5>
    <p>Returns a <code class="idl"><a data-link-type="idl" href="#typedefdef-performanceentrylist" id="ref-for-typedefdef-performanceentrylist①④">PerformanceEntryList</a></code> object returned by <a data-link-type="dfn" href="#dfn-filter-buffer-by-name-and-type" id="ref-for-dfn-filter-buffer-by-name-and-type②">filter buffer by name and type</a> algorithm with <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this①⑨">this</a>’s <a data-link-type="dfn" href="#entry-list" id="ref-for-entry-list②">entry list</a>,
 <var>name</var> set to the method input <code>name</code> parameter, and
 <var>type</var> set to <code>null</code> if optional <code>entryType</code> is omitted,
 or set to the method’s input <code>type</code> parameter otherwise.</p>
-   <h3 class="heading settled" data-level="4.3" id="takerecords-method"><span class="secno">4.3. </span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performanceobserver-takerecords" id="ref-for-dom-performanceobserver-takerecords">takeRecords()</a></code> method</span><a class="self-link" href="#takerecords-method"></a></h3>
+   <h3 class="heading settled" data-level="4.3" id="takerecords-method"><span class="secno">4.3. </span><span class="bs-old-id" id="idl-def-performanceobserver-takerecords"></span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performanceobserver-takerecords" id="ref-for-dom-performanceobserver-takerecords">takeRecords()</a></code> method</span><a class="self-link" href="#takerecords-method"></a></h3>
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-performanceobserver-takerecords" id="ref-for-dom-performanceobserver-takerecords①">takeRecords()</a></code> method must return a copy of <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②⓪">this</a>’s
 <a data-link-type="dfn" href="#observer-buffer" id="ref-for-observer-buffer①">observer buffer</a>, and also empty <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②①">this</a>’s <a data-link-type="dfn" href="#observer-buffer" id="ref-for-observer-buffer②">observer buffer</a>.</p>
-   <h3 class="heading settled" data-level="4.4" id="disconnect-method"><span class="secno">4.4. </span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performanceobserver-disconnect" id="ref-for-dom-performanceobserver-disconnect">disconnect()</a></code> method</span><a class="self-link" href="#disconnect-method"></a></h3>
+   <h3 class="heading settled" data-level="4.4" id="disconnect-method"><span class="secno">4.4. </span><span class="bs-old-id" id="idl-def-performanceobserver-disconnect"></span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performanceobserver-disconnect" id="ref-for-dom-performanceobserver-disconnect">disconnect()</a></code> method</span><a class="self-link" href="#disconnect-method"></a></h3>
    <p>The <code class="idl"><a data-link-type="idl" href="#dom-performanceobserver-disconnect" id="ref-for-dom-performanceobserver-disconnect①">disconnect()</a></code> method must do the following:</p>
    <ol>
     <li>Remove <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②②">this</a> from the <a data-link-type="dfn" href="#list-of-registered-performance-observer-objects" id="ref-for-list-of-registered-performance-observer-objects④">list of registered performance observer objects</a> of <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global①">relevant global object</a>.
     <li>Empty <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②③">this</a>’s <a data-link-type="dfn" href="#observer-buffer" id="ref-for-observer-buffer③">observer buffer</a>.
     <li>Empty <a data-link-type="dfn" href="https://webidl.spec.whatwg.org/#this" id="ref-for-this②④">this</a>’s <a data-link-type="dfn" href="#options-list" id="ref-for-options-list⑥">options list</a>.
    </ol>
-   <h3 class="heading settled" data-level="4.5" id="supportedentrytypes-attribute"><span class="secno">4.5. </span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performanceobserver-supportedentrytypes" id="ref-for-dom-performanceobserver-supportedentrytypes">supportedEntryTypes</a></code> attribute</span><a class="self-link" href="#supportedentrytypes-attribute"></a></h3>
-   <p>Each <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#global-object" id="ref-for-global-object①">global object</a> has an associated <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="frozen array of supported entry types" data-noexport id="frozen-array-of-supported-entry-types">frozen array of supported entry
+   <h3 class="heading settled" data-level="4.5" id="supportedentrytypes-attribute"><span class="secno">4.5. </span><span class="bs-old-id" id="idl-def-performanceobserver-supportedentrytypes"></span><span class="content"><code class="idl"><a data-link-type="idl" href="#dom-performanceobserver-supportedentrytypes" id="ref-for-dom-performanceobserver-supportedentrytypes">supportedEntryTypes</a></code> attribute</span><a class="self-link" href="#supportedentrytypes-attribute"></a></h3>
+   <p>Each <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#global-object" id="ref-for-global-object①">global object</a> has an associated <dfn class="dfn-paneled" data-dfn-type="dfn" data-lt="frozen array of supported entry types" data-noexport id="frozen-array-of-supported-entry-types"><span class="bs-old-id" id="dfn-frozen-array-of-supported-entry-types"></span>frozen array of supported entry
 types</dfn>, which is initialized to the
 <a href="https://webidl.spec.whatwg.org/#es-frozen-array">FrozenArray</a>
 <a href="https://webidl.spec.whatwg.org/#dfn-create-frozen-array">created</a> from the sequence of
@@ -1661,7 +1661,7 @@ steps:</p>
     <li>Return true.
    </ol>
    <h3 class="heading settled" data-level="5.7" id="generate-a-performance-entry-id"><span class="secno">5.7. </span><span class="content">Generate a Performance Entry id</span><a class="self-link" href="#generate-a-performance-entry-id"></a></h3>
-   <p>When asked to <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="generate-an-id">generate an id</dfn> for a
+   <p>When asked to <dfn class="dfn-paneled" data-dfn-type="dfn" data-export id="generate-an-id"><span class="bs-old-id" id="dfn-generate-an-id"></span>generate an id</dfn> for a
 <code class="idl"><a data-link-type="idl" href="#performanceentry" id="ref-for-performanceentry①⓪">PerformanceEntry</a></code> <var>entry</var>, run the following steps:</p>
    <ol>
     <li>Let <var>relevantGlobal</var> be <var>entry</var>’s <a data-link-type="dfn" href="https://html.spec.whatwg.org/multipage/webappapis.html#concept-relevant-global" id="ref-for-concept-relevant-global⑤">relevant global object</a>.
@@ -1709,6 +1709,8 @@ number of entries that have been generated in the web application.</p>
    <p>Thanks to Arvind Jain, Boris Zbarsky, Jatinder Mann, Nat Duca, Philippe
 Le Hegaret, Ryosuke Niwa, Shubhie Panicker, Todd Reifsteck, Yoav Weiss, and
 Zhiheng Wang, for their contributions to this work.</p>
+   <div id="conformance"></div>
+   <div id="dependencies"></div>
   </main>
   <div data-fill-with="conformance">
    <h2 class="heading no-num no-ref settled" id="w3c-conformance"><span class="content">Conformance</span><a class="self-link" href="#w3c-conformance"></a></h2>
