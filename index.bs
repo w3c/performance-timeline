@@ -755,7 +755,7 @@ these steps:</p>
           <li>Let <var>entries</var> be a copy of <var>po</var>'s
           [=observer buffer=].
           </li>
-          <li>If <var>entries</var> is empty, return.</li>
+          <li>If <var>entries</var> is empty, [=iteration/continue=].</li>
           <li>Empty <var>po</var>'s [=observer buffer=].
           </li>
           <li>Let <var>observerEntryList</var> be a new
