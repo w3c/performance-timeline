@@ -25,8 +25,6 @@ Status Text:
 		<li>Extends the base definition of the {{Performance}} interface defined by
 		[[HR-TIME-3]];</li>
 		<li>Exposes {{PerformanceEntry}} in Web Workers [[WORKERS]];</li>
-		<li>Formalizes support for multiple navigation events over a document's
-		lifetime.</li>
 		<li>Adds support for {{PerformanceObserver}}.</li>
 	</ul>
 </pre>
@@ -44,8 +42,6 @@ urlPrefix: https://html.spec.whatwg.org/multipage/; spec: HTML
     type: dfn
         urlPrefix: webappapis.html
             text: relevant global object; url: #concept-relevant-global
-        urlPrefix: nav-history-apis.html
-            text: associated document; url: #concept-document-window
 urlPrefix: https://webidl.spec.whatwg.org/; spec: WEBIDL
     type: dfn
         text: default toJSON steps; url: #default-tojson-steps
@@ -230,15 +226,6 @@ urlPrefix: https://w3c.github.io/timing-entrytypes-registry/; spec: TIMING-ENTRY
       <li>An integer <dfn oldids="dfn-dropped-entries-count">dropped entries count</dfn> that is initially 0.</li>
     </ul>
   </li>
-  <li>An integer <dfn oldids="dfn-last-performance-entry-id">last performance entry id</dfn> that is initially set
-  to a random integer between 100 and 10000.
-  </li>
-</ul>
-<p>Each {{Document}} has:</p>
-<ul>
-  <li>A <dfn oldids="dfn-most-recent-navigation">most recent navigation</dfn>, which is a {{PerformanceEntry}},
-  initially unset.
-  </li>
 </ul>
 <p>In order to get the <dfn oldids="dfn-relevant-performance-entry-tuple">relevant performance entry tuple</dfn>, given
 <var>entryType</var> and <var>globalObject</var> as input, run the
@@ -289,15 +276,13 @@ method's input <code>type</code> parameter otherwise.</p>
 <h2 id="the-performanceentry-interface" oldids="dom-performanceentry,idl-def-performanceentry">The {{PerformanceEntry}} interface</h2>
 <p>The {{PerformanceEntry}} interface hosts the performance data of
 various metrics.</p>
-<pre class='idl' id=idl-def-performanceentry-id>
+<pre class='idl'>
 [Exposed=(Window,Worker)]
 interface PerformanceEntry {
-  readonly    attribute unsigned long long  id;
   readonly    attribute DOMString           name;
   readonly    attribute DOMString           entryType;
   readonly    attribute DOMHighResTimeStamp startTime;
   readonly    attribute DOMHighResTimeStamp duration;
-  readonly    attribute unsigned long long  navigationId;
   [Default] object toJSON();
 };
 </pre>
@@ -324,10 +309,6 @@ interface PerformanceEntry {
   <dd>
     The getter steps for the {{PerformanceEntry/duration}} attribute are to return 0 if [=this=]'s [=end time=]
     is 0; otherwise [=this=]'s [=end time=] - [=this=]'s {{PerformanceEntry/startTime}}.
-  </dd>
-  <dt><dfn attribute for="PerformanceEntry" oldids="idl-def-performanceentry-navigationid">navigationId</dfn></dt>
-  <dd>
-    This attribute MUST return the value it is initialized to.
   </dd>
 </dl>
 <p>When <dfn data-dfn-for="PerformanceEntry" data-export oldids="idl-def-performanceentry-tojson">toJSON</dfn> is called, run [[WEBIDL]]'s [=default toJSON
@@ -638,12 +619,6 @@ entry types are supported by the user agent.</p>
 <p>To <dfn id="dfn-queue-a-performanceentry" data-export>queue a PerformanceEntry</dfn> (<var>newEntry</var>), run
 these steps:</p>
 <ol>
-  <li>If <var>newEntry</var>'s {{PerformanceEntry/id}} is unset:
-    <ol>
-      <li>Let <var ignore>id</var> be the result of running [=generate an id=] for <var>newEntry</var>.</li>
-      <li>Set <var>newEntry</var>'s {{PerformanceEntry/id}} to <var ignore>id</var>.</li>
-    </ol>
-  </li>
   <li>Let <var>interested observers</var> be an initially empty set of
   {{PerformanceObserver}} objects.
   </li>
@@ -653,15 +628,6 @@ these steps:</p>
   <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s [=relevant
   global object=].
   </li>
-  <li>If <var>relevantGlobal</var> has an [=associated document=]:
-    <ol>
-      <li>Set <var>newEntry</var>'s
-      {{PerformanceEntry/navigationId}} to the value of
-      <var>relevantGlobal</var>'s [=associated document=]'s [=most recent navigation=]'s {{PerformanceEntry/id}}.</li>
-    </ol>
-  </li>
-  <li>Otherwise, set <var>newEntry</var>'s
-  {{PerformanceEntry/navigationId}} to null.</li>
   <li>For each [=registered performance observer=] <var>regObs</var> in
   <var>relevantGlobal</var>'s [=list of registered performance observer objects=]:
     <ol>
@@ -706,24 +672,6 @@ these steps:</p>
   <li>[=Queue the PerformanceObserver task=] with
   <var>relevantGlobal</var> as input.
   </li>
-</ol>
-
-<h3 id="queue-a-navigation-performanceentry">Queue a navigation <code>PerformanceEntry</code></h3>
-<p>To <dfn id="dfn-queue-a-navigation-performanceentry" data-export>queue a navigation PerformanceEntry</dfn> (<var>newEntry</var>), run
-these steps:</p>
-<ol>
-  <li>Let <var ignore>id</var> be the result of running [=generate an id=] for <var>newEntry</var>.</li>
-  <li>Let <var>relevantGlobal</var> be <var>newEntry</var>'s [=relevant
-  global object=].
-  </li>
-  <li>Set <var>newEntry</var>'s {{PerformanceEntry/id}} to <var ignore>id</var>.</li>
-  <li>Set <var>newEntry</var>'s {{PerformanceEntry/navigationId}} to <var ignore>id</var>.</li>
-  <li>If <var>relevantGlobal</var> has an [=associated document=]:
-    <ol>
-      <li>Set <var>relevantGlobal</var>'s [=associated document=]'s [=most recent navigation=] to <var>newEntry</var>.</li>
-    </ol>
-  </li>
-  <li>[=Queue a PerformanceEntry=] with <var>newEntry</var> as input.</li>
 </ol>
 
 <h3 id="queue-the-performanceobserver-task">Queue the PerformanceObserver task</h3>
@@ -890,27 +838,6 @@ steps:</p>
   <li>Return true.</li>
 </ol>
 
-<h3 id="generate-a-performance-entry-id">Generate a Performance Entry id</h3>
-<p>When asked to <dfn data-export oldids="dfn-generate-an-id">generate an id</dfn> for a
-{{PerformanceEntry}} <var>entry</var>, run the following steps:</p>
-<ol>
-  <li>Let <var>relevantGlobal</var> be <var>entry</var>'s [=relevant
-  global object=].
-  <li>Increase <var>relevantGlobal</var>'s [=last performance entry
-  id=] by a small number chosen by the user agent.</li>
-  <li>Return <var>relevantGlobal</var>'s [=last performance entry id=].
-</ol>
-<p>A user agent may choose to increase the [=last performance entry
-id=] by a small random integer every time. A user agent must not pick
-a single global random integer and increase the [=last performance entry
-id=] of all global objects by that amount because this could introduce
-cross origin leaks.
-</p>
-<p class="note">The [=last performance entry id=] has an initial random
-value, and is increased by a small number chosen by the user agent instead
-of 1 to discourage developers from considering it as a counter of the
-number of entries that have been generated in the web application.</p>
-
 <h2 id="privacy" class="informative">Privacy Considerations</h2>
 <em>This section is non-normative.</em>
 <p>This specification extends the {{Performance}} interface defined by [[HR-TIME-3]] and
@@ -918,15 +845,6 @@ number of entries that have been generated in the web application.</p>
   refer to [[HR-TIME-3]] for privacy considerations of exposing high-resoluting timing
   information. Each new specification introducing new performance entries should have its own
   privacy considerations as well.</span></p>
-<p>The [=last performance entry id=] is deliberately initialized to a
-  random value, and is incremented by another small value every time a new
-  {{PerformanceEntry}} is queued. <span class="allow-2119">User agents may choose to use a consistent
-  increment for all users, or may pick a different increment for each
-  [=global object=], or may choose a new random increment for each
-  {{PerformanceEntry}}. However, in order to prevent cross-origin leaks, and
-  ensure that this does not enable fingerprinting, user agents must not just
-  pick a unique random integer, and use it as a consistent increment for all
-  {{PerformanceEntry}} objects across all [=global objects=].</span></p>
 
 <h2 id="security" class="informative">Security Considerations</h2>
 <em>This section is non-normative.</em>
